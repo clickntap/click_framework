@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smart-controller>
+
+	<method name="add-shop">
+		<bind name="shop" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.Shop" validation-group="create" scope="session"> ${shop.clear()} </bind>
+		<exec> ${shop.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-shop">
+		<bind name="shop" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.Shop" validation-group="update" scope="session"> ${shop.read()} </bind>
+		<exec> ${shop.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-shop">
+		<bind name="shop" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.Shop" scope="session"> ${shop.read()} </bind>
+		<exec> ${shop.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-book">
+		<bind name="book" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.Book" validation-group="create" scope="session"> ${book.clear()} </bind>
+		<exec> ${book.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-book">
+		<bind name="book" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.Book" validation-group="update" scope="session"> ${book.read()} </bind>
+		<exec> ${book.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-book">
+		<bind name="book" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.Book" scope="session"> ${book.read()} </bind>
+		<exec> ${book.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-bookset">
+		<bind name="bookset" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookSet" validation-group="create" scope="session"> ${bookset.clear()} </bind>
+		<exec> ${bookset.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-bookset">
+		<bind name="bookset" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookSet" validation-group="update" scope="session"> ${bookset.read()} </bind>
+		<exec> ${bookset.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-bookset">
+		<bind name="bookset" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookSet" scope="session"> ${bookset.read()} </bind>
+		<exec> ${bookset.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-event">
+		<bind name="event" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.Event" validation-group="create" scope="session"> ${event.clear()} </bind>
+		<exec> ${event.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-event">
+		<bind name="event" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.Event" validation-group="update" scope="session"> ${event.read()} </bind>
+		<exec> ${event.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-event">
+		<bind name="event" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.Event" scope="session"> ${event.read()} </bind>
+		<exec> ${event.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-link">
+		<bind name="link" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.Link" validation-group="create" scope="session"> ${link.clear()} </bind>
+		<exec> ${link.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-link">
+		<bind name="link" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.Link" validation-group="update" scope="session"> ${link.read()} </bind>
+		<exec> ${link.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-link">
+		<bind name="link" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.Link" scope="session"> ${link.read()} </bind>
+		<exec> ${link.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-bookftp">
+		<bind name="bookftp" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookFtp" validation-group="create" scope="session"> ${bookftp.clear()} </bind>
+		<exec> ${bookftp.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-bookftp">
+		<bind name="bookftp" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookFtp" validation-group="update" scope="session"> ${bookftp.read()} </bind>
+		<exec> ${bookftp.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-bookftp">
+		<bind name="bookftp" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookFtp" scope="session"> ${bookftp.read()} </bind>
+		<exec> ${bookftp.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-bookpromo">
+		<bind name="bookpromo" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookPromo" validation-group="create" scope="session"> ${bookpromo.clear()} </bind>
+		<exec> ${bookpromo.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-bookpromo">
+		<bind name="bookpromo" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookPromo" validation-group="update" scope="session"> ${bookpromo.read()} </bind>
+		<exec> ${bookpromo.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-bookpromo">
+		<bind name="bookpromo" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookPromo" scope="session"> ${bookpromo.read()} </bind>
+		<exec> ${bookpromo.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-bookandget">
+		<bind name="bookandget" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookAndGet" validation-group="create" scope="session"> ${bookandget.clear()} </bind>
+		<exec> ${bookandget.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-bookandget">
+		<bind name="bookandget" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookAndGet" validation-group="update" scope="session"> ${bookandget.read()} </bind>
+		<exec> ${bookandget.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-bookandget">
+		<bind name="bookandget" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookAndGet" scope="session"> ${bookandget.read()} </bind>
+		<exec> ${bookandget.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-bookandgethistory">
+		<bind name="bookandgethistory" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookAndGetHistory" validation-group="create" scope="session"> ${bookandgethistory.clear()} </bind>
+		<exec> ${bookandgethistory.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-bookandgethistory">
+		<bind name="bookandgethistory" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookAndGetHistory" validation-group="update" scope="session"> ${bookandgethistory.read()} </bind>
+		<exec> ${bookandgethistory.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-bookandgethistory">
+		<bind name="bookandgethistory" channel="app" class="com.clickntap.iolettore_webapp.bo.catalog.BookAndGetHistory" scope="session"> ${bookandgethistory.read()} </bind>
+		<exec> ${bookandgethistory.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+</smart-controller>

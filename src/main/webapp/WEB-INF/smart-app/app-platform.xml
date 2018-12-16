@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smart-controller>
+
+	<method name="add-operator">
+		<bind name="operator" channel="app" class="com.clickntap.iolettore_webapp.bo.platform.Operator" validation-group="create" scope="session"> ${operator.clear()} </bind>
+		<exec> ${operator.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-operator">
+		<bind name="operator" channel="app" class="com.clickntap.iolettore_webapp.bo.platform.Operator" validation-group="update" scope="session"> ${operator.read()} </bind>
+		<exec> ${operator.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-operator-password">
+		<bind name="operator" channel="app" class="com.clickntap.iolettore_webapp.bo.platform.Operator" validation-group="execute-password" scope="session"> ${operator.read()} </bind>
+		<exec> ${operator.execute("password")} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-operator">
+		<bind name="operator" channel="app" class="com.clickntap.iolettore_webapp.bo.platform.Operator" scope="session"> ${operator.read()} </bind>
+		<exec> ${operator.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-language">
+		<bind name="language" channel="app" class="com.clickntap.iolettore_webapp.bo.platform.Language" validation-group="create" scope="session"> ${language.clear()} </bind>
+		<exec> ${language.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-language">
+		<bind name="language" channel="app" class="com.clickntap.iolettore_webapp.bo.platform.Language" validation-group="update" scope="session"> ${language.read()} </bind>
+		<exec> ${language.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-language">
+		<bind name="language" channel="app" class="com.clickntap.iolettore_webapp.bo.platform.Language" scope="session"> ${language.read()} </bind>
+		<exec> ${language.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+</smart-controller>

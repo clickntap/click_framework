@@ -1,0 +1,78 @@
+<bean cache="community_userpost">
+    <validation>
+      <group name="create,update"><![CDATA[
+      ]]></group>
+      <group name="create"><![CDATA[
+      ]]></group>
+    </validation>
+    <read name="id"><![CDATA[
+        select
+          id as "id",
+          user_id as "userId",
+          description as "description",
+          creation_date as "creationDate",
+          last_modified as "lastModified"
+        from
+          io_userpost
+        where
+          id = ${this.id}
+    ]]></read>
+    <read-list name="postreactions"><![CDATA[
+      select id as "id" from io_postreaction where post_id = ${this.id}
+    ]]></read-list>
+    <read-list name="postcomments"><![CDATA[
+      select id as "id" from io_postcomment where post_id = ${this.id}
+    ]]></read-list>
+    <read-list name="useractions"><![CDATA[
+      select id as "id" from io_useraction where post_id = ${this.id}
+    ]]></read-list>
+
+    <read name="description"><![CDATA[
+      select
+        id as "id"
+      from
+        io_userpost
+      where
+        lower(description) = lower(${this.description})
+    ]]></read>
+    <update><![CDATA[
+        update io_userpost
+        set
+          user_id = ${this.userId},
+          description = ${this.description},
+          last_modified = ${this.now()}
+        where
+          id = ${this.id}
+    ]]></update>
+    <execute name="touch"><![CDATA[
+        update io_userpost
+        set
+          last_modified = ${this.now()}
+        where
+          id = ${this.id}
+    ]]></execute>
+    <create><![CDATA[
+        insert into io_userpost (
+          [#if this.bean.id??]id,[/#if]
+          user_id,
+          description,
+          creation_date,
+          last_modified
+        ) values (
+          [#if this.bean.id??]${this.id},[/#if]
+          ${this.userId},
+          ${this.description},
+          [#if this.bean.creationDate??]${this.creationDate}[#else]${this.now()}[/#if],
+          [#if this.bean.lastModified??]${this.lastModified}[#else]${this.now()}[/#if]
+        )
+    ]]></create>
+    <delete><![CDATA[
+      delete from
+        io_userpost
+      where
+        id = ${this.id}
+    ]]></delete>
+    <curr-val><![CDATA[
+        select LAST_INSERT_ID() as id
+    ]]></curr-val>
+</bean>

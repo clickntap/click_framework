@@ -1,0 +1,65 @@
+<bean cache="catalog_bookpromo">
+    <validation>
+      <group name="create,update"><![CDATA[
+      ]]></group>
+      <group name="create"><![CDATA[
+      ]]></group>
+    </validation>
+    <read name="id"><![CDATA[
+        select
+          book_id as "bookId",
+          start as "start",
+          end as "end",
+          description as "description",
+          discount as "discount"
+        from
+          io_bookpromo
+        where
+          id = ${this.id}
+    ]]></read>
+
+    
+    <update><![CDATA[
+        update io_bookpromo
+        set
+          book_id = ${this.bookId},
+          start = ${this.start},
+          end = ${this.end},
+          description = ${this.description},
+          discount = ${this.discount}
+        where
+          id = ${this.id}
+    ]]></update>
+    <execute name="touch"><![CDATA[
+        update io_bookpromo
+        set
+        where
+          id = ${this.id}
+    ]]></execute>
+    <create><![CDATA[
+        insert into io_bookpromo (
+          [#if this.bean.id??]id,[/#if]
+          book_id,
+          start,
+          end,
+          description,
+          discount
+        ) values (
+          [#if this.bean.id??]${this.id},[/#if]
+          ${this.bookId},
+          ${this.start},
+          ${this.end},
+          ${this.description},
+          ${this.discount}
+        )
+    ]]></create>
+    <delete><![CDATA[
+      delete from
+        io_bookpromo
+      where
+        id = ${this.id}
+    ]]></delete>
+    <curr-val><![CDATA[
+        select LAST_INSERT_ID() as id
+    ]]></curr-val>
+</bean>

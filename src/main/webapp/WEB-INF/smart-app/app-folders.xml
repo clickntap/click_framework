@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smart-controller>
+
+	<method name="add-folder">
+		<bind name="folder" channel="app" class="com.clickntap.iolettore_webapp.bo.folders.Folder" validation-group="create" scope="session"> ${folder.clear()} </bind>
+		<exec> ${folder.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-folder">
+		<bind name="folder" channel="app" class="com.clickntap.iolettore_webapp.bo.folders.Folder" validation-group="update" scope="session"> ${folder.read()} </bind>
+		<exec> ${folder.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-folder">
+		<bind name="folder" channel="app" class="com.clickntap.iolettore_webapp.bo.folders.Folder" scope="session"> ${folder.read()} </bind>
+		<exec> ${folder.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+</smart-controller>

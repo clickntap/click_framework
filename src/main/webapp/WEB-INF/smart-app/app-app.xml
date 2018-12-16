@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smart-controller>
+
+	<method name="add-label">
+		<bind name="label" channel="app" class="com.clickntap.iolettore_webapp.bo.app.Label" validation-group="create" scope="session"> ${label.clear()} </bind>
+		<exec> ${label.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-label">
+		<bind name="label" channel="app" class="com.clickntap.iolettore_webapp.bo.app.Label" validation-group="update" scope="session"> ${label.read()} </bind>
+		<exec> ${label.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-label">
+		<bind name="label" channel="app" class="com.clickntap.iolettore_webapp.bo.app.Label" scope="session"> ${label.read()} </bind>
+		<exec> ${label.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-labellocale">
+		<bind name="labellocale" channel="app" class="com.clickntap.iolettore_webapp.bo.app.LabelLocale" validation-group="create" scope="session"> ${labellocale.clear()} </bind>
+		<exec> ${labellocale.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-labellocale">
+		<bind name="labellocale" channel="app" class="com.clickntap.iolettore_webapp.bo.app.LabelLocale" validation-group="update" scope="session"> ${labellocale.read()} </bind>
+		<exec> ${labellocale.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-labellocale">
+		<bind name="labellocale" channel="app" class="com.clickntap.iolettore_webapp.bo.app.LabelLocale" scope="session"> ${labellocale.read()} </bind>
+		<exec> ${labellocale.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+</smart-controller>

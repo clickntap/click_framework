@@ -1,0 +1,203 @@
+<bean>
+  <read-list name="shops"><![CDATA[
+    [#assign query = (this.bean.query!"")?lower_case]
+    select
+      id as "id"
+    from io_shop
+    [#list query?split("[ .;:,]", "r") as word]
+    [#if word_index == 0]where[#else]and[/#if]
+    (
+           lower(name) like ${this.toString("%"+word+"%")}
+           or lower(address) like ${this.toString("%"+word+"%")}
+           or lower(city) like ${this.toString("%"+word+"%")}
+           or lower(city_code) like ${this.toString("%"+word+"%")}
+           or lower(phone) like ${this.toString("%"+word+"%")}
+    
+    )
+    [/#list]
+  ]]></read-list>
+  <read-list name="books"><![CDATA[
+    [#assign query = (this.bean.query!"")?lower_case]
+    select
+      id as "id"
+    from io_book
+    [#list query?split("[ .;:,]", "r") as word]
+    [#if word_index == 0]where[#else]and[/#if]
+    (
+           lower(title) like ${this.toString("%"+word+"%")}
+           or lower(author) like ${this.toString("%"+word+"%")}
+           or lower(editor) like ${this.toString("%"+word+"%")}
+    
+    )
+    [/#list]
+  ]]></read-list>
+  <read-list name="booksets"><![CDATA[
+    [#assign query = (this.bean.query!"")?lower_case]
+    select
+      id as "id"
+    from io_bookset
+    [#list query?split("[ .;:,]", "r") as word]
+    [#if word_index == 0]where[#else]and[/#if]
+    (
+           lower(channel) like ${this.toString("%"+word+"%")}
+    
+    )
+    [/#list]
+  ]]></read-list>
+  <read-list name="events"><![CDATA[
+    [#assign query = (this.bean.query!"")?lower_case]
+    select
+      id as "id"
+    from io_event
+    [#list query?split("[ .;:,]", "r") as word]
+    [#if word_index == 0]where[#else]and[/#if]
+    (
+           lower(name) like ${this.toString("%"+word+"%")}
+           or lower(description) like ${this.toString("%"+word+"%")}
+    
+    )
+    [/#list]
+  ]]></read-list>
+  <read-list name="links"><![CDATA[
+    [#assign query = (this.bean.query!"")?lower_case]
+    select
+      id as "id"
+    from io_link
+    [#list query?split("[ .;:,]", "r") as word]
+    [#if word_index == 0]where[#else]and[/#if]
+    (
+           lower(channel) like ${this.toString("%"+word+"%")}
+           or lower(href) like ${this.toString("%"+word+"%")}
+           or lower(description) like ${this.toString("%"+word+"%")}
+    
+    )
+    [/#list]
+  ]]></read-list>
+  <read-list name="bookftps"><![CDATA[
+    [#assign query = (this.bean.query!"")?lower_case]
+    select
+      id as "id"
+    from io_bookftp
+    [#list query?split("[ .;:,]", "r") as word]
+    [#if word_index == 0]where[#else]and[/#if]
+    (
+    id != 0
+    )
+    [/#list]
+  ]]></read-list>
+  <read-list name="bookpromos"><![CDATA[
+    [#assign query = (this.bean.query!"")?lower_case]
+    select
+      id as "id"
+    from io_bookpromo
+    [#list query?split("[ .;:,]", "r") as word]
+    [#if word_index == 0]where[#else]and[/#if]
+    (
+    id != 0
+    )
+    [/#list]
+  ]]></read-list>
+  <read-list name="bookandgets"><![CDATA[
+    [#assign query = (this.bean.query!"")?lower_case]
+    select
+      id as "id"
+    from io_bookandget
+    [#list query?split("[ .;:,]", "r") as word]
+    [#if word_index == 0]where[#else]and[/#if]
+    (
+    id != 0
+    )
+    [/#list]
+  ]]></read-list>
+  <read-list name="bookandgethistories"><![CDATA[
+    [#assign query = (this.bean.query!"")?lower_case]
+    select
+      id as "id"
+    from io_bookandgethistory
+    [#list query?split("[ .;:,]", "r") as word]
+    [#if word_index == 0]where[#else]and[/#if]
+    (
+    id != 0
+    )
+    [/#list]
+  ]]></read-list>
+  <read-list name="range-events"><![CDATA[
+    select
+      id as "id"
+    from io_event
+    where start_date < ${this.endDate}
+    and end_date > ${this.startDate}
+  ]]></read-list>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+    
+  
+  
+  
+  
+  <read-list name="range-bookftps"><![CDATA[
+    select
+      id as "id"
+    from io_bookftp
+    where start_date < ${this.endDate}
+    and end_date > ${this.startDate}
+  ]]></read-list>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <read-list name="range-bookandgets"><![CDATA[
+    select
+      id as "id"
+    from io_bookandget
+    where start_date < ${this.endDate}
+    and end_date > ${this.startDate}
+  ]]></read-list>
+</bean>

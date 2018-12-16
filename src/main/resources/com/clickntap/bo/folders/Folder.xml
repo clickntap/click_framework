@@ -1,0 +1,99 @@
+<bean cache="folders_folder">
+    <validation>
+      <group name="create,update"><![CDATA[
+        ${this.assertNotEmpty("name")}
+        ${this.assertNotEmpty("description")}
+        ${this.assertNotEmpty("startDateOnlyDate")}
+        ${this.assertNotEmpty("startDateOnlyTime")}
+      ]]></group>
+      <group name="create"><![CDATA[
+      ]]></group>
+    </validation>
+    <read name="id"><![CDATA[
+        select
+          id as "id",
+          name as "name",
+          description as "description",
+          start_date as "startDate",
+          end_date as "endDate",
+          is_active as "isActive",
+          creation_date as "creationDate",
+          last_modified as "lastModified"
+        from
+          io_folder
+        where
+          id = ${this.id}
+    ]]></read>
+
+    <read name="name"><![CDATA[
+      select
+        id as "id"
+      from
+        io_folder
+      where
+        lower(name) = lower(${this.name})
+    ]]></read><read name="description"><![CDATA[
+      select
+        id as "id"
+      from
+        io_folder
+      where
+        lower(description) = lower(${this.description})
+    ]]></read><read name="is_active"><![CDATA[
+      select
+        id as "id"
+      from
+        io_folder
+      where
+        lower(is_active) = lower(${this.isActive})
+    ]]></read>
+    <update><![CDATA[
+        update io_folder
+        set
+          name = ${this.name},
+          description = ${this.description},
+          start_date = ${this.startDate},
+          end_date = ${this.endDate},
+          is_active = ${this.isActive},
+          last_modified = ${this.now()}
+        where
+          id = ${this.id}
+    ]]></update>
+    <execute name="touch"><![CDATA[
+        update io_folder
+        set
+          last_modified = ${this.now()}
+        where
+          id = ${this.id}
+    ]]></execute>
+    <create><![CDATA[
+        insert into io_folder (
+          [#if this.bean.id??]id,[/#if]
+          name,
+          description,
+          start_date,
+          end_date,
+          is_active,
+          creation_date,
+          last_modified
+        ) values (
+          [#if this.bean.id??]${this.id},[/#if]
+          ${this.name},
+          ${this.description},
+          ${this.startDate},
+          ${this.endDate},
+          ${this.isActive},
+          [#if this.bean.creationDate??]${this.creationDate}[#else]${this.now()}[/#if],
+          [#if this.bean.lastModified??]${this.lastModified}[#else]${this.now()}[/#if]
+        )
+    ]]></create>
+    <delete><![CDATA[
+      delete from
+        io_folder
+      where
+        id = ${this.id}
+    ]]></delete>
+    <curr-val><![CDATA[
+        select LAST_INSERT_ID() as id
+    ]]></curr-val>
+</bean>

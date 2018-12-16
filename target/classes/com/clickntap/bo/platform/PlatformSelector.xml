@@ -1,0 +1,34 @@
+<bean>
+  <read-list name="operators"><![CDATA[
+    [#assign query = (this.bean.query!"")?lower_case]
+    select
+      id as "id"
+    from io_operator
+    [#list query?split("[ .;:,]", "r") as word]
+    [#if word_index == 0]where[#else]and[/#if]
+    (
+           lower(name) like ${this.toString("%"+word+"%")}
+           or lower(surname) like ${this.toString("%"+word+"%")}
+           or lower(email) like ${this.toString("%"+word+"%")}
+           or lower(username) like ${this.toString("%"+word+"%")}
+    
+    )
+    [/#list]
+  ]]></read-list>
+  <read-list name="languages"><![CDATA[
+    [#assign query = (this.bean.query!"")?lower_case]
+    select
+      id as "id"
+    from io_language
+    [#list query?split("[ .;:,]", "r") as word]
+    [#if word_index == 0]where[#else]and[/#if]
+    (
+           lower(code) like ${this.toString("%"+word+"%")}
+           or lower(name) like ${this.toString("%"+word+"%")}
+           or lower(native_name) like ${this.toString("%"+word+"%")}
+    
+    )
+    [/#list]
+  ]]></read-list>
+  
+</bean>

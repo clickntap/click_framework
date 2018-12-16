@@ -1,0 +1,100 @@
+<bean cache="community_useraction">
+    <validation>
+      <group name="create,update"><![CDATA[
+      ]]></group>
+      <group name="create"><![CDATA[
+      ]]></group>
+    </validation>
+    <read name="id"><![CDATA[
+        select
+          id as "id",
+          user_id as "userId",
+          action_user_id as "actionUserId",
+          book_id as "bookId",
+          event_id as "eventId",
+          comment_id as "commentId",
+          what as "what",
+          post_id as "postId",
+          post_comment_id as "postCommentId",
+          value as "value",
+          creation_date as "creationDate",
+          last_modified as "lastModified"
+        from
+          io_useraction
+        where
+          id = ${this.id}
+    ]]></read>
+    <read-list name="userreactions"><![CDATA[
+      select id as "id" from io_userreaction where action_id = ${this.id}
+    ]]></read-list>
+
+    <read name="what"><![CDATA[
+      select
+        id as "id"
+      from
+        io_useraction
+      where
+        lower(what) = lower(${this.what})
+    ]]></read>
+    <update><![CDATA[
+        update io_useraction
+        set
+          user_id = ${this.userId},
+          action_user_id = ${this.actionUserId},
+          book_id = ${this.bookId},
+          event_id = ${this.eventId},
+          comment_id = ${this.commentId},
+          what = ${this.what},
+          post_id = ${this.postId},
+          post_comment_id = ${this.postCommentId},
+          value = ${this.value},
+          last_modified = ${this.now()}
+        where
+          id = ${this.id}
+    ]]></update>
+    <execute name="touch"><![CDATA[
+        update io_useraction
+        set
+          last_modified = ${this.now()}
+        where
+          id = ${this.id}
+    ]]></execute>
+    <create><![CDATA[
+        insert into io_useraction (
+          [#if this.bean.id??]id,[/#if]
+          user_id,
+          action_user_id,
+          book_id,
+          event_id,
+          comment_id,
+          what,
+          post_id,
+          post_comment_id,
+          value,
+          creation_date,
+          last_modified
+        ) values (
+          [#if this.bean.id??]${this.id},[/#if]
+          ${this.userId},
+          ${this.actionUserId},
+          ${this.bookId},
+          ${this.eventId},
+          ${this.commentId},
+          ${this.what},
+          ${this.postId},
+          ${this.postCommentId},
+          ${this.value},
+          [#if this.bean.creationDate??]${this.creationDate}[#else]${this.now()}[/#if],
+          [#if this.bean.lastModified??]${this.lastModified}[#else]${this.now()}[/#if]
+        )
+    ]]></create>
+    <delete><![CDATA[
+      delete from
+        io_useraction
+      where
+        id = ${this.id}
+    ]]></delete>
+    <curr-val><![CDATA[
+        select LAST_INSERT_ID() as id
+    ]]></curr-val>
+</bean>

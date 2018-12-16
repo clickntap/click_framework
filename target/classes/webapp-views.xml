@@ -1,0 +1,70 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans" xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>/WEB-INF/conf/auto/smart-app.properties</value>
+            </list>
+        </property>
+    </bean>
+    <bean class="com.clickntap.smart.SmartView" id="html">
+        <property name="viewEngine" ref="viewEngine"/>
+        <property name="mode" value="TEXT"/>
+        <property name="contentType" value="text/html; charset=UTF-8"/>
+    </bean>
+    <bean class="com.clickntap.smart.SmartView" id="excel">
+        <property name="viewEngine" ref="viewEngine"/>
+        <property name="mode" value="TEXT"/>
+        <property name="contentType" value="application/ms-excel; charset=UTF-8"/>
+    </bean>
+    <bean class="com.clickntap.smart.SmartView" id="pdf">
+        <property name="viewEngine" ref="viewEngine"/>
+        <property name="mode" value="TEXT"/>
+        <property name="contentType" value="application/pdf; charset=UTF-8"/>
+    </bean>
+    <bean class="com.clickntap.smart.SmartView" id="pdfstream">
+        <property name="viewEngine" ref="viewEngine"/>
+        <property name="mode" value="BINARY"/>
+        <property name="binaryKey" value="out"/>
+        <property name="contentType" value="application/pdf"/>
+    </bean>
+    <bean class="com.clickntap.smart.SmartView" id="xml">
+        <property name="viewEngine" ref="viewEngine"/>
+        <property name="mode" value="TEXT"/>
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+    </bean>
+    <bean class="com.clickntap.smart.SmartView" id="htmlstream">
+        <property name="viewEngine" ref="viewEngine"/>
+        <property name="mode" value="BINARY"/>
+        <property name="binaryKey" value="out"/>
+        <property name="contentType" value="text/html; charset=UTF-8"/>
+    </bean>
+    <bean class="com.clickntap.smart.SmartView" id="xmlstream">
+        <property name="viewEngine" ref="viewEngine"/>
+        <property name="mode" value="BINARY"/>
+        <property name="binaryKey" value="out"/>
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+    </bean>
+    <bean class="com.clickntap.smart.SmartView" id="stream">
+        <property name="viewEngine" ref="viewEngine"/>
+        <property name="mode" value="BINARY"/>
+        <property name="binaryKey" value="out"/>
+        <property name="contentType" value="application/octet-stream"/>
+    </bean>
+    <bean class="com.clickntap.smart.SmartView" id="pngstream">
+        <property name="viewEngine" ref="viewEngine"/>
+        <property name="mode" value="BINARY"/>
+        <property name="binaryKey" value="out"/>
+        <property name="contentType" value="image/png"/>
+    </bean>
+    <bean class="com.clickntap.smart.SmartView" id="jpgstream">
+        <property name="viewEngine" ref="viewEngine"/>
+        <property name="mode" value="BINARY"/>
+        <property name="binaryKey" value="out"/>
+        <property name="contentType" value="image/jpg"/>
+    </bean>
+    <bean id="viewEngine" class="com.clickntap.tool.script.FreemarkerScriptEngine" init-method="start">
+        <property name="templateDir" value="${smartAppTemplateDir}"/>
+    </bean>
+</beans>

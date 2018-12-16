@@ -1,0 +1,27 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans" xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	<bean id="smartCache" class="com.clickntap.smart.SmartCache">
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+	<bean id="smartApp" class="com.clickntap.smart.SmartApp" init-method="start">
+		<property name="confResource" value="${smartAppConfResource}" />
+		<property name="controllerDir" value="${smartAppControllerDir}" />
+		<property name="evalEngine" ref="evalEngine" />
+		<property name="envResource" value="/WEB-INF/conf/auto/smart-app.properties" />
+		<property name="docRoot" value="/" />
+	</bean>
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
+		<property name="location" value="classpath:webapp-views.xml" />
+	</bean>
+	<bean id="evalEngine" class="com.clickntap.tool.script.FreemarkerScriptEngine" init-method="start">
+		<property name="templateDir" value="${smartAppTemplateDir}" />
+	</bean>
+	<bean id="messageSource" class="com.clickntap.smart.SmartTxtMessageSource" init-method="start">
+		<property name="messageResource">
+			<value>${messageResource}</value>
+		</property>
+		<property name="scriptEngine">
+			<ref bean="evalEngine" />
+		</property>
+	</bean>
+</beans>

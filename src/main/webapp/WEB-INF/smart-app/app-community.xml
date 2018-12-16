@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smart-controller>
+
+	<method name="add-user">
+		<bind name="user" channel="app" class="com.clickntap.iolettore_webapp.bo.community.User" validation-group="create" scope="session"> ${user.clear()} </bind>
+		<exec> ${user.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-user">
+		<bind name="user" channel="app" class="com.clickntap.iolettore_webapp.bo.community.User" validation-group="update" scope="session"> ${user.read()} </bind>
+		<exec> ${user.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-user-password">
+		<bind name="user" channel="app" class="com.clickntap.iolettore_webapp.bo.community.User" validation-group="execute-password" scope="session"> ${user.read()} </bind>
+		<exec> ${user.execute("password")} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-user">
+		<bind name="user" channel="app" class="com.clickntap.iolettore_webapp.bo.community.User" scope="session"> ${user.read()} </bind>
+		<exec> ${user.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-appinst">
+		<bind name="appinst" channel="app" class="com.clickntap.iolettore_webapp.bo.community.AppInst" validation-group="create" scope="session"> ${appinst.clear()} </bind>
+		<exec> ${appinst.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-appinst">
+		<bind name="appinst" channel="app" class="com.clickntap.iolettore_webapp.bo.community.AppInst" validation-group="update" scope="session"> ${appinst.read()} </bind>
+		<exec> ${appinst.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-appinst">
+		<bind name="appinst" channel="app" class="com.clickntap.iolettore_webapp.bo.community.AppInst" scope="session"> ${appinst.read()} </bind>
+		<exec> ${appinst.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-userfollower">
+		<bind name="userfollower" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserFollower" validation-group="create" scope="session"> ${userfollower.clear()} </bind>
+		<exec> ${userfollower.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-userfollower">
+		<bind name="userfollower" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserFollower" validation-group="update" scope="session"> ${userfollower.read()} </bind>
+		<exec> ${userfollower.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-userfollower">
+		<bind name="userfollower" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserFollower" scope="session"> ${userfollower.read()} </bind>
+		<exec> ${userfollower.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-userlibrary">
+		<bind name="userlibrary" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserLibrary" validation-group="create" scope="session"> ${userlibrary.clear()} </bind>
+		<exec> ${userlibrary.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-userlibrary">
+		<bind name="userlibrary" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserLibrary" validation-group="update" scope="session"> ${userlibrary.read()} </bind>
+		<exec> ${userlibrary.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-userlibrary">
+		<bind name="userlibrary" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserLibrary" scope="session"> ${userlibrary.read()} </bind>
+		<exec> ${userlibrary.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-userrating">
+		<bind name="userrating" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserRating" validation-group="create" scope="session"> ${userrating.clear()} </bind>
+		<exec> ${userrating.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-userrating">
+		<bind name="userrating" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserRating" validation-group="update" scope="session"> ${userrating.read()} </bind>
+		<exec> ${userrating.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-userrating">
+		<bind name="userrating" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserRating" scope="session"> ${userrating.read()} </bind>
+		<exec> ${userrating.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-userpost">
+		<bind name="userpost" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserPost" validation-group="create" scope="session"> ${userpost.clear()} </bind>
+		<exec> ${userpost.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-userpost">
+		<bind name="userpost" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserPost" validation-group="update" scope="session"> ${userpost.read()} </bind>
+		<exec> ${userpost.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-userpost">
+		<bind name="userpost" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserPost" scope="session"> ${userpost.read()} </bind>
+		<exec> ${userpost.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-postreaction">
+		<bind name="postreaction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.PostReaction" validation-group="create" scope="session"> ${postreaction.clear()} </bind>
+		<exec> ${postreaction.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-postreaction">
+		<bind name="postreaction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.PostReaction" validation-group="update" scope="session"> ${postreaction.read()} </bind>
+		<exec> ${postreaction.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-postreaction">
+		<bind name="postreaction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.PostReaction" scope="session"> ${postreaction.read()} </bind>
+		<exec> ${postreaction.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-postcomment">
+		<bind name="postcomment" channel="app" class="com.clickntap.iolettore_webapp.bo.community.PostComment" validation-group="create" scope="session"> ${postcomment.clear()} </bind>
+		<exec> ${postcomment.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-postcomment">
+		<bind name="postcomment" channel="app" class="com.clickntap.iolettore_webapp.bo.community.PostComment" validation-group="update" scope="session"> ${postcomment.read()} </bind>
+		<exec> ${postcomment.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-postcomment">
+		<bind name="postcomment" channel="app" class="com.clickntap.iolettore_webapp.bo.community.PostComment" scope="session"> ${postcomment.read()} </bind>
+		<exec> ${postcomment.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-postcommentreaction">
+		<bind name="postcommentreaction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.PostCommentReaction" validation-group="create" scope="session"> ${postcommentreaction.clear()} </bind>
+		<exec> ${postcommentreaction.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-postcommentreaction">
+		<bind name="postcommentreaction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.PostCommentReaction" validation-group="update" scope="session"> ${postcommentreaction.read()} </bind>
+		<exec> ${postcommentreaction.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-postcommentreaction">
+		<bind name="postcommentreaction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.PostCommentReaction" scope="session"> ${postcommentreaction.read()} </bind>
+		<exec> ${postcommentreaction.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-comment">
+		<bind name="comment" channel="app" class="com.clickntap.iolettore_webapp.bo.community.Comment" validation-group="create" scope="session"> ${comment.clear()} </bind>
+		<exec> ${comment.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-comment">
+		<bind name="comment" channel="app" class="com.clickntap.iolettore_webapp.bo.community.Comment" validation-group="update" scope="session"> ${comment.read()} </bind>
+		<exec> ${comment.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-comment">
+		<bind name="comment" channel="app" class="com.clickntap.iolettore_webapp.bo.community.Comment" scope="session"> ${comment.read()} </bind>
+		<exec> ${comment.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-commentreaction">
+		<bind name="commentreaction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.CommentReaction" validation-group="create" scope="session"> ${commentreaction.clear()} </bind>
+		<exec> ${commentreaction.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-commentreaction">
+		<bind name="commentreaction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.CommentReaction" validation-group="update" scope="session"> ${commentreaction.read()} </bind>
+		<exec> ${commentreaction.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-commentreaction">
+		<bind name="commentreaction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.CommentReaction" scope="session"> ${commentreaction.read()} </bind>
+		<exec> ${commentreaction.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-useraction">
+		<bind name="useraction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserAction" validation-group="create" scope="session"> ${useraction.clear()} </bind>
+		<exec> ${useraction.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-useraction">
+		<bind name="useraction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserAction" validation-group="update" scope="session"> ${useraction.read()} </bind>
+		<exec> ${useraction.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-useraction">
+		<bind name="useraction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserAction" scope="session"> ${useraction.read()} </bind>
+		<exec> ${useraction.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+
+	<method name="add-userreaction">
+		<bind name="userreaction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserReaction" validation-group="create" scope="session"> ${userreaction.clear()} </bind>
+		<exec> ${userreaction.create()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="edit-userreaction">
+		<bind name="userreaction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserReaction" validation-group="update" scope="session"> ${userreaction.read()} </bind>
+		<exec> ${userreaction.update()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+	<method name="delete-userreaction">
+		<bind name="userreaction" channel="app" class="com.clickntap.iolettore_webapp.bo.community.UserReaction" scope="session"> ${userreaction.read()} </bind>
+		<exec> ${userreaction.delete()} ${ws.setForm(this.param("form"))} </exec>
+	</method>
+
+</smart-controller>
