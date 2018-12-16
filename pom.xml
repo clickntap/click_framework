@@ -4,7 +4,7 @@
 
 	<groupId>com.clickntap</groupId>
 	<artifactId>click_framework</artifactId>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.3</version>
 	<packaging>jar</packaging>
 	<name>Click Framework</name>
 	<description />
@@ -50,7 +50,7 @@
 		<connection>scm:git:ssh://github.com/clickntap/click_framework.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/clickntap/click_framework.git</developerConnection>
 		<url>https://github.com/clickntap/click_framework</url>
-		<tag>click_framework-1.0</tag>
+		<tag>click_framework-1.3</tag>
 	</scm>
 
 	<properties>
