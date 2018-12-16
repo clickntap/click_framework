@@ -7,7 +7,7 @@
 	<version>1.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Click Framework</name>
-	<description />
+	<description>Java Framework based on Spring Framework, Freemarker and Simplicity</description>
 	<url>https://github.com/clickntap/click_framework</url>
 
 	<prerequisites>
