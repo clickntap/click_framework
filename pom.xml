@@ -4,10 +4,10 @@
 
 	<groupId>com.clickntap</groupId>
 	<artifactId>click_framework</artifactId>
-	<version>1.0</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Click Framework</name>
-	<description />
+	<description></description>
 	<url>https://github.com/clickntap/click_framework</url>
 
 	<prerequisites>
