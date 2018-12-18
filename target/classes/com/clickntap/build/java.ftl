@@ -43,7 +43,7 @@ public class ${package?capitalize}Selector extends BOFilter {
     return getApp().getBOListByFilter(${entity.attributeValue("name")}.class, filter, "${entity.attributeValue("name")?lower_case}s");
   }
   [/#list]
-  
+
   [#assign auth]
   [#list g.elements("entity") as entity]
   [#assign n = 0]
@@ -61,9 +61,9 @@ public class ${package?capitalize}Selector extends BOFilter {
   [/#if]
   [/#list]
   [/#assign]
-  
+
   ${auth?trim}
-  
+
   [#assign range]
   [#list g.elements("entity") as entity]
   [#assign n = 0]
@@ -250,7 +250,15 @@ public class ${entity.attributeValue("name")} extends BO {
   }
 
   public ${entity.attributeValue("name")}(HttpServletRequest request) throws Exception {
-	super(request);
+	  super(request);
+  }
+
+  public void set${entity.attributeValue("name")}Id(Number id) {
+    setId(id);
+  }
+
+  public Number get${entity.attributeValue("name")}Id() {
+    return getId();
   }
 
   [#list entities.elements("g") as og]
