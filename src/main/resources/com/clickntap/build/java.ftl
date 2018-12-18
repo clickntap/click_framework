@@ -253,11 +253,11 @@ public class ${entity.attributeValue("name")} extends BO {
 	  super(request);
   }
 
-  public void set${entity.attributeValue("name")}Id(Number id) {
+  public void setEdit${entity.attributeValue("name")}Id(Number id) {
     setId(id);
   }
 
-  public Number get${entity.attributeValue("name")}Id() {
+  public Number getEdit${entity.attributeValue("name")}Id() {
     return getId();
   }
 
@@ -511,7 +511,8 @@ public String getPasswordMD5() throws Exception {
       [#if json.attributeValue("value")?contains(".ftl")]
       Map<String, Object> ctx = new HashMap<String, Object>();
 			ctx.put(ConstUtils.THIS, this);
-      json.put("${json.attributeValue("name")}", getApp().getBoEngine().eval(ctx, "${json.attributeValue("value")}"));
+			String value = getApp().getBoEngine().eval(ctx, "${json.attributeValue("value")}");
+      json.put("${json.attributeValue("name")}", value);
       [#else]
 	      [#if json.attributeValue("name") == "t"]
 	      Long t = (Long)BeanUtils.getValue(this, "${json.attributeValue("value")}");

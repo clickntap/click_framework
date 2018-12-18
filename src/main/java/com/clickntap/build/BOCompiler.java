@@ -2,7 +2,11 @@ package com.clickntap.build;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -67,24 +71,64 @@ public class BOCompiler extends AbstractCompiler {
 
   private String organizeImports(String content) {
     String[] lines = content.split(System.getProperty("line.separator"));
+    String packageLine = null;
+    List<String> imports = new ArrayList<String>();
     StringBuffer sb = new StringBuffer();
     for (String line : lines) {
       line = line.trim();
-      boolean skip = true;
+      if (line.startsWith("package")) {
+        packageLine = line;
+      }
+    }
+    String packageName = packageLine.substring("package".length()).trim().replace(";", "");
+    for (String line : lines) {
+      line = line.trim();
       if (line.startsWith("import")) {
-        int x1 = line.lastIndexOf(".");
-        int x2 = line.indexOf(";");
-        String className = line.substring(x1 + 1, x2);
-        for (String codeLine : lines) {
-          if (!codeLine.startsWith("import") && codeLine.contains(className)) {
-            skip = false;
-            break;
+        if (!imports.contains(line)) {
+          String path = line.replace(packageName + ".", "");
+          if (path.contains(".")) {
+            int x1 = line.lastIndexOf(".");
+            int x2 = line.indexOf(";");
+            String className = line.substring(x1 + 1, x2);
+            boolean skip = true;
+            for (String codeLine : lines) {
+              if (!codeLine.startsWith("import") && codeLine.contains(className)) {
+                skip = false;
+                break;
+              }
+            }
+            if (!skip) {
+              imports.add(line);
+            }
           }
         }
-      } else {
-        skip = false;
       }
-      if (!skip && !line.isEmpty()) {
+    }
+    sb.append(packageLine).append('\n').append('\n');
+    Collections.sort(imports, new Comparator<String>() {
+      public int compare(String s1, String s2) {
+        if (s1.contains(" com.") && !s2.contains(" com.")) {
+          return 1;
+        }
+        if (!s1.contains(" com.") && s2.contains(" com.")) {
+          return -1;
+        }
+        return s1.compareTo(s2);
+      }
+    });
+    String currentPath = "";
+    for (String line : imports) {
+      int x = line.indexOf(".");
+      String newPath = line.substring(0, x);
+      if (!currentPath.equals(newPath)) {
+        currentPath = newPath;
+        sb.append('\n');
+      }
+      sb.append(line).append('\n');
+    }
+    for (String line : lines) {
+      line = line.trim();
+      if (!line.startsWith("import") && !line.startsWith("package") && !line.isEmpty()) {
         sb.append(line).append('\n');
       }
     }
