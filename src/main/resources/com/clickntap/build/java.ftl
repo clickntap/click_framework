@@ -16,7 +16,7 @@
 package ${this.projectPackage}.bo.${package};
 
 import java.util.List;
-import ${this.projectPackage}.bo.BOFilter;
+import com.clickntap.api.BOFilter;
 import ${this.projectPackage}.bo.BOApp;
 import com.clickntap.tool.types.Datetime;
 
@@ -98,29 +98,17 @@ import ${this.projectPackage}.bo.${opackage}.${opackage?capitalize}Selector;
 [/#list]
 import ${this.projectPackage}.bo.BOSorter;
 
-public class BOApp extends com.clickntap.hub.App {
+public class BOApp extends com.clickntap.api.BOApp {
   [#list entities.elements("g") as og]
   [#assign opackage = og.attributeValue("name")]
   private ${opackage?capitalize}Selector ${opackage};
   [/#list]
-  private BOSorter sorter;
-  private ScriptEngine boEngine;
-
-	public ScriptEngine getBoEngine() {
-		return boEngine;
-	}
-
-	public void setBoEngine(ScriptEngine boEngine) {
-		this.boEngine = boEngine;
-	}
-
   public void init() throws Exception {
     super.init();
     [#list entities.elements("g") as og]
     [#assign opackage = og.attributeValue("name")]
     ${opackage} = new ${opackage?capitalize}Selector(this);
     [/#list]
-    sorter = new BOSorter();
   }
   [#list entities.elements("g") as og]
   [#assign opackage = og.attributeValue("name")]
@@ -128,14 +116,6 @@ public class BOApp extends com.clickntap.hub.App {
     return ${opackage};
   }
   [/#list]
-
-  public void sort(List<? extends BO> items, String propertyName, boolean ascending) {
-    sorter.sort(items, propertyName, ascending);
-  }
-
-  public void sort(List<? extends BO> items, String propertyName) {
-    sorter.sort(items, propertyName, true);
-  }
 }
 
 [/#assign]
@@ -149,6 +129,7 @@ package ${this.projectPackage}.bo;
 import ${this.projectPackage}.bo.${opackage}.${oentity.attributeValue("name")};
 [/#list]
 [/#list]
+import com.clickntap.api.BO;
 import java.util.List;
 
 public class BOSession extends com.clickntap.hub.AppSession {
@@ -197,7 +178,7 @@ ${this.save(java,"src/main/java/"+this.projectPackage.replace(".","/")+"/bo/BOSe
 [#assign java]
 package ${this.projectPackage}.bo.${package};
 
-import ${this.projectPackage}.bo.BO;
+import com.clickntap.api.BO;
 import com.clickntap.tool.types.Datetime;
 import java.util.HashMap;
 import com.clickntap.utils.ConstUtils;
