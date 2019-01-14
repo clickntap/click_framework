@@ -61,24 +61,6 @@ public class ApiController implements Controller {
     if (api != null) {
       api.handleRequest(request, response);
     }
-    //    if (uri.indexOf("/cms/") > 0) {
-    //      uri = uri.substring(uri.indexOf("/cms/"));
-    //    }
-    //    if (uri.indexOf("/cms/") == 0) {
-    //      if (uri.indexOf("/cms/cover/thumb/") == 0) {
-    //        Cover.cover(app, response, uri.substring("/cms/cover/thumb".length()), 300);
-    //      } else if (uri.indexOf("/cms/code/") == 0) {
-    //        String code = uri.substring("/cms/code/".length());
-    //        Code128 code128 = new Code128();
-    //        code128.setCode(code);
-    //        code128.build();
-    //        code128.copyTo(response.getOutputStream());
-    //      } else if (uri.indexOf("/cms/cover/") == 0) {
-    //        Cover.cover(app, response, uri.substring("/cms/cover/".length()), 800);
-    //      } else {
-    //        out(response, new CMSController(app, request, response).json());
-    //      }
-    //    }
     if (uri.indexOf("/api/") > 0) {
       uri = uri.substring(uri.indexOf("/api/"));
     }
