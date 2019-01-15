@@ -56,7 +56,7 @@ public class ${package?capitalize}Selector extends BOFilter {
     ${entity.attributeValue("name")} filter = new ${entity.attributeValue("name")}();
     filter.setUsername(usernameOrEmail);
     filter.setPassword(password);
-    return getApp().getBO(${entity.attributeValue("name")}.class, filter, "auth");
+    return getApp().getBO(filter, "auth");
   }
   [/#if]
   [/#list]

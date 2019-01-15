@@ -29,15 +29,15 @@ public class CascadingStyleSheetsCompiler extends AbstractCompiler {
     }
   }
 
+  protected File cssFile(File file) {
+    return new File(file.getParentFile(), file.getName() + ".css");
+  }
+
   public boolean compilable(File file) {
-    if (FilenameUtils.getExtension(file.getName()).equals("less") && !templateName(file).contains("/") && !templateName(file).contains("_") && !templateName(file).contains("-")) {
+    if (FilenameUtils.getExtension(file.getName()).equals("less")) {
       return true;
     }
     return false;
-  }
-
-  protected File cssFile(File file) {
-    return new File(file.getParentFile(), file.getName() + ".css");
   }
 
 }

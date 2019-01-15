@@ -23,7 +23,7 @@ public class JavascriptCompiler extends AbstractCompiler {
   }
 
   public boolean compilable(File file) {
-    if (FilenameUtils.getExtension(file.getName()).equals("js") && !templateName(file).contains("/") && !templateName(file).contains("_") && !templateName(file).contains("-")) {
+    if (FilenameUtils.getExtension(file.getName()).equals("js")) {
       return true;
     }
     return false;

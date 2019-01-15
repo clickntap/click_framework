@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
@@ -70,40 +70,63 @@ public class BuildCompiler implements FileAlterationListener {
   }
 
   public void onFileChange(File file) {
-    boolean ok = false;
-    for (com.clickntap.build.Compiler compiler : compilers) {
-      if (compiler.compilable(file)) {
-        long lo = System.currentTimeMillis();
-        try {
-          compiler.precompile(file);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-        try {
-          compiler.compile(file);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-        System.out.println((System.currentTimeMillis() - lo) + " millis --> " + file.getName());
-        timestamp = System.currentTimeMillis();
-        ok = true;
+    try {
+      String extension = FilenameUtils.getExtension(file.getName());
+      if (extension.equals("css") || extension.equals("less")) {
+        extension = "less";
       }
-    }
-    if (!ok) {
-      try {
-        for (File f : uiWorkDir.getFile().listFiles()) {
-          if (f.isFile()) {
-            if (file.getCanonicalPath().contains("lib")) {
-              FileUtils.touch(f);
-            }
-            if (!f.getName().equals(file.getName()) && f.getParentFile().equals(file.getParentFile())) {
-              FileUtils.touch(f);
+      if (extension.equals("svg")) {
+        extension = "js";
+      }
+      if (extension.equals("less") && file.getCanonicalPath().contains("/ui/css/")) {
+        extension = "";
+      }
+      if (extension.equals("js") && file.getCanonicalPath().contains("/ui/js/")) {
+        extension = "";
+      }
+      for (File f : uiWorkDir.getFile().listFiles()) {
+        if (f.isFile() && !f.getName().contains("-")) {
+          if (FilenameUtils.getExtension(f.getName()).equals(extension)) {
+            for (com.clickntap.build.Compiler compiler : compilers) {
+              if (compiler.compilable(f)) {
+                long lo = System.currentTimeMillis();
+                try {
+                  compiler.precompile(f);
+                } catch (Exception e) {
+                  e.printStackTrace();
+                }
+                try {
+                  compiler.compile(f);
+                } catch (Exception e) {
+                  e.printStackTrace();
+                }
+                System.out.println((System.currentTimeMillis() - lo) + " millis --> " + f.getName());
+                timestamp = System.currentTimeMillis();
+              }
             }
           }
         }
-      } catch (Exception e) {
       }
+    } catch (Exception e) {
     }
+    //    boolean ok = false;
+    //    for (com.clickntap.build.Compiler compiler : compilers) {
+    //    }
+    //    if (!ok) {
+    //      try {
+    //        for (File f : uiWorkDir.getFile().listFiles()) {
+    //          if (f.isFile()) {
+    //            if (file.getCanonicalPath().contains("lib")) {
+    //              FileUtils.touch(f);
+    //            }
+    //            if (!f.getName().equals(file.getName()) && f.getParentFile().equals(file.getParentFile())) {
+    //              FileUtils.touch(f);
+    //            }
+    //          }
+    //        }
+    //      } catch (Exception e) {
+    //      }
+    //    }
   }
 
   public void onFileDelete(File file) {

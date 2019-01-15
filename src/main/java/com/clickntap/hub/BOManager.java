@@ -16,8 +16,8 @@ public class BOManager extends ProxyBeanManager {
     return (T) read(id, clazz);
   }
 
-  public <T> T getBO(Class<T> clazz, BO bo, String filter) throws Exception {
-    return (T) readByFilter(bo, filter, clazz);
+  public <T> T getBO(T bo, String filter) throws Exception {
+    return (T) readByFilter((Bean) bo, filter, bo.getClass());
   }
 
   public <T> T getBO(Class<T> clazz, String filter) throws Exception {
