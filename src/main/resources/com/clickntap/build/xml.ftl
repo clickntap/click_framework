@@ -64,28 +64,34 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
 <bean[#if entity.attributeValue("cache")?? && entity.attributeValue("cache") == "no"][#else] cache="${g.attributeValue("name")?lower_case}_${entity.attributeValue("name")?lower_case}"[/#if]>
     <validation>
       <group name="create,update"><![CDATA[
+      	[#assign code]
         [#list entity.elements("field") as field]
         [#if (field.attributeValue("mandatory")!"") == "yes"]
         [#if field.attributeValue("name")?ends_with("date")]
-        [#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name")+"_only_date")}")}
+       	[#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name")+"_only_date")}")}
         [#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name")+"_only_time")}")}
-        [#else]
-        [#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name"))}")}
         [/#if]
+        [#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name"))}")}
         [/#if]
         [/#list]
         [#list entity.elements("field") as field]
         [#if field.attributeValue("name") == "email"]
         [#noparse]
+        [#if ((this.target.email)!"") != ""]
         ${this.assertEmail("email")}
         ${this.assertUnique("email")}
+        [/#if]
         [/#noparse]
         [/#if]
         [#if field.attributeValue("name") == "password"]
         [#noparse]${this.assertUnique("username")}[/#noparse]
         [/#if]
         [/#list]
-      ]]></group>
+        [#assign n = 0][#list entity.elements("field") as field][#if field.attributeValue("name") == "start_date"][#assign n = n + 1][/#if][#if field.attributeValue("name") == "end_date"][#assign n = n + 1][/#if][/#list]
+		[#if n == 2][#noparse]${this.assertGt("endDate","startDate")}[/#noparse][/#if]
+		[/#assign]
+		${code?trim}
+        ]]></group>
       <group name="create"><![CDATA[
        [#list entity.elements("field") as field]
         [#if field.attributeValue("name") == "password"]
