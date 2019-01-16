@@ -43,6 +43,7 @@ public class SmartContext extends HashMap<String, Object> implements Serializabl
   private static final String SMART_STORED_REQUEST = "smartStoredRequest";
   private static final String SMART_SESSION_KEY = "smartSessionKey";
   private static final String SMART_SESSIONS_KEY = "smartSessionsKey";
+  private static final String APP_SESSIONS_KEY = "appSessionsKey";
   private static Log log = LogFactory.getLog(SmartContext.class);
   private HttpServletRequest request;
   private HttpServletResponse response;
@@ -106,7 +107,19 @@ public class SmartContext extends HashMap<String, Object> implements Serializabl
         }
         request.getSession().setAttribute(SMART_SESSION_KEY, activeSessionKey);
       }
-      this.session = getActiveSession();
+      if (!param("appSessionKey").isEmpty()) {
+        HashMap<String, Map> appSessionMap = (HashMap<String, Map>) request.getSession().getAttribute(APP_SESSIONS_KEY);
+        if (appSessionMap == null) {
+          appSessionMap = new HashMap<String, Map>();
+          request.getSession().setAttribute(APP_SESSIONS_KEY, appSessionMap);
+        }
+        if (!appSessionMap.containsKey(param("appSessionKey"))) {
+          appSessionMap.put(param("appSessionKey"), new HashMap());
+        }
+        this.session = appSessionMap.get(param("appSessionKey"));
+      } else {
+        this.session = getActiveSession();
+      }
       try {
         this.applicationContext = RequestContextUtils.findWebApplicationContext(request);
         this.authenticator = (Authenticator) getBean(SMART_AUTHENTICATOR_BEAN);
@@ -146,10 +159,6 @@ public class SmartContext extends HashMap<String, Object> implements Serializabl
       request.getSession().setAttribute(activeSessionKey, map);
     }
     return map;
-  }
-
-  public String getVersion() {
-    return "1.40";
   }
 
   public JSONArray toJsonArray(String array) {
