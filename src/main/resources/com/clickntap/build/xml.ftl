@@ -94,24 +94,24 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
         ]]></group>
       <group name="create"><![CDATA[
        [#list entity.elements("field") as field]
-        [#if field.attributeValue("name") == "password"]
-        [#noparse]
-        ${this.assertNotEmpty("confirmPassword")}
-        ${this.assertEquals("confirmPassword","password")}
-        ${this.assertLength("password",4,16)}
-        [/#noparse]
+       	[#if field.attributeValue("name")?contains("password")]
+  		[#assign passwordName = this.getter(field.attributeValue("name"))?replace("get","")]
+        [#noparse]${[/#noparse]this.assertNotEmpty("confirm${passwordName}")}
+        [#noparse]${[/#noparse]this.assertEquals("confirm${passwordName}","${this.name(field.attributeValue("name"))}")}
+        [#noparse]${[/#noparse]this.assertLength("${this.name(field.attributeValue("name"))}",4,16)}
         [/#if]
         [/#list]
       ]]></group>
       [#list entity.elements("field") as field]
-      [#if field.attributeValue("name") == "password"]
-      <group name="execute-password"><![CDATA[[#noparse]
-  			${this.assertExists("oldPassword")}
-  			${this.assertNotEmpty("oldPassword")}
-  			${this.assertNotEmpty("newPassword")}
-  			${this.assertEquals("confirmNewPassword","newPassword")}
-  			${this.assertLength("newPassword",4,16)}
-  		[/#noparse]]]></group>
+      [#if field.attributeValue("name")?contains("password")]
+  	  [#assign passwordName = this.getter(field.attributeValue("name"))?replace("get","")]
+      <group name="execute-${field.attributeValue("name")?replace("_","")}"><![CDATA[
+		[#noparse]${[/#noparse]this.assertExists("old${passwordName}")}
+		[#noparse]${[/#noparse]this.assertNotEmpty("old${passwordName}")}
+		[#noparse]${[/#noparse]this.assertNotEmpty("new${passwordName}")}
+		[#noparse]${[/#noparse]this.assertEquals("confirmNew${passwordName}","new${passwordName}")}
+		[#noparse]${[/#noparse]this.assertLength("new${passwordName}",4,16)}
+  	  ]]></group>
       [/#if]
       [/#list]
     </validation>
@@ -172,19 +172,22 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
     <read name="auth"><![CDATA[
     		select id as "id" from ${prefix}_${entity.attributeValue("name")?lower_case} [#noparse]where (lower(username) = lower(${this.email}) or lower(email) = lower(${this.email})) and password = ${this.passwordMD5} limit 1[/#noparse]
     ]]></read>
-    <read-list name="oldPassword"><![CDATA[
-    		select id as "id" from ${prefix}_${entity.attributeValue("name")?lower_case} [#noparse]where password = ${this.oldPasswordMD5} and id = ${this.id}[/#noparse]
-    ]]></read-list>
     <read-list name="username"><![CDATA[
     		select id as "id" from ${prefix}_${entity.attributeValue("name")?lower_case} [#noparse]where username = ${this.username} and (id != ${this.id} or ${this.id} is null)[/#noparse]
     ]]></read-list>
-    <execute name="password"><![CDATA[
-      update ${prefix}_${entity.attributeValue("name")?lower_case} [#noparse]set password = ${this.newPasswordMD5}, last_modified = ${this.now()} where id = ${this.id}[/#noparse]
-    ]]></execute>
     <execute name="forgot-password"><![CDATA[
       update ${prefix}_${entity.attributeValue("name")?lower_case} [#noparse]set password = ${this.newPasswordMD5}, last_modified = ${this.now()} where id = ${this.id}[/#noparse]
     ]]></execute>
-    [/#if]
+ 	[/#if]
+    [#if field.attributeValue("name")?contains("password")]
+  	  [#assign passwordName = this.getter(field.attributeValue("name"))?replace("get","")]
+    <read-list name="old${passwordName}"><![CDATA[
+    		select id as "id" from ${prefix}_${entity.attributeValue("name")?lower_case} where ${field.attributeValue("name")} = [#noparse]${[/#noparse]this.old${passwordName}MD5} and id = [#noparse]${this.id}[/#noparse]
+    ]]></read-list>
+     <execute name="${field.attributeValue("name")?replace("_","")}"><![CDATA[
+      update ${prefix}_${entity.attributeValue("name")?lower_case} set ${field.attributeValue("name")} = [#noparse]${[/#noparse]this.new${passwordName}MD5}, [#noparse]last_modified = ${this.now()} where id = ${this.id}[/#noparse]
+    ]]></execute>
+     [/#if]
     [/#list]
 
     [#list entity.elements("field") as field][#if (field.attributeValue("search")!"") == "yes"]<read name="${field.attributeValue("name")}"><![CDATA[
@@ -233,7 +236,7 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
           [#if field.attributeValue("default")??]
           [#noparse]coalesce(${this.[/#noparse]${this.name(field.attributeValue("name"))?replace("lastModified", "now()")?replace("creationDate", "now()")}}[#if field_has_next],${field.attributeValue("default")}),[/#if]
           [#else]
-          [#if field.attributeValue("name") == "password"]
+          [#if field.attributeValue("name")?contains("password")]
           [#noparse]${this.[/#noparse]${this.name(field.attributeValue("name"))+"MD5"}}[#if field_has_next],[/#if]
           [#elseif field.attributeValue("name") == "creation_date"]
           [#noparse][#if this.bean.creationDate??]${this.creationDate}[#else]${this.now()}[/#if][/#noparse][#if field_has_next],[/#if]

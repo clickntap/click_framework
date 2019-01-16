@@ -217,11 +217,11 @@ public class ${entity.attributeValue("name")} extends BO {
   private String ${this.name(field.attributeValue("name")+"_only_date")};
   [#else]
   private [@javaClass field.attributeValue("type")/] ${this.name(field.attributeValue("name"))};
-  [#if field.attributeValue("name") == "password"]
-  private String confirmPassword;
-  private String oldPassword;
-  private String newPassword;
-  private String confirmNewPassword;
+  [#if field.attributeValue("name")?contains("password")]
+  private String confirm${this.getter(field.attributeValue("name"))?replace("get","")};
+  private String old${this.getter(field.attributeValue("name"))?replace("get","")};
+  private String new${this.getter(field.attributeValue("name"))?replace("get","")};
+  private String confirmNew${this.getter(field.attributeValue("name"))?replace("get","")};
   [/#if]
   [/#if]
   [/#if][/#list]
@@ -388,29 +388,35 @@ public class ${entity.attributeValue("name")} extends BO {
     return new JSONObject(${this.getter(field.attributeValue("name"))}());
   };
   [/#if]
-  [#if field.attributeValue("name") == "password"]
-  public String getConfirmPassword() {
-    return confirmPassword;
+  
+  
+    [#if field.attributeValue("name")?contains("password")]
+  [#assign passwordName = this.getter(field.attributeValue("name"))?replace("get","")]
+  
+  public String getConfirm${passwordName}() {
+    return confirm${passwordName};
   }
-  public String getNewPassword() {
-    return newPassword;
+  public String getNew${passwordName}() {
+    return new${passwordName};
   }
-  public String getNewPasswordMD5() throws Exception {
-    return SecurityUtils.md5(getNewPassword());
+  public String getNew${passwordName}MD5() throws Exception {
+    return SecurityUtils.md5(getNew${passwordName}());
   }
-    public String getConfirmNewPassword() {
-    return confirmNewPassword;
+    public String getConfirmNew${passwordName}() {
+    return confirmNew${passwordName};
   }
-  public String getOldPassword() {
-    return oldPassword;
+  public String getOld${passwordName}() {
+    return old${passwordName};
   }
-  public String getOldPasswordMD5() throws Exception {
-    return SecurityUtils.md5(getOldPassword());
+  public String getOld${passwordName}MD5() throws Exception {
+    return SecurityUtils.md5(getOld${passwordName}());
   }
-public String getPasswordMD5() throws Exception {
-    return SecurityUtils.md5(getPassword());
+public String get${passwordName}MD5() throws Exception {
+    return SecurityUtils.md5(get${passwordName}());
   }
-  [/#if]
+   [/#if]
+  
+  
 
   [/#if]
   [#if (field.attributeValue("references")!"") != ""]
@@ -438,18 +444,19 @@ public String getPasswordMD5() throws Exception {
   public void ${this.setter(field.attributeValue("name"))}([@javaClass field.attributeValue("type")/] ${this.name(field.attributeValue("name"))}) {
     this.${this.name(field.attributeValue("name"))} = ${this.name(field.attributeValue("name"))};
   };
-  [#if field.attributeValue("name") == "password"]
-   public void setConfirmPassword(String confirmPassword) {
-    this.confirmPassword = confirmPassword;
+    [#if field.attributeValue("name")?contains("password")]
+  [#assign passwordName = this.getter(field.attributeValue("name"))?replace("get","")]
+    public void setConfirm${passwordName}(String confirm${passwordName}) {
+    this.confirm${passwordName} = confirm${passwordName};
   }
-  public void setNewPassword(String newPassword) {
-    this.newPassword = newPassword;
+  public void setNew${passwordName}(String new${passwordName}) {
+    this.new${passwordName} = new${passwordName};
   }
-  public void setConfirmNewPassword(String confirmNewPassword) {
-    this.confirmNewPassword = confirmNewPassword;
+  public void setConfirmNew${passwordName}(String confirmNew${passwordName}) {
+    this.confirmNew${passwordName} = confirmNew${passwordName};
   }
-  public void setOldPassword(String oldPassword) {
-    this.oldPassword = oldPassword;
+  public void setOld${passwordName}(String old${passwordName}) {
+    this.old${passwordName} = old${passwordName};
   }
   [/#if]
   [#if field.attributeValue("name") == "email"]
