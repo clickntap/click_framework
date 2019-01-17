@@ -101,7 +101,6 @@ public class BuildCompiler implements FileAlterationListener {
                   e.printStackTrace();
                 }
                 System.out.println((System.currentTimeMillis() - lo) + " millis --> " + f.getName());
-                timestamp = System.currentTimeMillis();
               }
             }
           }
@@ -109,24 +108,7 @@ public class BuildCompiler implements FileAlterationListener {
       }
     } catch (Exception e) {
     }
-    //    boolean ok = false;
-    //    for (com.clickntap.build.Compiler compiler : compilers) {
-    //    }
-    //    if (!ok) {
-    //      try {
-    //        for (File f : uiWorkDir.getFile().listFiles()) {
-    //          if (f.isFile()) {
-    //            if (file.getCanonicalPath().contains("lib")) {
-    //              FileUtils.touch(f);
-    //            }
-    //            if (!f.getName().equals(file.getName()) && f.getParentFile().equals(file.getParentFile())) {
-    //              FileUtils.touch(f);
-    //            }
-    //          }
-    //        }
-    //      } catch (Exception e) {
-    //      }
-    //    }
+    timestamp = System.currentTimeMillis();
   }
 
   public void onFileDelete(File file) {
