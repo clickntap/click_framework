@@ -84,31 +84,61 @@ public class BuildCompiler implements FileAlterationListener {
       if (extension.equals("js") && file.getCanonicalPath().contains("/ui/js/")) {
         extension = "";
       }
+      if (file.getName().startsWith("cnt") && FilenameUtils.getExtension(file.getName()).equals("less")) {
+        compile(file);
+        return;
+      }
+      if (extension.equals("sass")) {
+        for (File f : new File(uiWorkDir.getFile().getAbsolutePath() + "/lib/css").listFiles()) {
+          if (FilenameUtils.getExtension(f.getName()).equals(extension)) {
+            compile(f);
+          }
+        }
+        return;
+      }
+      boolean stop = false;
+      if (file.getName().contains("conf.")) {
+        for (File f : new File(uiWorkDir.getFile().getAbsolutePath() + "/lib/cnt").listFiles()) {
+          if (f.getName().startsWith("cnt")) {
+            if (FilenameUtils.getExtension(f.getName()).equals(extension)) {
+              compile(f);
+              stop = true;
+            }
+          }
+        }
+      }
+      if (stop) {
+        return;
+      }
       for (File f : uiWorkDir.getFile().listFiles()) {
         if (f.isFile() && !f.getName().contains("-")) {
           if (FilenameUtils.getExtension(f.getName()).equals(extension)) {
-            for (com.clickntap.build.Compiler compiler : compilers) {
-              if (compiler.compilable(f)) {
-                long lo = System.currentTimeMillis();
-                try {
-                  compiler.precompile(f);
-                } catch (Exception e) {
-                  e.printStackTrace();
-                }
-                try {
-                  compiler.compile(f);
-                } catch (Exception e) {
-                  e.printStackTrace();
-                }
-                System.out.println((System.currentTimeMillis() - lo) + " millis --> " + f.getName());
-              }
-            }
+            compile(f);
           }
         }
       }
     } catch (Exception e) {
     }
     timestamp = System.currentTimeMillis();
+  }
+
+  private void compile(File f) {
+    for (com.clickntap.build.Compiler compiler : compilers) {
+      if (compiler.compilable(f)) {
+        long lo = System.currentTimeMillis();
+        try {
+          compiler.precompile(f);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+        try {
+          compiler.compile(f);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+        System.out.println((System.currentTimeMillis() - lo) + " millis --> " + f.getName());
+      }
+    }
   }
 
   public void onFileDelete(File file) {
