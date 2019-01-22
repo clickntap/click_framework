@@ -73,13 +73,15 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
         [/#if]
         [#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name"))}")}
         [/#if]
+        [#if (field.attributeValue("unique")!"") == "yes"]
+        [#noparse]${this.assertUnique([/#noparse]"${this.name(field.attributeValue("name"))}")}
+        [/#if]
         [/#list]
         [#list entity.elements("field") as field]
         [#if field.attributeValue("name") == "email"]
         [#noparse]
         [#if ((this.target.email)!"") != ""]
         ${this.assertEmail("email")}
-        ${this.assertUnique("email")}
         [/#if]
         [/#noparse]
         [/#if]
@@ -163,9 +165,12 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
     [/#list]
     [/#list]
     [#list entity.elements("field") as field]
-    [#if field.attributeValue("name") == "email"]
-    <read-list name="email"><![CDATA[
-    		select id as "id" from ${prefix}_${entity.attributeValue("name")?lower_case} [#noparse]where email = ${this.email} and (id != ${this.id} or ${this.id} is null)[/#noparse]
+    [#if (field.attributeValue("unique")!"") == "yes"]
+    <read-list name="${this.name(field.attributeValue("name"))}"><![CDATA[
+        select id as "id" from ${prefix}_${entity.attributeValue("name")?lower_case} where ${field.attributeValue("name")} = [#noparse]${[/#noparse]this.${this.name(field.attributeValue("name"))}}
+        [#if field.attributeValue("name") != "id"]
+        and [#noparse](id != ${this.id} or ${this.id} is null)[/#noparse]
+        [/#if]
     ]]></read-list>
     [/#if]
     [#if field.attributeValue("name") == "password"]
