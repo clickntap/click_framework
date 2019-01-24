@@ -55,6 +55,7 @@ public class BOCompiler extends AbstractCompiler {
   }
 
   public void save(String content, String path) throws Exception {
+    System.out.println(path);
     for (int i = 'a'; i <= 'z'; i++) {
       if (i == 'a' || i == 'e' || i == 'i' || i == 'o' || i == 'u') {
         continue;

@@ -102,7 +102,7 @@ public class ApiController implements Controller {
           }
           out(response, result);
         } else if (action.equals("add")) {
-          SmartBindingResult bindingResult = context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", null, null, null);
+          SmartBindingResult bindingResult = context.bind(entityName, api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", null, null, null);
           BO bo = (BO) context.get(entityName);
           ValidationUtils.invokeValidator(app.getValidator(bo, "create"), bo, bindingResult.getBindingResult());
           if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
@@ -119,10 +119,10 @@ public class ApiController implements Controller {
         } else if (action.equals("edit")) {
           String[] fields = new String[1];
           fields[0] = "id";
-          SmartBindingResult bindingResult = context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", fields, null, "request");
+          SmartBindingResult bindingResult = context.bind(entityName, api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", fields, null, "request");
           BO bo = (BO) context.get(entityName);
           bo.read();
-          bindingResult = context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", null, null, "request");
+          bindingResult = context.bind(entityName, api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", null, null, "request");
           ValidationUtils.invokeValidator(app.getValidator(bo, "update"), bo, bindingResult.getBindingResult());
           if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
             bo.update();
@@ -172,9 +172,9 @@ public class ApiController implements Controller {
           fields[1] = "oldPassword";
           fields[2] = "newPassword";
           fields[3] = "confirmNewPassword";
-          SmartBindingResult bindingResult = context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", fields, null, "request");
+          SmartBindingResult bindingResult = context.bind(entityName, api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", fields, null, "request");
           BO bo = (BO) context.get(entityName);
-          bindingResult = context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", null, null, "request");
+          bindingResult = context.bind(entityName, api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", null, null, "request");
           ValidationUtils.invokeValidator(app.getValidator(bo, "execute-password"), bo, bindingResult.getBindingResult());
           if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
             bo.execute("password");
@@ -212,7 +212,7 @@ public class ApiController implements Controller {
               out(response, json);
             } else {
               if (api != null) {
-                String className = this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName;
+                String className = api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName;
                 out(response, api.onNull(Class.forName(className), context));
               }
             }
@@ -267,7 +267,7 @@ public class ApiController implements Controller {
     fields[1] = "username";
     fields[2] = "password";
     fields[3] = "email";
-    context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", fields, null, "request");
+    context.bind(entityName, api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", fields, null, "request");
     BO bo = (BO) context.get(entityName);
     return bo;
   }
