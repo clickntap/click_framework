@@ -2,12 +2,12 @@
 [#if entities??]
 
 [#assign prefix = entities.attributeValue("prefix")]
-[#list entities.elements("g") as g]
+[#list entities.elements("g")?reverse as g]
 [#assign package = g.attributeValue("name")]
 [#assign xml]
 <?xml version="1.0" encoding="UTF-8"?>
 <smart-controller>
-[#list g.elements("entity") as entity]
+[#list g.elements("entity")?reverse as entity]
 	[#assign name = entity.attributeValue("name")?lower_case]
 	[#assign className = g.attributeValue("name")+"."+entity.attributeValue("name")]
 

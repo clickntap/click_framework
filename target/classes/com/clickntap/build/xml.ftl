@@ -66,14 +66,14 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
       <group name="create,update"><![CDATA[
       	[#assign code]
         [#list entity.elements("field") as field]
-        [#if (field.attributeValue("mandatory")!"") == "yes"]
+        [#if (field.attributeValue("mandatory")!"") == "yes" && field.attributeValue("name") != "id"]
         [#if field.attributeValue("name")?ends_with("date")]
        	[#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name")+"_only_date")}")}
         [#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name")+"_only_time")}")}
         [/#if]
         [#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name"))}")}
         [/#if]
-        [#if (field.attributeValue("unique")!"") == "yes"]
+        [#if (field.attributeValue("unique")!"") == "yes" && field.attributeValue("name") != "id"]
         [#noparse]${this.assertUnique([/#noparse]"${this.name(field.attributeValue("name"))}")}
         [/#if]
         [/#list]
@@ -95,7 +95,7 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
 		${code?trim}
         ]]></group>
       <group name="create"><![CDATA[
-       [#list entity.elements("field") as field]
+       	[#list entity.elements("field") as field]
        	[#if field.attributeValue("name")?contains("password")]
   		[#assign passwordName = this.getter(field.attributeValue("name"))?replace("get","")]
         [#noparse]${[/#noparse]this.assertNotEmpty("confirm${passwordName}")}
@@ -103,6 +103,17 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
         [#noparse]${[/#noparse]this.assertLength("${this.name(field.attributeValue("name"))}",4,16)}
         [/#if]
         [/#list]
+    	[#assign code]
+        [#list entity.elements("field") as field]
+        [#if (field.attributeValue("mandatory")!"") == "yes" && field.attributeValue("name") == "id"]
+        [#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name"))}")}
+        [/#if]
+        [#if (field.attributeValue("unique")!"") == "yes" && field.attributeValue("name") == "id"]
+        [#noparse]${this.assertUnique([/#noparse]"${this.name(field.attributeValue("name"))}")}
+        [/#if]
+        [/#list]
+  		[/#assign]
+		${code?trim}
       ]]></group>
       [#list entity.elements("field") as field]
       [#if field.attributeValue("name")?contains("password")]
