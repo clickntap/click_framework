@@ -6,6 +6,7 @@ import com.clickntap.utils.ConstUtils;
 public class AppSession extends BO {
   protected SmartContext ctx;
   private String form;
+  private String nextForm;
   private String locale;
 
   public void clear() throws Exception {
@@ -36,6 +37,14 @@ public class AppSession extends BO {
 
   public void setLocale(String locale) {
     this.locale = locale;
+  }
+
+  public String getNextForm() {
+    return nextForm;
+  }
+
+  public void setNextForm(String nextForm) {
+    this.nextForm = nextForm;
   }
 
 }

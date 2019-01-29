@@ -13,22 +13,22 @@
 
 	<method name="add-${name}">
 		<bind name="${name}" channel="app" class="${this.projectPackage}.bo.${className}" validation-group="create" scope="session"> [#noparse]${[/#noparse]${name}.clear()} </bind>
-		<exec> [#noparse]${[/#noparse]${name}.create()} [#noparse]${ws.setForm(this.param("nextForm"))}[/#noparse] </exec>
+		<exec> [#noparse]${[/#noparse]${name}.create()} [#noparse]${ws.setForm(ws.nextForm!"")}[/#noparse] </exec>
 	</method>
 	<method name="edit-${name}">
 		<bind name="${name}" channel="app" class="${this.projectPackage}.bo.${className}" validation-group="update" scope="session"> [#noparse]${[/#noparse]${name}.read()} </bind>
-		<exec> [#noparse]${[/#noparse]${name}.update()} [#noparse]${ws.setForm(this.param("nextForm"))}[/#noparse] </exec>
+		<exec> [#noparse]${[/#noparse]${name}.update()} [#noparse]${ws.setForm(ws.nextForm!"")}[/#noparse] </exec>
 	</method>
 	[#list entity.elements("field") as field][#if field.attributeValue("name")?contains("password")]
   	[#assign passwordName = this.getter(field.attributeValue("name"))?replace("get","")]
 	<method name="edit-${name}-${field.attributeValue("name")?replace("_","")}">
 		<bind name="${name}" channel="app" class="${this.projectPackage}.bo.${className}" validation-group="execute-${field.attributeValue("name")?replace("_","")}" scope="session"> [#noparse]${[/#noparse]${name}.read()} </bind>
-		<exec> [#noparse]${[/#noparse]${name}.execute("${field.attributeValue("name")?replace("_","")}")} [#noparse]${ws.setForm(this.param("nextForm"))}[/#noparse] </exec>
+		<exec> [#noparse]${[/#noparse]${name}.execute("${field.attributeValue("name")?replace("_","")}")} [#noparse]${ws.setForm(ws.nextForm!"")}[/#noparse] </exec>
 	</method>
 	[/#if][/#list]
 	<method name="delete-${name}">
 		<bind name="${name}" channel="app" class="${this.projectPackage}.bo.${className}" scope="session"> [#noparse]${[/#noparse]${name}.read()} </bind>
-		<exec> [#noparse]${[/#noparse]${name}.delete()} [#noparse]${ws.setForm(this.param("nextForm"))}[/#noparse] </exec>
+		<exec> [#noparse]${[/#noparse]${name}.delete()} [#noparse]${ws.setForm(ws.nextForm!"")}[/#noparse] </exec>
 	</method>
 
 [/#list]
