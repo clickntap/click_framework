@@ -66,7 +66,7 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
       <group name="create,update"><![CDATA[
       	[#assign code]
         [#list entity.elements("field") as field]
-        [#if (field.attributeValue("mandatory")!"") == "yes" && field.attributeValue("name") != "id"]
+        [#if (field.attributeValue("mandatory")!"") == "yes" && field.attributeValue("name") != "id" && field.attributeValue("name") != "password"]
         [#if field.attributeValue("name")?ends_with("date")]
        	[#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name")+"_only_date")}")}
         [#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name")+"_only_time")}")}
@@ -96,8 +96,8 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
         ]]></group>
       <group name="create"><![CDATA[
        	[#list entity.elements("field") as field]
-       	[#if field.attributeValue("name")?contains("password")]
-  		[#assign passwordName = this.getter(field.attributeValue("name"))?replace("get","")]
+       	[#if field.attributeValue("name")?contains("password") && (field.attributeValue("mandatory")!"") == "yes"]
+  		  [#assign passwordName = this.getter(field.attributeValue("name"))?replace("get","")]
         [#noparse]${[/#noparse]this.assertNotEmpty("confirm${passwordName}")}
         [#noparse]${[/#noparse]this.assertEquals("confirm${passwordName}","${this.name(field.attributeValue("name"))}")}
         [#noparse]${[/#noparse]this.assertLength("${this.name(field.attributeValue("name"))}",4,16)}
@@ -137,7 +137,7 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
         [/#if]
         [/#list]
         [/#assign]
-          ${fields?trim?keep_before_last(',')} 
+          ${fields?trim?keep_before_last(',')}
         from
           ${prefix}_${entity.attributeValue("name")?lower_case}
         where
@@ -231,7 +231,7 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
 		  [#noparse][/#if][/#noparse]
         [/#if][/#list]
         [/#assign]
-          ${fields?trim?keep_before_last(',')} 
+          ${fields?trim?keep_before_last(',')}
         where
           id = [#noparse]${this.id}[/#noparse]
     ]]></update>
