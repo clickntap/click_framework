@@ -130,9 +130,14 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
     </validation>
     <read name="id"><![CDATA[
         select
+        [#assign fields]
         [#list entity.elements("field") as field]
-          ${field.attributeValue("name")} as "${this.name(field.attributeValue("name"))}"[#if field_has_next],[/#if]
+        [#if !(field.attributeValue("name")?contains("password"))]
+	       ${field.attributeValue("name")} as "${this.name(field.attributeValue("name"))}",
+        [/#if]
         [/#list]
+        [/#assign]
+        ${fields?trim?keep_before_last(',')} 
         from
           ${prefix}_${entity.attributeValue("name")?lower_case}
         where
@@ -217,9 +222,16 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
     <update><![CDATA[
         update ${prefix}_${entity.attributeValue("name")?lower_case}
         set
-        [#list entity.elements("field") as field][#if field.attributeValue("name") != "id" && field.attributeValue("name") != "creation_date"]
-          ${field.attributeValue("name")} = [#noparse]${this.[/#noparse]${this.name(field.attributeValue("name"))?replace("lastModified", "now()")?replace("creationDate", "now()")}}[#if field_has_next],[/#if]
+        [#assign fields]
+        [#list entity.elements("field") as field][#if field.attributeValue("name") != "id" && field.attributeValue("name") != "creation_date" && !field.attributeValue("name")?contains("password")]
+          ${field.attributeValue("name")} = [#noparse]${this.[/#noparse]${this.name(field.attributeValue("name"))?replace("lastModified", "now()")?replace("creationDate", "now()")}},
+  		[#elseif field.attributeValue("name")?contains("password")]
+  		  [#noparse][#if this.bean.[/#noparse]${this.name(field.attributeValue("name"))}??]
+ 	        ${field.attributeValue("name")} = [#noparse]${this.[/#noparse]${this.name(field.attributeValue("name"))+"MD5"}},
+		  [#noparse][/#if][/#noparse]
         [/#if][/#list]
+        [/#assign]
+          ${fields?trim?keep_before_last(',')} 
         where
           id = [#noparse]${this.id}[/#noparse]
     ]]></update>
@@ -227,7 +239,7 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
         update ${prefix}_${entity.attributeValue("name")?lower_case}
         set
         [#list entity.elements("field") as field][#if  field.attributeValue("name") == "last_modified"]
-          ${field.attributeValue("name")} = [#noparse]${this.[/#noparse]${this.name(field.attributeValue("name"))?replace("lastModified", "now()")?replace("creationDate", "now()")}}[#if field_has_next],[/#if]
+          ${field.attributeValue("name")} = [#noparse]${this.[/#noparse]${this.name(field.attributeValue("name"))?replace("lastModified", "now()")?replace("creationDate", "now()")}}
         [/#if][/#list]
         where
           id = [#noparse]${this.id}[/#noparse]
