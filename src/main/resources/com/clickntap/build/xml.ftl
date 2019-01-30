@@ -66,7 +66,7 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
       <group name="create,update"><![CDATA[
       	[#assign code]
         [#list entity.elements("field") as field]
-        [#if (field.attributeValue("mandatory")!"") == "yes" && field.attributeValue("name") != "id" && field.attributeValue("name") != "password"]
+        [#if (field.attributeValue("mandatory")!"") == "yes" && field.attributeValue("name") != "id" && !field.attributeValue("name")?contains("password")]
         [#if field.attributeValue("name")?ends_with("date")]
        	[#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name")+"_only_date")}")}
         [#noparse]${this.assertNotEmpty([/#noparse]"${this.name(field.attributeValue("name")+"_only_time")}")}
