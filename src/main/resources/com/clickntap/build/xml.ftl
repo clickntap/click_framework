@@ -133,11 +133,11 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
         [#assign fields]
         [#list entity.elements("field") as field]
         [#if !(field.attributeValue("name")?contains("password"))]
-	       ${field.attributeValue("name")} as "${this.name(field.attributeValue("name"))}",
+	      ${field.attributeValue("name")} as "${this.name(field.attributeValue("name"))}",
         [/#if]
         [/#list]
         [/#assign]
-        ${fields?trim?keep_before_last(',')} 
+          ${fields?trim?keep_before_last(',')} 
         from
           ${prefix}_${entity.attributeValue("name")?lower_case}
         where
