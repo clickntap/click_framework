@@ -48,7 +48,7 @@
       id as "id"
     from ${prefix}_${entity.attributeValue("name")?lower_case}
     where start_date < [#noparse]${[/#noparse]this.endDate}
-    and end_date > [#noparse]${[/#noparse]this.startDate}
+    and (end_date > [#noparse]${[/#noparse]this.startDate} or (end_date is null and start_date > [#noparse]${[/#noparse]this.startDate}))
   ]]></read-list>
   [/#if]
   [/#list]
