@@ -196,16 +196,13 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
     <read-list name="username"><![CDATA[
     		select id as "id" from ${prefix}_${entity.attributeValue("name")?lower_case} [#noparse]where username = ${this.username} and (id != ${this.id} or ${this.id} is null)[/#noparse]
     ]]></read-list>
-    <execute name="forgot-password"><![CDATA[
-      update ${prefix}_${entity.attributeValue("name")?lower_case} [#noparse]set password = ${this.newPasswordMD5}, last_modified = ${this.now()} where id = ${this.id}[/#noparse]
-    ]]></execute>
  	[/#if]
     [#if field.attributeValue("name")?contains("password")]
   	  [#assign passwordName = this.getter(field.attributeValue("name"))?replace("get","")]
     <read-list name="old${passwordName}"><![CDATA[
     		select id as "id" from ${prefix}_${entity.attributeValue("name")?lower_case} where ${field.attributeValue("name")} = [#noparse]${[/#noparse]this.old${passwordName}MD5} and id = [#noparse]${this.id}[/#noparse]
     ]]></read-list>
-     <execute name="${field.attributeValue("name")?replace("_","")}"><![CDATA[
+     <execute name="${field.attributeValue("name")?replace("_","")},forgot-${field.attributeValue("name")?replace("_","")}"><![CDATA[
       update ${prefix}_${entity.attributeValue("name")?lower_case} set ${field.attributeValue("name")} = [#noparse]${[/#noparse]this.new${passwordName}MD5}, [#noparse]last_modified = ${this.now()} where id = ${this.id}[/#noparse]
     ]]></execute>
      [/#if]
