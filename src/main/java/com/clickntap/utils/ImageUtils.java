@@ -142,6 +142,7 @@ public class ImageUtils {
 
   public static BufferedImage drawImage(BufferedImage img1, BufferedImage img2, int x, int y, int w, int h) {
     Graphics2D graphics2D = img1.createGraphics();
+    graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
     graphics2D.drawImage(img2, x, y, w, h, null);
     graphics2D.dispose();
     return img1;
@@ -149,6 +150,7 @@ public class ImageUtils {
 
   public static BufferedImage drawImage(BufferedImage img1, BufferedImage img2) {
     Graphics2D graphics2D = img1.createGraphics();
+    graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
     graphics2D.drawImage(img2, (img1.getWidth() - img2.getWidth()) / 2, (img1.getHeight() - img2.getHeight()) / 2, img2.getWidth(), img2.getHeight(), null);
     graphics2D.dispose();
     return img1;
