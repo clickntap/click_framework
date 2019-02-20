@@ -25,6 +25,7 @@ import com.clickntap.hub.App;
 import com.clickntap.smart.SmartBindingResult;
 import com.clickntap.smart.SmartContext;
 import com.clickntap.tool.bean.BeanUtils;
+import com.clickntap.utils.AsciiUtils;
 import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.IOUtils;
 
@@ -84,12 +85,18 @@ public class ApiController implements Controller {
           n++;
         }
       }
-      SmartContext context = new SmartContext(request, response);
+      SmartContext context;
+      try {
+        context = new SmartContext(request, response);
+      } catch (Exception e1) {
+        return null;
+      }
       if (groupName != null && entityName != null && action != null) {
         BOFilter filter = (BOFilter) BeanUtils.getValue(app, groupName);
         if (action.equals("search")) {
           Method method = org.springframework.beans.BeanUtils.findDeclaredMethod(filter.getClass(), fixS("search" + entityName + "s"), String.class);
           List<BO> list = (List<BO>) method.invoke(filter, URLDecoder.decode(names[3], ConstUtils.UTF_8));
+          list = api.onSearch(filter.getClass(), list);
           JSONObject result = new JSONObject();
           List<JSONObject> items = new ArrayList<JSONObject>();
           for (BO bo : list) {
@@ -97,21 +104,21 @@ public class ApiController implements Controller {
           }
           result.put("size", items.size());
           result.put("items", items);
-          if (api != null) {
-            api.onSearch(filter.getClass(), result);
-          }
           out(response, result);
         } else if (action.equals("add")) {
-          SmartBindingResult bindingResult = context.bind(entityName, api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", null, null, null);
+          SmartBindingResult bindingResult = context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", null, null, null);
           BO bo = (BO) context.get(entityName);
+          if (!context.param("username").isEmpty()) {
+            String username = BeanUtils.getValue(bo, "username").toString();
+            username = AsciiUtils.webize(AsciiUtils.utf7ToText(username));
+            BeanUtils.setValue(bo, "username", username);
+          }
           ValidationUtils.invokeValidator(app.getValidator(bo, "create"), bo, bindingResult.getBindingResult());
           if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
             bo.create();
             Map<String, Object> conf = new HashMap<String, Object>();
             conf.put("appId", context.param("appId"));
-            if (api != null) {
-              api.onAdd(bo, conf);
-            }
+            api.onAdd(bo, conf);
             out(response, bo);
           } else {
             outErrors(response, context, bindingResult);
@@ -119,18 +126,21 @@ public class ApiController implements Controller {
         } else if (action.equals("edit")) {
           String[] fields = new String[1];
           fields[0] = "id";
-          SmartBindingResult bindingResult = context.bind(entityName, api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", fields, null, "request");
+          SmartBindingResult bindingResult = context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", fields, null, "request");
           BO bo = (BO) context.get(entityName);
           bo.read();
-          bindingResult = context.bind(entityName, api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", null, null, "request");
+          bindingResult = context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", null, null, "request");
+          if (!context.param("username").isEmpty()) {
+            String username = BeanUtils.getValue(bo, "username").toString();
+            username = AsciiUtils.webize(AsciiUtils.utf7ToText(username));
+            BeanUtils.setValue(bo, "username", username);
+          }
           ValidationUtils.invokeValidator(app.getValidator(bo, "update"), bo, bindingResult.getBindingResult());
           if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
             bo.update();
             Map<String, Object> conf = new HashMap<String, Object>();
             conf.put("appId", context.param("appId"));
-            if (api != null) {
-              api.onEdit(bo, conf);
-            }
+            api.onEdit(bo, conf);
             out(response, bo);
           } else {
             outErrors(response, context, bindingResult);
@@ -150,9 +160,7 @@ public class ApiController implements Controller {
           BO bo = getBo(request, response, groupName, entityName);
           bo.read();
           JSONObject json = bo.json();
-          if (api != null) {
-            api.onRead(bo, json);
-          }
+          api.onRead(bo, json);
           out(response, json);
         } else if (action.equals("auth")) {
           BO bo = getBo(request, response, groupName, entityName);
@@ -161,9 +169,7 @@ public class ApiController implements Controller {
             bo.read();
             Map<String, Object> conf = new HashMap<String, Object>();
             conf.put("appId", context.param("appId"));
-            if (api != null) {
-              api.onAuth(bo, conf);
-            }
+            api.onAuth(bo, conf);
           }
           out(response, bo);
         } else if (action.equals("changePassword")) {
@@ -172,9 +178,9 @@ public class ApiController implements Controller {
           fields[1] = "oldPassword";
           fields[2] = "newPassword";
           fields[3] = "confirmNewPassword";
-          SmartBindingResult bindingResult = context.bind(entityName, api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", fields, null, "request");
+          SmartBindingResult bindingResult = context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", fields, null, "request");
           BO bo = (BO) context.get(entityName);
-          bindingResult = context.bind(entityName, api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", null, null, "request");
+          bindingResult = context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", null, null, "request");
           ValidationUtils.invokeValidator(app.getValidator(bo, "execute-password"), bo, bindingResult.getBindingResult());
           if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
             bo.execute("password");
@@ -189,9 +195,7 @@ public class ApiController implements Controller {
             bo.read();
             JSONObject json = bo.json();
             json.put("forgotPassword", true);
-            if (api != null) {
-              api.onRead(bo, json);
-            }
+            api.onRead(bo, json);
           }
           out(response, bo);
         } else {
@@ -206,26 +210,30 @@ public class ApiController implements Controller {
             BO bo = (BO) method.invoke(filter, actionId);
             if (bo != null) {
               JSONObject json = bo.json();
-              if (api != null) {
-                api.onRead(bo, json);
-              }
+              api.onRead(bo, json);
               out(response, json);
             } else {
-              if (api != null) {
-                String className = api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName;
-                out(response, api.onNull(Class.forName(className), context));
-              }
+              String className = this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName;
+              out(response, api.onNull(Class.forName(className), context));
             }
           } else {
-            if (api != null) {
+            if (action != null && !action.trim().isEmpty()) {
+              String className = this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName;
+              BO bo = (BO) api.get((Class<? extends BO>) Class.forName(className), action);
+              if (bo != null) {
+                JSONObject json = bo.json();
+                api.onRead(bo, json);
+                out(response, json);
+              } else {
+                out(response, api.onNull(Class.forName(className), context));
+              }
+            } else {
               out(response, api.api(uri, context));
             }
           }
         }
       } else {
-        if (api != null) {
-          out(response, api.api(uri, context));
-        }
+        out(response, api.api(uri, context));
       }
     }
     if (uri.indexOf("/click/") > 0) {
@@ -267,7 +275,7 @@ public class ApiController implements Controller {
     fields[1] = "username";
     fields[2] = "password";
     fields[3] = "email";
-    context.bind(entityName, api.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", fields, null, "request");
+    context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", fields, null, "request");
     BO bo = (BO) context.get(entityName);
     return bo;
   }
@@ -305,5 +313,4 @@ public class ApiController implements Controller {
     }
     return name;
   }
-
 }
