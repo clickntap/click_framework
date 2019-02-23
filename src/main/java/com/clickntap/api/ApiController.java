@@ -113,11 +113,12 @@ public class ApiController implements Controller {
             username = AsciiUtils.webize(AsciiUtils.utf7ToText(username));
             BeanUtils.setValue(bo, "username", username);
           }
+          Map<String, Object> conf = new HashMap<String, Object>();
+          conf.put("appId", context.param("appId"));
+          api.onPreAdd(bo, conf);
           ValidationUtils.invokeValidator(app.getValidator(bo, "create"), bo, bindingResult.getBindingResult());
           if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
             bo.create();
-            Map<String, Object> conf = new HashMap<String, Object>();
-            conf.put("appId", context.param("appId"));
             api.onAdd(bo, conf);
             out(response, bo);
           } else {

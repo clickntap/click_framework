@@ -14,6 +14,8 @@ public interface Api {
 
   void handleRequest(HttpServletRequest request, HttpServletResponse response);
 
+  void onPreAdd(BO bo, Map<String, Object> conf) throws Exception;
+
   void onAdd(BO bo, Map<String, Object> conf) throws Exception;
 
   void onEdit(BO bo, Map<String, Object> conf) throws Exception;
