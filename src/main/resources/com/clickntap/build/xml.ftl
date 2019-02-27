@@ -100,7 +100,7 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
   		  [#assign passwordName = this.getter(field.attributeValue("name"))?replace("get","")]
         [#noparse]${[/#noparse]this.assertNotEmpty("confirm${passwordName}")}
         [#noparse]${[/#noparse]this.assertEquals("confirm${passwordName}","${this.name(field.attributeValue("name"))}")}
-        [#noparse]${[/#noparse]this.assertLength("${this.name(field.attributeValue("name"))}",4,16)}
+        [#noparse]${[/#noparse]this.assertLength("${this.name(field.attributeValue("name"))}",4,64)}
         [/#if]
         [/#list]
     	[#assign code]
@@ -123,7 +123,7 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
 		[#noparse]${[/#noparse]this.assertNotEmpty("old${passwordName}")}
 		[#noparse]${[/#noparse]this.assertNotEmpty("new${passwordName}")}
 		[#noparse]${[/#noparse]this.assertEquals("confirmNew${passwordName}","new${passwordName}")}
-		[#noparse]${[/#noparse]this.assertLength("new${passwordName}",4,16)}
+		[#noparse]${[/#noparse]this.assertLength("new${passwordName}",4,64)}
   	  ]]></group>
       [/#if]
       [/#list]
