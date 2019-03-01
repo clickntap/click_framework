@@ -173,7 +173,11 @@ public class SmartSwitcher implements Controller {
         return null;
     } catch (Exception e) {
       ctx.setException(e);
-      return new ModelAndView(ctx.getController().getViewName(), ctx);
+      try {
+        return new ModelAndView(ctx.getController().getViewName(), ctx);
+      } catch (SmartControllerNotFoundException notfound) {
+        return null;
+      }
     }
   }
 
@@ -185,7 +189,6 @@ public class SmartSwitcher implements Controller {
         return (Boolean) jdbcManager.execute(new TransactionalService(this, ctx));
       }
     } catch (SmartControllerNotFoundException e) {
-      ctx.getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
     } catch (SmartControllerAccessDeniedException e) {
       ctx.getResponse().sendError(HttpServletResponse.SC_FORBIDDEN);
     }
