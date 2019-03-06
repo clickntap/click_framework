@@ -60,7 +60,9 @@ public class ApiController implements Controller {
   public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
     String uri = request.getRequestURI();
     if (api != null) {
-      api.handleRequest(request, response);
+      if (api.handleRequest(request, response)) {
+        return null;
+      }
     }
     if (uri.indexOf("/api/") > 0) {
       uri = uri.substring(uri.indexOf("/api/"));

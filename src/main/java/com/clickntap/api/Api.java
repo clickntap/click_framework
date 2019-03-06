@@ -12,7 +12,7 @@ import com.clickntap.smart.SmartContext;
 
 public interface Api {
 
-  void handleRequest(HttpServletRequest request, HttpServletResponse response);
+  boolean handleRequest(HttpServletRequest request, HttpServletResponse response);
 
   void onPreAdd(BO bo, Map<String, Object> conf) throws Exception;
 
