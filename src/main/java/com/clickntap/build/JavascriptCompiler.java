@@ -14,7 +14,7 @@ public class JavascriptCompiler extends AbstractCompiler {
     StringBuffer sb = new StringBuffer();
     sb.append(libs("js", "js"));
     sb.append(libs("cnt", "js"));
-    sb.append("cntSVG.add(").append(libs("svg", "json")).append(")\n");
+    sb.append("UI.svg(").append(libs("svg", "json")).append(")\n");
     sb.append('\n');
     File minFile = new File(file.getParentFile().getAbsolutePath() + "/js/" + file.getName());
     sb.append(FileUtils.readFileToString(tmpFile, ConstUtils.UTF_8));
