@@ -13,15 +13,34 @@ import org.apache.commons.io.FileUtils;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 
+import com.clickntap.tool.script.FreemarkerScriptEngine;
 import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.XMLUtils;
 import com.google.googlejavaformat.java.Formatter;
 
 import freemarker.template.utility.StringUtil;
 
-public class BOCompiler extends AbstractCompiler {
+public class BOCompiler {
 
   private Element projectElement;
+  private String classLoader;
+
+  public String getClassLoader() {
+    return classLoader;
+  }
+
+  public void setClassLoader(String classLoader) {
+    this.classLoader = classLoader;
+  }
+
+  public FreemarkerScriptEngine getEngine() throws Exception {
+    FreemarkerScriptEngine engine = new FreemarkerScriptEngine();
+    engine.setClassLoader(classLoader);
+    engine.setExtension(ConstUtils.EMPTY);
+    engine.setUpdateDelay(0);
+    engine.start();
+    return engine;
+  }
 
   public void compile(File file) throws Exception {
     setClassLoader(BOCompiler.class.getName());
