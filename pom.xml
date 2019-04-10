@@ -50,7 +50,7 @@
 		<connection>scm:git:ssh://github.com/clickntap/click_framework.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/clickntap/click_framework.git</developerConnection>
 		<url>https://github.com/clickntap/click_framework</url>
-		<tag>click_framework-1.40</tag>
+		<tag>click_framework-1.41</tag>
 	</scm>
 
 	<properties>
