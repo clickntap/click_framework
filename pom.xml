@@ -4,7 +4,7 @@
 
 	<groupId>com.clickntap</groupId>
 	<artifactId>click_framework</artifactId>
-	<version>1.47-SNAPSHOT</version>
+	<version>1.48-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Click Framework</name>
 	<description>Java Framework based on Spring Framework, Freemarker and Simplicity</description>
@@ -26,7 +26,7 @@
 			<name>Tonino Mendicino</name>
 			<email>tonino.mendicino@clickntap.com</email>
 			<url>http://www.clickntap.com</url>
-			<timezone>+1</timezone>
+			<timezone>+2</timezone>
 			<roles>
 				<role>developer</role>
 			</roles>
@@ -50,7 +50,7 @@
 		<connection>scm:git:ssh://github.com/clickntap/click_framework.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/clickntap/click_framework.git</developerConnection>
 		<url>https://github.com/clickntap/click_framework</url>
-		<tag>click_framework-1.47</tag>
+		<tag>click_framework-1.48</tag>
 	</scm>
 
 	<properties>
