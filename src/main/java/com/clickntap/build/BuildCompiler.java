@@ -23,6 +23,7 @@ import com.cathive.sass.SassContext;
 import com.cathive.sass.SassFileContext;
 import com.cathive.sass.SassOptions;
 import com.cathive.sass.SassOutputStyle;
+import com.clickntap.hub.App;
 import com.clickntap.tool.script.FreemarkerScriptEngine;
 import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.LessUtils;
@@ -31,7 +32,16 @@ import com.clickntap.utils.XMLUtils;
 
 public class BuildCompiler implements FileAlterationListener {
   private Resource uiWorkDir;
+  private App app;
   private FileAlterationMonitor monitor;
+
+  public App getApp() {
+    return app;
+  }
+
+  public void setApp(App app) {
+    this.app = app;
+  }
 
   public void init() throws Exception {
     File directory = getUiWorkDir().getFile();
@@ -101,6 +111,7 @@ public class BuildCompiler implements FileAlterationListener {
     try {
       String templateName = templateName(file);
       Map<String, Object> ctx = new HashMap<String, Object>();
+      ctx.put(ConstUtils.THIS, this);
       FileOutputStream out = new FileOutputStream(f);
       getEngine().eval(ctx, templateName, out);
       out.close();

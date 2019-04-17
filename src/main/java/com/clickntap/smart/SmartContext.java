@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
@@ -365,6 +366,8 @@ public class SmartContext extends HashMap<String, Object> implements Serializabl
       if (user != null) {
         authorize(user);
         return true;
+      } else {
+        response.setStatus(HttpStatus.SC_UNAUTHORIZED);
       }
       putAll(binder.getBindingResult().getModel());
     }
