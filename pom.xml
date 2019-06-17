@@ -55,8 +55,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<source.version>1.6</source.version>
-		<target.version>1.6</target.version>
+		<source.version>1.8</source.version>
+		<target.version>1.8</target.version>
 		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 		<maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
 		<maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
