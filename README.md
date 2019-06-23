@@ -3,5 +3,5 @@
 [![Platform](https://api.clickntap.com/Java/Platform.svg)](https://search.maven.org/artifact/com.clickntap/click_framework/)
 
 
-##Click Framework
+# Click Framework
 Click is a framework to build clickable Web Apps
