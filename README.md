@@ -4,9 +4,10 @@
 
 
 # Click Framework
-## Click is a framework to build clickable Web Apps
 
-### Use with Maven
+Click is a framework to build clickable Web Apps
+
+## Use with Maven
 ```xml
 
 <dependency>
@@ -17,5 +18,5 @@
 
 ```
 
-### Support or Contact
+## Support or Contact
 Having trouble with Click Framework? Contact info@clickntap.com and we’ll help you sort it out.
