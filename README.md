@@ -4,4 +4,13 @@
 
 
 # Click Framework
-Click is a framework to build clickable Web Apps
+## Click is a framework to build clickable Web Apps
+
+Apache Maven
+```xml
+<dependency>
+  <groupId>com.clickntap</groupId>
+  <artifactId>click_framework</artifactId>
+  <version>1.54</version>
+</dependency>
+```
