@@ -9,10 +9,10 @@ import com.asual.lesscss.LessEngine;
 
 public class LessUtils {
 
-  public static LessEngine engine = new LessEngine();
+  public static LessEngine compiler = new LessEngine();
 
   public static synchronized String eval(String code) throws Exception {
-    return engine.compile(code);
+    return compiler.compile(code);
   }
 
   public static synchronized void compile(String file) throws Exception {
@@ -28,9 +28,7 @@ public class LessUtils {
   }
 
   public static synchronized void compile(File file, boolean compress) throws Exception {
-    String css = engine.compile(file, compress);
-    css = css.replace("-:;", "");
-    css = css.replace("-: ;", "");
+    String css = compiler.compile(file, compress);
     FileUtils.writeByteArrayToFile(new File(file.getParent() + "/" + FilenameUtils.getBaseName(file.getName()) + ".css"), css.getBytes(ConstUtils.UTF_8));
   }
 }

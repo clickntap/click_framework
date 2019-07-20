@@ -156,6 +156,7 @@ public class BuildCompiler implements FileAlterationListener {
         cssFile.renameTo(destFile);
       }
     } catch (Exception e) {
+      e.printStackTrace();
     } finally {
       try {
         tmpFile.delete();
@@ -163,6 +164,17 @@ public class BuildCompiler implements FileAlterationListener {
       }
     }
     System.out.println(file.getName() + " compiled in " + (System.currentTimeMillis() - lo) + " millis");
+  }
+
+  public String jsCompress(String js) throws Exception {
+    //    StringReader in = new StringReader(js);
+    //    JavaScriptCompressor compressor = new JavaScriptCompressor(in, null);
+    //    in.close();
+    //    StringWriter writer = new StringWriter();
+    //    compressor.compress(writer, 999, true, false, false, false);
+    //    String out = writer.toString();
+    //    writer.close();
+    return js;
   }
 
   private void jsCompile(File file) {
@@ -176,19 +188,24 @@ public class BuildCompiler implements FileAlterationListener {
         StringBuffer sb = libs("js");
         JSONObject json = new JSONObject();
         File svgDir = new File(getUiWorkDir().getFile().getCanonicalPath() + "/lib/svg");
+        boolean svgsExists = false;
         for (File svg : svgDir.listFiles()) {
           if (FilenameUtils.getExtension(svg.getName()).equals("svg")) {
             json.put(FilenameUtils.getBaseName(svg.getName()), FileUtils.readFileToString(svg, ConstUtils.UTF_8));
+            svgsExists = true;
           }
         }
-        sb.append("UI.svg(").append(json.toString()).append(");\n\n\n");
+        if (svgsExists) {
+          sb.append("UI.svg(").append(json.toString()).append(");\n\n\n");
+        }
         sb.append(FileUtils.readFileToString(tmpFile, ConstUtils.UTF_8));
         tmpFile.delete();
-        FileUtils.writeStringToFile(destFile, sb.toString(), ConstUtils.UTF_8);
+        FileUtils.writeStringToFile(destFile, jsCompress(sb.toString()), ConstUtils.UTF_8);
       } else {
         tmpFile.renameTo(destFile);
       }
     } catch (Exception e) {
+      e.printStackTrace();
     } finally {
       try {
         tmpFile.delete();
@@ -258,9 +275,13 @@ public class BuildCompiler implements FileAlterationListener {
       }
       if (extension.equals("js") && !changedFile.getParentFile().getName().equals("js")) {
         jsCompile(changedFile);
-        List<File> files = getFiles("js", changedFile.getParentFile(), false);
+        List<File> files = getFiles("js", changedFile.getParentFile(), true);
         for (File file : files) {
-          jsCompile(file);
+          String changedName = FilenameUtils.getBaseName(changedFile.getName());
+          String name = FilenameUtils.getBaseName(file.getName());
+          if (changedName.contains(name) && !name.equals(changedName)) {
+            jsCompile(file);
+          }
         }
       }
     } catch (Exception e) {
