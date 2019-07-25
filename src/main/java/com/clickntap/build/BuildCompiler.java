@@ -282,6 +282,9 @@ public class BuildCompiler implements FileAlterationListener {
           if (changedName.contains(name) && !name.equals(changedName)) {
             jsCompile(file);
           }
+          if (file.getParentFile().getParentFile().getAbsolutePath().contains(name) && !name.equals(changedName)) {
+            jsCompile(file);
+          }
         }
       }
     } catch (Exception e) {
