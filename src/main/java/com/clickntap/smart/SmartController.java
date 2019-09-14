@@ -172,16 +172,6 @@ public class SmartController {
     return null;
   }
 
-  public boolean isDemoLocked(SmartContext ctx) {
-    String sessionDemo;
-    try {
-      sessionDemo = ctx.getSession().get("demo").toString();
-    } catch (Exception e) {
-      sessionDemo = ConstUtils.EMPTY;
-    }
-    return !getRef().equals("demo") && getDemo() != null && !getDemo().equals(sessionDemo);
-  }
-
   public String getDemo() {
     return demo;
   }

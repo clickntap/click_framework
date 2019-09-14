@@ -167,13 +167,6 @@ public class BuildCompiler implements FileAlterationListener {
   }
 
   public String jsCompress(String js) throws Exception {
-    //    StringReader in = new StringReader(js);
-    //    JavaScriptCompressor compressor = new JavaScriptCompressor(in, null);
-    //    in.close();
-    //    StringWriter writer = new StringWriter();
-    //    compressor.compress(writer, 999, true, false, false, false);
-    //    String out = writer.toString();
-    //    writer.close();
     return js;
   }
 

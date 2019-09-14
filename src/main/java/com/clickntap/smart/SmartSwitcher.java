@@ -20,7 +20,6 @@ import com.clickntap.tool.bean.BeanManager;
 import com.clickntap.tool.bean.BeanUtils;
 import com.clickntap.tool.jdbc.JdbcManager;
 import com.clickntap.utils.ConstUtils;
-import com.clickntap.utils.WebUtils;
 
 public class SmartSwitcher implements Controller {
   private static final String CHANNEL_SCRIPT_KEY = "channelScript";
@@ -160,13 +159,6 @@ public class SmartSwitcher implements Controller {
 
   public ModelAndView restHandleRequest(SmartContext ctx) throws Exception {
     try {
-      if ("yes".equals(ctx.getRequest().getSession().getAttribute("smartLogout"))) {
-        ctx.getRequest().getSession().removeAttribute("smartLogout");
-        WebUtils.setClientData(ctx.getResponse(), SmartContext.SMART_USER_ID, null);
-        ctx.tryLogout();
-        ctx.redirect(ctx.getController().getLoginRef());
-        return null;
-      }
       if (handleRequest(ctx) && !ctx.isRedirected()) {
         return new ModelAndView(ctx.getController().getViewName(), ctx);
       } else
@@ -199,13 +191,6 @@ public class SmartSwitcher implements Controller {
     boolean executed = false;
 
     SmartController controller = context.getController();
-
-    if (controller.isDemoLocked(context)) {
-      if (controller.isAjax())
-        throw new SmartControllerAccessDeniedException();
-      context.redirect("demo");
-      return false;
-    }
     if (!context.canTryAutoLogin())
       context.tryAutoLogin();
 

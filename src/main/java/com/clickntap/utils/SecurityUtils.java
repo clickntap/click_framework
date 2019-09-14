@@ -78,12 +78,12 @@ public class SecurityUtils {
     return encode(s, "SHA-256");
   }
 
-  public static String base64enc(String s) throws Exception {
-    return new String(Base64.getEncoder().encode(s.getBytes(ConstUtils.UTF_8)));
+  public static String base64enc(byte[] s) throws Exception {
+    return new String(Base64.getEncoder().encode(s));
   }
 
-  public static String base64dec(String s) throws Exception {
-    return new String(Base64.getDecoder().decode(s.getBytes(ConstUtils.UTF_8)));
+  public static byte[] base64dec(String s) throws Exception {
+    return Base64.getDecoder().decode(s.getBytes(ConstUtils.UTF_8));
   }
 
   public static String md5(File f) throws Exception {
@@ -105,13 +105,5 @@ public class SecurityUtils {
       }
     } while (numRead != -1);
     return new String(Hex.encodeHex(md.digest()));
-  }
-
-  public static void main(String args[]) throws Exception {
-    String s = "tonino.mendicino@clickntap.com";
-    System.out.println(SecurityUtils.md5(s));
-    System.out.println(SecurityUtils.sha1(s));
-    System.out.println(SecurityUtils.sha256(s));
-    System.out.println(SecurityUtils.base64dec(SecurityUtils.base64enc(s)));
   }
 }

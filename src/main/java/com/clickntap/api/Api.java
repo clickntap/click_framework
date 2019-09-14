@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
+import com.clickntap.hub.App;
 import com.clickntap.smart.SmartContext;
 
 public interface Api {
@@ -31,5 +32,9 @@ public interface Api {
   JSONObject api(String uri, SmartContext ctx) throws Exception;
 
   public BO get(Class<? extends BO> clazz, String value);
+
+  public String getTokenCookie(App app, HttpServletResponse response, String token, boolean secure) throws Exception;
+
+  public String addTokenCookie(App app, HttpServletResponse response, boolean secure) throws Exception;
 
 }
