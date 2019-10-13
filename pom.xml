@@ -207,6 +207,11 @@
 			<artifactId>javax.mail</artifactId>
 			<version>1.6.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.javascript</groupId>
+			<artifactId>closure-compiler</artifactId>
+			<version>v20160208</version>
+		</dependency>
 	</dependencies>
 
 	<build>
