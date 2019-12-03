@@ -13,6 +13,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.clickntap.api.ApiUtils;
 import com.clickntap.tool.script.ScriptEngine;
 import com.clickntap.utils.ConstUtils;
 
@@ -74,7 +75,7 @@ public class JdbcManager {
 	private List query(String script, Object object, Class beanClass, JdbcParams params) {
 		List resultList = null;
 		String sql = evalScript(script, params, object);
-		//System.out.println(ApiUtils.codeFormat(sql, '(', ')'));
+		System.out.println(ApiUtils.codeFormat(sql, '(', ')'));
 		//		for (Object param : params.getParams()) {
 		//			System.out.print(" / ");
 		//			System.out.print(param);
