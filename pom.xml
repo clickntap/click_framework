@@ -4,7 +4,7 @@
 
 	<groupId>com.clickntap</groupId>
 	<artifactId>click_framework</artifactId>
-	<version>1.58-SNAPSHOT</version>
+	<version>1.58</version>
 	<packaging>jar</packaging>
 	<name>Click Framework</name>
 	<description>Java Framework based on Spring Framework, Freemarker and Simplicity</description>
@@ -49,7 +49,7 @@
 		<connection>scm:git:ssh://github.com/clickntap/click_framework.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/clickntap/click_framework.git</developerConnection>
 		<url>https://github.com/clickntap/click_framework</url>
-		<tag>click_framework-1.57</tag>
+		<tag>click_framework-1.58</tag>
 	</scm>
 
 	<properties>
