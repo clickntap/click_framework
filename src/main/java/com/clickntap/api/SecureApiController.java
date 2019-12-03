@@ -79,20 +79,18 @@ public class SecureApiController implements Controller {
 				} else {
 					BO token = signed(request, privateKey);
 					M.invoke(secureRequest, "setDeviceToken", token);
-					if (secureRequest.path(0).startsWith("~")) {
-						String smartQuery = secureRequest.path(0).substring(1);
-						SmartContext ctx = new SmartContext(request, response);
-						json.put("items", search.run(sqlFile(smartQuery), ctx));
-						out(response, json);
-						return null;
-					}
-					if (token != null) {
+					//if (token != null) {
 						if (api != null) {
 							if (api.handleRequest(request, response, secureRequest)) {
 								return null;
 							}
 						}
-						List<BO> users = (List) M.invoke(token, "getAuthUsers");
+						List<BO> users;
+						try {
+							users = (List) M.invoke(token, "getAuthUsers");
+						} catch (Exception e) {
+							users = new ArrayList<BO>();
+						}
 						if (users.size() != 0 && "me".equalsIgnoreCase(secureRequest.path(0))) {
 							BO bo = (BO) M.invoke(users.get(0), "getUser");
 							JSONObject data = bo.json(true);
@@ -119,11 +117,21 @@ public class SecureApiController implements Controller {
 							if ((id = num(secureRequest.path(2))) != 0) {
 								return get(response, secureRequest, id);
 							}
+						} else {
+							String smartQuery = secureRequest.path(0);
+							SmartContext ctx = new SmartContext(request, response);
+							if (users.size() != 0) {
+								ctx.put("userId", users.get(0).getId());
+							}
+							json.put("count", search.count(sqlFile(smartQuery), ctx, json));
+							json.put("items", search.run(sqlFile(smartQuery), ctx, json));
+							out(response, json);
+							return null;
 						}
 						out(response, json);
-					} else {
-						err(response);
-					}
+					//} else {
+					//	err(response);
+					//}
 				}
 			} else {
 				err(response);
@@ -293,13 +301,13 @@ public class SecureApiController implements Controller {
 			ECPublicKey publicKey = SecureUtils.importPublicKey(M.invoke(token, "getPublicKey").toString());
 			byte[] encoded = SecureUtils.base64dec(request.getHeader("sign"));
 			JSONObject sign = new JSONObject(SecureUtils.decrypt(SecureUtils.generateSecret(publicKey, privateKey), encoded));
-			if (sign.getLong("t") > Long.parseLong(M.invoke(token, "getLastRequestTime").toString())) {
+			//if (sign.getLong("t") > Long.parseLong(M.invoke(token, "getLastRequestTime").toString())) {
 				if (M.invoke(token, "getToken").toString().equals(sign.get("token"))) {
 					M.invoke(token, "setLastRequestTime", sign.getLong("t"));
 					token.update();
 					return token;
 				}
-			}
+			//}
 		}
 		return null;
 	}

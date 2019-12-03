@@ -1,7 +1,8 @@
 package com.clickntap.api;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import com.clickntap.tool.bean.BeanUtils;
 import com.clickntap.tool.jdbc.JdbcManager;
 import com.clickntap.tool.script.FreemarkerScriptEngine;
 import com.clickntap.utils.ConstUtils;
+import com.clickntap.utils.IOUtils;
 
 import freemarker.template.utility.StringUtil;
 
@@ -32,13 +34,30 @@ public class AdvancedSearch {
 		engine.start();
 	}
 
-	private void init() throws IOException {
+	private void init() throws Exception {
 		Resource queryResource = new ClassPathResource("com/clickntap/api/query.sql");
-		searchTemplate = FileUtils.readFileToString(queryResource.getFile(), ConstUtils.UTF_8);
+		InputStream in = queryResource.getInputStream();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		IOUtils.copy(in, out);
+		searchTemplate = new String(out.toByteArray(), ConstUtils.UTF_8);
+		out.close();
+		in.close();
 	}
 
-	public List<JSONObject> run(File query, SmartContext ctx) throws Exception {
-		init();
+	public int count(File query, SmartContext ctx, JSONObject data) throws Exception {
+		AdvancedSearchFilter filter = new AdvancedSearchFilter();
+		JSONObject json = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(query, ConstUtils.UTF_8)));
+		data.put("limit", json.get("limit"));
+		data.put("from", json.get("from"));
+		filter.setCount(true);
+		filter.setJson(json);
+		for (BO bo : (List<BO>) db.queryScript(searchTemplate, filter, Class.forName(json.getString("class")))) {
+			return Integer.parseInt(bo.get("count").toString());
+		}
+		return 0;
+	}
+
+	public List<JSONObject> run(File query, SmartContext ctx, JSONObject data) throws Exception {
 		AdvancedSearchFilter filter = new AdvancedSearchFilter();
 		JSONObject json = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(query, ConstUtils.UTF_8)));
 		try {
@@ -54,6 +73,7 @@ public class AdvancedSearch {
 			json.put("sort", sort);
 		} catch (Exception e) {
 		}
+		filter.setCount(false);
 		filter.setJson(json);
 		List<JSONObject> items = new ArrayList<JSONObject>();
 		for (BO bo : (List<BO>) db.queryScript(searchTemplate, filter, Class.forName(json.getString("class")))) {
@@ -77,8 +97,8 @@ public class AdvancedSearch {
 					}
 				}
 			}
-			if (json.has("sqlFields")) {
-				JSONArray fields = json.getJSONArray("sqlFields");
+			if (json.has("selectFields")) {
+				JSONArray fields = json.getJSONArray("selectFields");
 				for (int i = 0; i < fields.length(); i++) {
 					String name = fields.getJSONObject(i).getString("name");
 					try {
@@ -89,6 +109,7 @@ public class AdvancedSearch {
 			}
 			items.add(item);
 		}
+		data.put("size", items.size());
 		return items;
 	}
 

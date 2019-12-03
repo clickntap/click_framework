@@ -1,5 +1,8 @@
-[#macro select json]
+[#macro select json count]
 select
+[#if count]
+count(*) as "count"
+[#else]
 [#if json.has("key")]${json.key}[#else]id[/#if] as "id"
 [#if json.has("fields")]
 [#list this.target.list(json.fields) as field]
@@ -8,10 +11,11 @@ select
 [/#if]
 [/#list]
 [/#if]
-[#if json.has("sqlFields")]
-[#list this.target.list(json.sqlFields) as field]
+[#if json.has("selectFields")]
+[#list this.target.list(json.selectFields) as field]
 ,(${field.sql}) as "${field.name}"
 [/#list]
+[/#if]
 [/#if]
 from ${json.table}
 [#assign where = true]
@@ -61,7 +65,7 @@ from ${json.table}
     [#if where]where[#else]and[/#if]
     [#assign where = false]
     ${intersect.intersectKey} in (
-      [@select intersect/]
+      [@select intersect false/]
     )
   [/#list]
 [/#if]
@@ -69,7 +73,9 @@ from ${json.table}
 
 [#assign json = this.target.getJson()]
 
-[@select json/]
+[@select json this.target.count/]
+
+[#if !(this.target.count)]
 
 [#if json.has("sort")]
   order by
@@ -85,5 +91,4 @@ ${json.from},
 [/#if]
 ${json.limit}
 [/#if]
-[#compress]
-[/#compress]
+[/#if]

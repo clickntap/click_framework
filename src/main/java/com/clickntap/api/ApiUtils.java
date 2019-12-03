@@ -67,6 +67,10 @@ public class ApiUtils {
 	}
 
 	public static String codeFormat(String f) {
+		return codeFormat(f, '{', '}');
+	}
+
+	public static String codeFormat(String f, char bracketOn, char bracketOff) {
 		StringBuffer js = new StringBuffer();
 		String[] lines = StringUtil.split(f, '\n');
 		int indent = 0;
@@ -76,11 +80,11 @@ public class ApiUtils {
 			int i1 = 0;
 			int i2 = 0;
 			for (int i = 0; i < line.length(); i++) {
-				if (line.charAt(i) == '{') {
+				if (line.charAt(i) == bracketOn) {
 					i1 = i;
 					c1++;
 				}
-				if (line.charAt(i) == '}') {
+				if (line.charAt(i) == bracketOff) {
 					i2 = i;
 					c2++;
 				}

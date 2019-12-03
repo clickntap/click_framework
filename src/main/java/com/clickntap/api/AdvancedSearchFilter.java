@@ -10,6 +10,7 @@ import com.clickntap.smart.SmartContext;
 public class AdvancedSearchFilter extends BO {
 
 	private JSONObject json;
+	private boolean count;
 
 	public JSONObject getJson() {
 		return json;
@@ -25,6 +26,14 @@ public class AdvancedSearchFilter extends BO {
 
 	public static String toCamelCase(String value) {
 		return ApiUtils.toCamelCase(value, true);
+	}
+
+	public boolean isCount() {
+		return count;
+	}
+
+	public void setCount(boolean count) {
+		this.count = count;
 	}
 
 }
