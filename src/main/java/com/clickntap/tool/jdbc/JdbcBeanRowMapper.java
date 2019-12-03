@@ -41,7 +41,7 @@ public class JdbcBeanRowMapper implements RowMapper {
 				String label = rs.getMetaData().getColumnLabel(i).trim();
 				pvs.addPropertyValue(label, o);
 				if (bean instanceof BO) {
-					if (!M.has(bean, "get" + label.substring(0, 1).toUpperCase() + label.substring(1))) {
+					if (!M.has(bean, "get" + label.substring(0, 1).toUpperCase() + (label.length() > 1 ? label.substring(1) : ""))) {
 						BO bo = (BO) bean;
 						bo.put(label, o);
 					}
