@@ -344,13 +344,13 @@ public class SecureApiController implements Controller {
 			ECPublicKey publicKey = SecureUtils.importPublicKey(M.invoke(token, "getPublicKey").toString());
 			byte[] encoded = SecureUtils.base64dec(request.getHeader("sign"));
 			JSONObject sign = new JSONObject(SecureUtils.decrypt(SecureUtils.generateSecret(publicKey, privateKey), encoded));
-			//if (sign.getLong("t") > Long.parseLong(M.invoke(token, "getLastRequestTime").toString())) {
-			if (M.invoke(token, "getToken").toString().equals(sign.get("token"))) {
-				M.invoke(token, "setLastRequestTime", sign.getLong("t"));
-				token.update();
-				return token;
+			if (sign.getLong("t") > Long.parseLong(M.invoke(token, "getLastRequestTime").toString())) {
+				if (M.invoke(token, "getToken").toString().equals(sign.get("token"))) {
+					M.invoke(token, "setLastRequestTime", sign.getLong("t"));
+					token.update();
+					return token;
+				}
 			}
-			//}
 		}
 		return null;
 	}
