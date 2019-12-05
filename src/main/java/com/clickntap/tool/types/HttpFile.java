@@ -9,46 +9,46 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class HttpFile implements MultipartFile {
 
-  private InputStream inputStream;
+	private InputStream inputStream;
 
-  public HttpFile(String url) throws IOException {
-    this(new URL(url));
-  }
+	public HttpFile(String url) throws IOException {
+		this(new URL(url));
+	}
 
-  public HttpFile(URL url) throws IOException {
-    this.inputStream = url.openStream();
-  }
+	public HttpFile(URL url) throws IOException {
+		this.inputStream = url.openStream();
+	}
 
-  public byte[] getBytes() throws IOException {
-    throw new RuntimeException();
-  }
+	public byte[] getBytes() throws IOException {
+		throw new RuntimeException();
+	}
 
-  public String getContentType() {
-    throw new RuntimeException();
-  }
+	public String getContentType() {
+		throw new RuntimeException();
+	}
 
-  public InputStream getInputStream() throws IOException {
-    return inputStream;
-  }
+	public InputStream getInputStream() throws IOException {
+		return inputStream;
+	}
 
-  public String getName() {
-    throw new RuntimeException();
-  }
+	public String getName() {
+		throw new RuntimeException();
+	}
 
-  public String getOriginalFilename() {
-    throw new RuntimeException();
-  }
+	public String getOriginalFilename() {
+		throw new RuntimeException();
+	}
 
-  public long getSize() {
-    throw new RuntimeException();
-  }
+	public long getSize() {
+		throw new RuntimeException();
+	}
 
-  public boolean isEmpty() {
-    return false;
-  }
+	public boolean isEmpty() {
+		return false;
+	}
 
-  public void transferTo(File arg0) throws IOException, IllegalStateException {
-    throw new RuntimeException();
-  }
+	public void transferTo(File arg0) throws IOException, IllegalStateException {
+		throw new RuntimeException();
+	}
 
 }

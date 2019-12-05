@@ -1,12 +1,10 @@
 package com.clickntap.api;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.core.io.ClassPathResource;
@@ -16,7 +14,6 @@ import com.clickntap.hub.BOManager;
 import com.clickntap.smart.SmartContext;
 import com.clickntap.tool.bean.BeanUtils;
 import com.clickntap.tool.jdbc.JdbcManager;
-import com.clickntap.tool.script.FreemarkerScriptEngine;
 import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.IOUtils;
 
@@ -26,12 +23,9 @@ public class AdvancedSearch {
 
 	private JdbcManager db;
 	private String searchTemplate;
-	private FreemarkerScriptEngine engine;
 
 	public AdvancedSearch() throws Exception {
 		init();
-		engine = new FreemarkerScriptEngine();
-		engine.start();
 	}
 
 	private void init() throws Exception {
@@ -44,11 +38,15 @@ public class AdvancedSearch {
 		in.close();
 	}
 
-	public int count(File query, SmartContext ctx, JSONObject data) throws Exception {
+	public int count(JSONObject json, SmartContext ctx, JSONObject data) throws Exception {
+		init();
 		AdvancedSearchFilter filter = new AdvancedSearchFilter();
-		JSONObject json = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(query, ConstUtils.UTF_8)));
-		data.put("limit", json.get("limit"));
-		data.put("from", json.get("from"));
+
+		try {
+			data.put("limit", json.get("limit"));
+			data.put("from", json.get("from"));
+		} catch (Exception e) {
+		}
 		filter.setCount(true);
 		filter.setJson(json);
 		for (BO bo : (List<BO>) db.queryScript(searchTemplate, filter, Class.forName(json.getString("class")))) {
@@ -57,9 +55,9 @@ public class AdvancedSearch {
 		return 0;
 	}
 
-	public List<JSONObject> run(File query, SmartContext ctx, JSONObject data) throws Exception {
+	public List<JSONObject> run(JSONObject json, SmartContext ctx, JSONObject data, boolean sortable) throws Exception {
+		init();
 		AdvancedSearchFilter filter = new AdvancedSearchFilter();
-		JSONObject json = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(query, ConstUtils.UTF_8)));
 		try {
 			String[] sorts = StringUtil.split(ctx.param("sort"), ',');
 			List<JSONObject> sort = new ArrayList<JSONObject>();
@@ -70,7 +68,9 @@ public class AdvancedSearch {
 				item.put("type", parts[1]);
 				sort.add(item);
 			}
-			json.put("sort", sort);
+			if (sortable) {
+				json.put("sort", sort);
+			}
 		} catch (Exception e) {
 		}
 		filter.setCount(false);
@@ -80,6 +80,7 @@ public class AdvancedSearch {
 			bo.setApp((BOManager) ctx.getBean("app"));
 			JSONObject item = new JSONObject();
 			item.put("id", bo.getId());
+			item.put("className", bo.getClass().getSimpleName());
 			if (json.has("fields")) {
 				JSONArray fields = json.getJSONArray("fields");
 				for (int i = 0; i < fields.length(); i++) {
@@ -109,7 +110,6 @@ public class AdvancedSearch {
 			}
 			items.add(item);
 		}
-		data.put("size", items.size());
 		return items;
 	}
 

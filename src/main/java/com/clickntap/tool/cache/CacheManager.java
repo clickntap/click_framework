@@ -4,11 +4,11 @@ import java.util.List;
 
 public interface CacheManager {
 
-  public List<String> getCacheNames() throws Exception;
+	public List<String> getCacheNames() throws Exception;
 
-  public Cache getCache(String cacheName, int maxSize) throws Exception;
+	public Cache getCache(String cacheName, int maxSize) throws Exception;
 
-  public boolean containsCache(String cacheName);
+	public boolean containsCache(String cacheName);
 
-  public void reset();
+	public void reset();
 }

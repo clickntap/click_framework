@@ -15,7 +15,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.core.io.Resource;
 import org.springframework.validation.FieldError;
@@ -27,6 +29,7 @@ import com.clickntap.hub.App;
 import com.clickntap.smart.SmartBindingResult;
 import com.clickntap.smart.SmartContext;
 import com.clickntap.tool.bean.BeanUtils;
+import com.clickntap.tool.script.FreemarkerScriptEngine;
 import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.SecurityUtils;
 
@@ -41,6 +44,7 @@ public class SecureApiController implements Controller {
 	private String boPackage;
 	private Resource sqlFolder;
 	private AdvancedSearch search;
+	private FreemarkerScriptEngine engine;
 
 	public void setSqlFolder(Resource sqlFolder) {
 		this.sqlFolder = sqlFolder;
@@ -56,6 +60,12 @@ public class SecureApiController implements Controller {
 
 	public SecureApiController() {
 		Security.addProvider(new BouncyCastleProvider());
+		try {
+			engine = new FreemarkerScriptEngine();
+			engine.start();
+		} catch (Exception e) {
+			new RuntimeException(e);
+		}
 	}
 
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -79,7 +89,7 @@ public class SecureApiController implements Controller {
 				} else {
 					BO token = signed(request, privateKey);
 					M.invoke(secureRequest, "setDeviceToken", token);
-					//if (token != null) {
+					if (token != null) {
 						if (api != null) {
 							if (api.handleRequest(request, response, secureRequest)) {
 								return null;
@@ -90,6 +100,49 @@ public class SecureApiController implements Controller {
 							users = (List) M.invoke(token, "getAuthUsers");
 						} catch (Exception e) {
 							users = new ArrayList<BO>();
+						}
+						if (secureRequest.path(0).equalsIgnoreCase("f")) {
+							String smartQuery = secureRequest.path(1);
+							SmartContext ctx = new SmartContext(request, response);
+							ctx.put("path", secureRequest.getPath());
+							if (users.size() != 0) {
+								ctx.put("userId", users.get(0).getId());
+							}
+							JSONObject sqlJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(smartQuery), ConstUtils.UTF_8)));
+							boolean isID = false;
+							if (sqlJson.has("filters")) {
+								JSONArray filters = sqlJson.getJSONArray("filters");
+								for (int i = 0; i < filters.length(); i++) {
+									JSONObject filter = filters.getJSONObject(i);
+									if (filter.getString("name").equalsIgnoreCase("id")) {
+										isID = true;
+									}
+								}
+							}
+							if (isID) {
+								JSONObject item = search.run(sqlJson, ctx, json, false).get(0);
+								json.put("item", item);
+								if (sqlJson.has("includes")) {
+									ctx.put("item", item);
+									JSONArray includes = sqlJson.getJSONArray("includes");
+									for (int i = 0; i < includes.length(); i++) {
+										JSONObject include = includes.getJSONObject(i);
+										sqlJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(include.getString("file")), ConstUtils.UTF_8)));
+										System.out.println(sqlJson.toString(2));
+										List<JSONObject> items = search.run(sqlJson, ctx, json, i == 0);
+										json.put("count", search.count(sqlJson, ctx, json));
+										json.put(include.getString("name"), items);
+										json.put("size", items.size());
+									}
+								}
+							} else {
+								List<JSONObject> items = search.run(sqlJson, ctx, json, true);
+								json.put("count", search.count(sqlJson, ctx, json));
+								json.put("items", items);
+								json.put("size", items.size());
+							}
+							out(response, json);
+							return null;
 						}
 						if (users.size() != 0 && "me".equalsIgnoreCase(secureRequest.path(0))) {
 							BO bo = (BO) M.invoke(users.get(0), "getUser");
@@ -117,21 +170,11 @@ public class SecureApiController implements Controller {
 							if ((id = num(secureRequest.path(2))) != 0) {
 								return get(response, secureRequest, id);
 							}
-						} else {
-							String smartQuery = secureRequest.path(0);
-							SmartContext ctx = new SmartContext(request, response);
-							if (users.size() != 0) {
-								ctx.put("userId", users.get(0).getId());
-							}
-							json.put("count", search.count(sqlFile(smartQuery), ctx, json));
-							json.put("items", search.run(sqlFile(smartQuery), ctx, json));
-							out(response, json);
-							return null;
 						}
 						out(response, json);
-					//} else {
-					//	err(response);
-					//}
+					} else {
+						err(response);
+					}
 				}
 			} else {
 				err(response);
@@ -302,11 +345,11 @@ public class SecureApiController implements Controller {
 			byte[] encoded = SecureUtils.base64dec(request.getHeader("sign"));
 			JSONObject sign = new JSONObject(SecureUtils.decrypt(SecureUtils.generateSecret(publicKey, privateKey), encoded));
 			//if (sign.getLong("t") > Long.parseLong(M.invoke(token, "getLastRequestTime").toString())) {
-				if (M.invoke(token, "getToken").toString().equals(sign.get("token"))) {
-					M.invoke(token, "setLastRequestTime", sign.getLong("t"));
-					token.update();
-					return token;
-				}
+			if (M.invoke(token, "getToken").toString().equals(sign.get("token"))) {
+				M.invoke(token, "setLastRequestTime", sign.getLong("t"));
+				token.update();
+				return token;
+			}
 			//}
 		}
 		return null;
