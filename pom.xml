@@ -23,10 +23,10 @@
 
 	<developers>
 		<developer>
-	       	<name>Tonino Mendicino</name>
-	        <email>tonino.mendicino@clickntap.com</email>
-	        <organization>Click'nTap</organization>
-	        <organizationUrl>https://www.clickntap.com/</organizationUrl>
+			<name>Tonino Mendicino</name>
+			<email>tonino.mendicino@clickntap.com</email>
+			<organization>Click'nTap</organization>
+			<organizationUrl>https://www.clickntap.com/</organizationUrl>
 		</developer>
 	</developers>
 
@@ -47,8 +47,8 @@
 		<connection>scm:git:ssh://github.com/clickntap/click_framework.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/clickntap/click_framework.git</developerConnection>
 		<url>https://github.com/clickntap/click_framework</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -283,7 +283,17 @@
 			<id>release</id>
 			<build>
 				<plugins>
-
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>2.5.3</version>
+						<configuration>
+							<autoVersionSubmodules>true</autoVersionSubmodules>
+							<useReleaseProfile>false</useReleaseProfile>
+							<releaseProfiles>release</releaseProfiles>
+							<goals>deploy</goals>
+						</configuration>
+					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
