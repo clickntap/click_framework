@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -190,16 +189,19 @@ public class BuildCompiler implements FileAlterationListener {
 			if (getUiWorkDir().getFile().getAbsolutePath().equals(file.getParentFile().getAbsolutePath())) {
 				StringBuffer sb = libs("js");
 				JSONObject json = new JSONObject();
-				File svgDir = new File(getUiWorkDir().getFile().getCanonicalPath() + "/lib/svg");
-				boolean svgsExists = false;
-				for (File svg : svgDir.listFiles()) {
-					if (FilenameUtils.getExtension(svg.getName()).equals("svg")) {
-						json.put(FilenameUtils.getBaseName(svg.getName()), FileUtils.readFileToString(svg, ConstUtils.UTF_8));
-						svgsExists = true;
+				try {
+					File svgDir = new File(getUiWorkDir().getFile().getCanonicalPath() + "/lib/svg");
+					boolean svgsExists = false;
+					for (File svg : svgDir.listFiles()) {
+						if (FilenameUtils.getExtension(svg.getName()).equals("svg")) {
+							json.put(FilenameUtils.getBaseName(svg.getName()), FileUtils.readFileToString(svg, ConstUtils.UTF_8));
+							svgsExists = true;
+						}
 					}
-				}
-				if (svgsExists) {
-					sb.append("UI.svg(").append(json.toString()).append(");\n\n\n");
+					if (svgsExists) {
+						sb.append("UI.svg(").append(json.toString()).append(");\n\n\n");
+					}
+				} catch (Exception e) {
 				}
 				sb.append(FileUtils.readFileToString(tmpFile, ConstUtils.UTF_8));
 				tmpFile.delete();
@@ -232,61 +234,39 @@ public class BuildCompiler implements FileAlterationListener {
 		return sb;
 	}
 
-	private List<File> getFiles(String extension, File dir, boolean includeSiblings) throws Exception {
-		List<File> files = new ArrayList<File>();
-		for (File file : dir.listFiles()) {
-			String fileExtension = FilenameUtils.getExtension(file.getName());
-			if (file.isFile() && includeSiblings) {
-				if (fileExtension.equals(extension)) {
-					files.add(file);
-				}
-			}
+	private void compile(File changedFile) throws Exception {
+		String extension = FilenameUtils.getExtension(changedFile.getName());
+		if (extension.equals("less")) {
+			lessCompile(changedFile);
 		}
-		if (!dir.equals(getUiWorkDir().getFile())) {
-			files.addAll(getFiles(extension, dir.getParentFile(), true));
+		if (extension.equals("js")) {
+			jsCompile(changedFile);
 		}
-		return files;
+		if (extension.equals("sass")) {
+			Path srcRoot = Paths.get(changedFile.getParentFile().getCanonicalPath());
+			SassContext ctx = SassFileContext.create(srcRoot.resolve(changedFile.getName()));
+			SassOptions options = ctx.getOptions();
+			options.setOutputStyle(SassOutputStyle.COMPRESSED);
+			File minFile = new File(changedFile.getParentFile().getAbsolutePath() + "/" + changedFile.getName().replace(".sass", ".css"));
+			FileUtils.writeStringToFile(minFile, ctx.compile(), ConstUtils.UTF_8);
+		}
 	}
 
 	public void onFileChange(File changedFile) {
 		try {
-			if (changedFile.getName().equals("libs.xml")) {
-				FileUtils.touch(new File(getUiWorkDir().getFile().getAbsolutePath() + "/lib/cnt/conf.less"));
-			}
 			String extension = FilenameUtils.getExtension(changedFile.getName());
-			if (extension.equals("svg")) {
+			if (changedFile.getParentFile().getAbsolutePath().endsWith(extension)) {
+				return;
+			}
+			File workDir = getUiWorkDir().getFile();
+			File fileDir = changedFile.getParentFile();
+			if (workDir.getAbsolutePath().equalsIgnoreCase(fileDir.getAbsolutePath())) {
+				compile(changedFile);
+			} else {
 				for (File file : getUiWorkDir().getFile().listFiles()) {
-					if (file.isFile()) {
-						FileUtils.touch(file);
-					}
-				}
-			}
-			if (extension.equals("less")) {
-				lessCompile(changedFile);
-				List<File> files = getFiles("less", changedFile.getParentFile(), changedFile.getName().equals("conf.less"));
-				for (File file : files) {
-					lessCompile(file);
-				}
-			}
-			if (extension.equals("sass")) {
-				Path srcRoot = Paths.get(changedFile.getParentFile().getCanonicalPath());
-				SassContext ctx = SassFileContext.create(srcRoot.resolve(changedFile.getName()));
-				SassOptions options = ctx.getOptions();
-				options.setOutputStyle(SassOutputStyle.COMPRESSED);
-				File minFile = new File(changedFile.getParentFile().getAbsolutePath() + "/" + changedFile.getName().replace(".sass", ".css"));
-				FileUtils.writeStringToFile(minFile, ctx.compile(), ConstUtils.UTF_8);
-			}
-			if (extension.equals("js") && !changedFile.getParentFile().getName().equals("js")) {
-				jsCompile(changedFile);
-				List<File> files = getFiles("js", changedFile.getParentFile(), true);
-				for (File file : files) {
-					String changedName = FilenameUtils.getBaseName(changedFile.getName());
-					String name = FilenameUtils.getBaseName(file.getName());
-					if (changedName.contains(name) && !name.equals(changedName)) {
-						jsCompile(file);
-					}
-					if (file.getParentFile().getParentFile().getAbsolutePath().contains(name) && !name.equals(changedName)) {
-						jsCompile(file);
+					String fileExtension = FilenameUtils.getExtension(file.getName());
+					if (fileExtension.equalsIgnoreCase(extension)) {
+						compile(file);
 					}
 				}
 			}
