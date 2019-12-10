@@ -273,7 +273,7 @@ public class SecureApiController implements Controller {
 
 	private ModelAndView add(HttpServletRequest request, HttpServletResponse response, JSONObject json, SecureRequest secureRequest) throws Exception {
 		SmartContext context = new SmartContext(request, response);
-		SmartBindingResult bindingResult = context.bind(secureRequest.path(1), this.getClass().getPackage().getName() + ".bo." + secureRequest.path(0) + "." + secureRequest.path(1), "app", null, null, null);
+		SmartBindingResult bindingResult = context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", null, null, null);
 		BO bo = (BO) context.get(secureRequest.path(1));
 		ValidationUtils.invokeValidator(app.getValidator(bo, "create"), bo, bindingResult.getBindingResult());
 		if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
@@ -289,10 +289,10 @@ public class SecureApiController implements Controller {
 		SmartContext context = new SmartContext(request, response);
 		String[] fields = new String[1];
 		fields[0] = "id";
-		SmartBindingResult bindingResult = context.bind(secureRequest.path(1), this.getClass().getPackage().getName() + ".bo." + secureRequest.path(0) + "." + secureRequest.path(1), "app", fields, null, "request");
+		SmartBindingResult bindingResult = context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", fields, null, "request");
 		BO bo = (BO) context.get(secureRequest.path(1));
 		bo.read();
-		bindingResult = context.bind(secureRequest.path(1), this.getClass().getPackage().getName() + ".bo." + secureRequest.path(0) + "." + secureRequest.path(1), "app", null, null, "request");
+		bindingResult = context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", null, null, "request");
 		ValidationUtils.invokeValidator(app.getValidator(bo, "update"), bo, bindingResult.getBindingResult());
 		if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
 			bo.update();
@@ -309,7 +309,7 @@ public class SecureApiController implements Controller {
 		SmartContext context = new SmartContext(request, response);
 		String[] fields = new String[1];
 		fields[0] = "id";
-		context.bind(secureRequest.path(1), this.getClass().getPackage().getName() + ".bo." + secureRequest.path(0) + "." + secureRequest.path(1), "app", fields, null, "request");
+		context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", fields, null, "request");
 		BO bo = (BO) context.get(secureRequest.path(1));
 		json.put("n", bo.delete());
 		out(response, json);
