@@ -65,8 +65,12 @@ from ${json.table}
     [#if where]where[#else]and[/#if]
     [#assign where = false]
     ${intersect.intersectKey} in (
+      [#if intersect.has("query")]
+      	${intersect.query}
+      [#else]
       [@select intersect false/]
-    )
+      [/#if]
+     )
   [/#list]
 [/#if]
 [/#macro]
