@@ -65,10 +65,10 @@ from ${json.table}
     [#if where]where[#else]and[/#if]
     [#assign where = false]
     ${intersect.intersectKey} in (
-      [#if intersect.has("query")]
-      	${intersect.query}
+      [#if intersect.has("sql")]
+      	${intersect.getString("sql")}
       [#else]
-      [@select intersect false/]
+      	[@select intersect false/]
       [/#if]
      )
   [/#list]
