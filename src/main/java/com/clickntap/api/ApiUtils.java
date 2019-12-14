@@ -71,10 +71,15 @@ public class ApiUtils {
 	}
 
 	public static String codeFormat(String f, char bracketOn, char bracketOff) {
-		StringBuffer js = new StringBuffer();
+		StringBuffer code = new StringBuffer();
 		String[] lines = StringUtil.split(f, '\n');
 		int indent = 0;
 		for (String line : lines) {
+			line = line.trim();
+			if (line.isEmpty()) {
+				continue;
+			}
+			StringBuffer formattedLine = new StringBuffer();
 			int c1 = 0;
 			int c2 = 0;
 			int i1 = 0;
@@ -96,17 +101,21 @@ public class ApiUtils {
 				indent -= 2;
 			}
 			for (int i = 0; i < indent; i++) {
-				js.append(' ');
+				formattedLine.append(' ');
 			}
 			if (c2 == c1 && c1 == 1 && i1 > i2) {
 				indent += 2;
 			}
-			js.append(line).append('\n');
+			formattedLine.append(line).append('\n');
 			if (c1 > c2) {
 				indent += (2 * (c1 - c2));
 			}
+			if (formattedLine.charAt(0) == bracketOff) {
+				formattedLine.append('\n');
+			}
+			code.append(formattedLine);
 		}
-		return js.toString();
+		return code.toString();
 	}
 
 	public static String toCamelCase(String value, boolean startWithLowerCase) {

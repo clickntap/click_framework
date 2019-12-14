@@ -23,6 +23,8 @@ import com.cathive.sass.SassContext;
 import com.cathive.sass.SassFileContext;
 import com.cathive.sass.SassOptions;
 import com.cathive.sass.SassOutputStyle;
+import com.clickntap.api.ApiUtils;
+import com.clickntap.api.HttpUtils;
 import com.clickntap.hub.App;
 import com.clickntap.tool.script.FreemarkerScriptEngine;
 import com.clickntap.utils.ConstUtils;
@@ -38,6 +40,15 @@ public class BuildCompiler implements FileAlterationListener {
 	private Resource uiWorkDir;
 	private App app;
 	private FileAlterationMonitor monitor;
+	private boolean compress;
+
+	public boolean isCompress() {
+		return compress;
+	}
+
+	public void setCompress(boolean compress) {
+		this.compress = compress;
+	}
 
 	public App getApp() {
 		return app;
@@ -80,6 +91,10 @@ public class BuildCompiler implements FileAlterationListener {
 			return resource + "?" + SecurityUtils.md5(file);
 		}
 		return ConstUtils.EMPTY;
+	}
+
+	public String http(String resource) throws Exception {
+		return HttpUtils.get(resource);
 	}
 
 	public void onStart(FileAlterationObserver observer) {
@@ -171,12 +186,16 @@ public class BuildCompiler implements FileAlterationListener {
 	}
 
 	public String jsCompress(String js) throws Exception {
-		Compiler compiler = new Compiler();
-		CompilerOptions options = new CompilerOptions();
-		CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
-		SourceFile source = SourceFile.fromCode("js", js);
-		compiler.compile(Collections.<SourceFile>emptyList(), Collections.singletonList(source), options);
-		return compiler.toSource();
+		if (compress) {
+			Compiler compiler = new Compiler();
+			CompilerOptions options = new CompilerOptions();
+			CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
+			SourceFile source = SourceFile.fromCode("js", js);
+			compiler.compile(Collections.<SourceFile>emptyList(), Collections.singletonList(source), options);
+			return compiler.toSource();
+		} else {
+			return js;
+		}
 	}
 
 	private void jsCompile(File file) {
@@ -255,6 +274,14 @@ public class BuildCompiler implements FileAlterationListener {
 	public void onFileChange(File changedFile) {
 		try {
 			String extension = FilenameUtils.getExtension(changedFile.getName());
+			if (extension.equalsIgnoreCase("js") || extension.endsWith("ss")) {
+				String code = FileUtils.readFileToString(changedFile, ConstUtils.UTF_8).trim();
+				String formattedCode = ApiUtils.codeFormat(code).trim();
+				if (!code.equals(formattedCode)) {
+					FileUtils.writeByteArrayToFile(changedFile, formattedCode.trim().getBytes(ConstUtils.UTF_8));
+					return;
+				}
+			}
 			if (changedFile.getParentFile().getAbsolutePath().endsWith(extension)) {
 				return;
 			}
