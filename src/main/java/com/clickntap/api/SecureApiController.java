@@ -106,7 +106,7 @@ public class SecureApiController implements Controller {
 							SmartContext ctx = new SmartContext(request, response);
 							ctx.put("path", secureRequest.getPath());
 							if (users.size() != 0) {
-								ctx.put("userId", users.get(0).getId());
+								ctx.put("authId", users.get(0).getId());
 							}
 							JSONObject sqlJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(smartQuery), ConstUtils.UTF_8)));
 							boolean isID = false;
