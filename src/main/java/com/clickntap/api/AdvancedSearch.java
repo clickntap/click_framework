@@ -56,6 +56,7 @@ public class AdvancedSearch {
 	}
 
 	public List<JSONObject> run(JSONObject json, SmartContext ctx, JSONObject data, boolean sortable) throws Exception {
+		
 		init();
 		AdvancedSearchFilter filter = new AdvancedSearchFilter();
 		try {
@@ -73,10 +74,12 @@ public class AdvancedSearch {
 			}
 		} catch (Exception e) {
 		}
+		
 		filter.setCount(false);
 		filter.setJson(json);
 		List<JSONObject> items = new ArrayList<JSONObject>();
-		for (BO bo : (List<BO>) db.queryScript(searchTemplate, filter, Class.forName(json.getString("class")))) {
+		List list =  db.queryScript(searchTemplate, filter, Class.forName(json.getString("class")));
+		for (BO bo : (List<BO>) list) {
 			bo.setApp((BOManager) ctx.getBean("app"));
 			JSONObject item = new JSONObject();
 			item.put("id", bo.getId());
@@ -108,8 +111,10 @@ public class AdvancedSearch {
 					}
 				}
 			}
+			//System.out.println((System.currentTimeMillis()-t)+" millis");
 			items.add(item);
 		}
+		
 		return items;
 	}
 

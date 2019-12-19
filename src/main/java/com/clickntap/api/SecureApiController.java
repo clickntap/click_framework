@@ -1,7 +1,6 @@
 package com.clickntap.api;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.security.Security;
@@ -30,6 +29,7 @@ import com.clickntap.smart.SmartBindingResult;
 import com.clickntap.smart.SmartContext;
 import com.clickntap.tool.bean.BeanUtils;
 import com.clickntap.tool.script.FreemarkerScriptEngine;
+import com.clickntap.tool.script.ScriptEngine;
 import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.SecurityUtils;
 
@@ -102,45 +102,11 @@ public class SecureApiController implements Controller {
 							users = new ArrayList<BO>();
 						}
 						if (secureRequest.path(0).equalsIgnoreCase("f")) {
-							String smartQuery = secureRequest.path(1);
-							SmartContext ctx = new SmartContext(request, response);
-							ctx.put("path", secureRequest.getPath());
+							Number authId = null;
 							if (users.size() != 0) {
-								ctx.put("authId", M.invoke(users.get(0), "getUserId"));
+								authId = (Number) M.invoke(users.get(0), "getUserId");
 							}
-							JSONObject sqlJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(smartQuery), ConstUtils.UTF_8)));
-							boolean isID = false;
-							if (sqlJson.has("filters")) {
-								JSONArray filters = sqlJson.getJSONArray("filters");
-								for (int i = 0; i < filters.length(); i++) {
-									JSONObject filter = filters.getJSONObject(i);
-									if (filter.getString("name").equalsIgnoreCase("id")) {
-										isID = true;
-									}
-								}
-							}
-							if (isID) {
-								JSONObject item = search.run(sqlJson, ctx, json, false).get(0);
-								json.put("item", item);
-								if (sqlJson.has("includes")) {
-									ctx.put("item", item);
-									JSONArray includes = sqlJson.getJSONArray("includes");
-									for (int i = 0; i < includes.length(); i++) {
-										JSONObject include = includes.getJSONObject(i);
-										sqlJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(include.getString("file")), ConstUtils.UTF_8)));
-										System.out.println(sqlJson.toString(2));
-										List<JSONObject> items = search.run(sqlJson, ctx, json, i == 0);
-										json.put("count", search.count(sqlJson, ctx, json));
-										json.put(include.getString("name"), items);
-										json.put("size", items.size());
-									}
-								}
-							} else {
-								List<JSONObject> items = search.run(sqlJson, ctx, json, true);
-								json.put("count", search.count(sqlJson, ctx, json));
-								json.put("items", items);
-								json.put("size", items.size());
-							}
+							json = fapi(request, engine, search, sqlFolder, secureRequest.getPath(), authId);
 							out(response, json);
 							return null;
 						}
@@ -188,7 +154,50 @@ public class SecureApiController implements Controller {
 		return null;
 	}
 
-	private File sqlFile(String smartQuery) throws IOException {
+	public static JSONObject fapi(HttpServletRequest request, ScriptEngine engine, AdvancedSearch search, Resource sqlFolder, List<String> path, Number authId) throws Exception {
+		JSONObject json = new JSONObject();
+		String smartQuery = path.get(1);
+		SmartContext ctx = new SmartContext(request, null);
+		ctx.put("path", path);
+		if (authId != null) {
+			ctx.put("authId", authId);
+		}
+		JSONObject sqlJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(sqlFolder, smartQuery), ConstUtils.UTF_8)));
+		//System.out.println(sqlJson.toString(2));
+		boolean isID = false;
+		if (sqlJson.has("filters")) {
+			JSONArray filters = sqlJson.getJSONArray("filters");
+			for (int i = 0; i < filters.length(); i++) {
+				JSONObject filter = filters.getJSONObject(i);
+				if (filter.getString("name").equalsIgnoreCase("id")) {
+					isID = true;
+				}
+			}
+		}
+
+		if (isID) {
+			JSONObject item = search.run(sqlJson, ctx, json, false).get(0);
+			json.put("item", item);
+			if (sqlJson.has("includes")) {
+				ctx.put("item", item);
+				JSONArray includes = sqlJson.getJSONArray("includes");
+				for (int i = 0; i < includes.length(); i++) {
+					JSONObject include = includes.getJSONObject(i);
+					sqlJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(sqlFolder, include.getString("file")), ConstUtils.UTF_8)));
+					List<JSONObject> items = search.run(sqlJson, ctx, json, i == 0);
+					json.put(include.getString("name"), items);
+				}
+			}
+		} else {
+			List<JSONObject> items = search.run(sqlJson, ctx, json, true);
+			json.put("count", search.count(sqlJson, ctx, json));
+			json.put("items", items);
+			json.put("size", items.size());
+		}
+		return json;
+	}
+
+	public static File sqlFile(Resource sqlFolder, String smartQuery) throws Exception {
 		return new File(sqlFolder.getFile().getCanonicalPath() + "/" + smartQuery + ".json");
 	}
 
