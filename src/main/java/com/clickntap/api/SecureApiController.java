@@ -106,7 +106,7 @@ public class SecureApiController implements Controller {
 							if (users.size() != 0) {
 								authId = (Number) M.invoke(users.get(0), "getUserId");
 							}
-							json = fapi(request, engine, search, sqlFolder, secureRequest.getPath(), authId);
+							json = fapi(sqlFolder, request, engine, search, secureRequest.getPath(), authId);
 							out(response, json);
 							return null;
 						}
@@ -154,7 +154,7 @@ public class SecureApiController implements Controller {
 		return null;
 	}
 
-	public static JSONObject fapi(HttpServletRequest request, ScriptEngine engine, AdvancedSearch search, Resource sqlFolder, List<String> path, Number authId) throws Exception {
+	public static JSONObject fapi(File sqlFolder, HttpServletRequest request, ScriptEngine engine, AdvancedSearch search, List<String> path, Number authId) throws Exception {
 		JSONObject json = new JSONObject();
 		String smartQuery = path.get(1);
 		SmartContext ctx = new SmartContext(request, null);
@@ -163,7 +163,6 @@ public class SecureApiController implements Controller {
 			ctx.put("authId", authId);
 		}
 		JSONObject sqlJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(sqlFolder, smartQuery), ConstUtils.UTF_8)));
-		//System.out.println(sqlJson.toString(2));
 		boolean isID = false;
 		if (sqlJson.has("filters")) {
 			JSONArray filters = sqlJson.getJSONArray("filters");
@@ -184,12 +183,24 @@ public class SecureApiController implements Controller {
 				for (int i = 0; i < includes.length(); i++) {
 					JSONObject include = includes.getJSONObject(i);
 					sqlJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(sqlFolder, include.getString("file")), ConstUtils.UTF_8)));
-					List<JSONObject> items = search.run(sqlJson, ctx, json, i == 0);
-					json.put(include.getString("name"), items);
+					List<JSONObject> otherItems = search.run(sqlJson, ctx, json, i == 0);
+					json.put(include.getString("name"), otherItems);
 				}
 			}
 		} else {
 			List<JSONObject> items = search.run(sqlJson, ctx, json, true);
+			for (JSONObject item : items) {
+				if (sqlJson.has("includes")) {
+					ctx.put("item", item);
+					JSONArray includes = sqlJson.getJSONArray("includes");
+					for (int i = 0; i < includes.length(); i++) {
+						JSONObject include = includes.getJSONObject(i);
+						JSONObject includeJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(sqlFolder, include.getString("file")), ConstUtils.UTF_8)));
+						List<JSONObject> otherItems = search.run(includeJson, ctx, item, false);
+						item.put(include.getString("name"), otherItems);
+					}
+				}
+			}
 			json.put("count", search.count(sqlJson, ctx, json));
 			json.put("items", items);
 			json.put("size", items.size());
@@ -197,8 +208,12 @@ public class SecureApiController implements Controller {
 		return json;
 	}
 
-	public static File sqlFile(Resource sqlFolder, String smartQuery) throws Exception {
-		return new File(sqlFolder.getFile().getCanonicalPath() + "/" + smartQuery + ".json");
+	public static JSONObject fapi(Resource sqlFolder, HttpServletRequest request, ScriptEngine engine, AdvancedSearch search, List<String> path, Number authId) throws Exception {
+		return fapi(sqlFolder.getFile(), request, engine, search, path, authId);
+	}
+
+	public static File sqlFile(File sqlFolderFile, String smartQuery) throws Exception {
+		return new File(sqlFolderFile.getCanonicalPath() + "/" + smartQuery + ".json");
 	}
 
 	private ModelAndView get(HttpServletResponse response, SecureRequest secureRequest, Number id) throws Exception {
