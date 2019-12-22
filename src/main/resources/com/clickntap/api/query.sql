@@ -52,7 +52,7 @@ from ${json.table}
     [#else]
       [#if where]where[#else]and[/#if]
       [#assign where = false]
-      [#if filter.name?contains(".")]
+      [#if filter.name?contains(".") || filter.value?contains("(")]
       ${filter.name} ${filter.operator} [#if filter.value?lower_case == "null"]null[#else]${filter.value?lower_case}[/#if]
       [#else]
       ${filter.name} ${filter.operator} [#if filter.value?lower_case == "null"]null[#else]${this.toString(filter.value?lower_case)}[/#if]

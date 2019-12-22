@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.script.ScriptEngineManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,6 +46,7 @@ public class SecureApiController implements Controller {
 	private Resource sqlFolder;
 	private AdvancedSearch search;
 	private FreemarkerScriptEngine engine;
+	private static javax.script.ScriptEngine javascriptEngine;
 
 	public void setSqlFolder(Resource sqlFolder) {
 		this.sqlFolder = sqlFolder;
@@ -60,6 +62,8 @@ public class SecureApiController implements Controller {
 
 	public SecureApiController() {
 		Security.addProvider(new BouncyCastleProvider());
+		ScriptEngineManager manager = new ScriptEngineManager();
+		javascriptEngine = manager.getEngineByName("nashorn");
 		try {
 			engine = new FreemarkerScriptEngine();
 			engine.start();
@@ -145,9 +149,7 @@ public class SecureApiController implements Controller {
 			} else {
 				err(response);
 			}
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			err(response);
 		}
@@ -205,6 +207,12 @@ public class SecureApiController implements Controller {
 			json.put("items", items);
 			json.put("size", items.size());
 		}
+		File js = jsFile(sqlFolder, smartQuery);
+		if (js.exists()) {
+			javascriptEngine.put("sql", sqlJson);
+			javascriptEngine.put("json", json);
+			json = new JSONObject((javascriptEngine.eval(FileUtils.readFileToString(js))).toString());
+		}
 		return json;
 	}
 
@@ -214,6 +222,10 @@ public class SecureApiController implements Controller {
 
 	public static File sqlFile(File sqlFolderFile, String smartQuery) throws Exception {
 		return new File(sqlFolderFile.getCanonicalPath() + "/" + smartQuery + ".json");
+	}
+
+	public static File jsFile(File sqlFolderFile, String smartQuery) throws Exception {
+		return new File(sqlFolderFile.getCanonicalPath() + "/" + smartQuery + ".js");
 	}
 
 	private ModelAndView get(HttpServletResponse response, SecureRequest secureRequest, Number id) throws Exception {
