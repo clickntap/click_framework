@@ -354,8 +354,13 @@ public class SecureApiController implements Controller {
 
 	public static void out(HttpServletResponse response, JSONObject json, SmartBindingResult bindingResult) throws Exception {
 		if (bindingResult == null) {
-			response.setContentType("application/json; charset=UTF-8");
-			response.getOutputStream().write(json.toString(2).getBytes(ConstUtils.UTF_8));
+			if (json.has("contentType") && json.has("data")) {
+				response.setContentType(json.getString("contentType"));
+				response.getOutputStream().write(json.getString("data").getBytes(ConstUtils.UTF_8));
+			} else {
+				response.setContentType("application/json; charset=UTF-8");
+				response.getOutputStream().write(json.toString().getBytes(ConstUtils.UTF_8));
+			}
 		} else {
 			List<JSONObject> errors = new ArrayList<JSONObject>();
 			for (FieldError fieldError : bindingResult.getBindingResult().getFieldErrors()) {
