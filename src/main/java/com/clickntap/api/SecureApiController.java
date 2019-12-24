@@ -46,7 +46,6 @@ public class SecureApiController implements Controller {
 	private Resource sqlFolder;
 	private AdvancedSearch search;
 	private FreemarkerScriptEngine engine;
-	private static javax.script.ScriptEngine javascriptEngine;
 
 	public void setSqlFolder(Resource sqlFolder) {
 		this.sqlFolder = sqlFolder;
@@ -62,8 +61,6 @@ public class SecureApiController implements Controller {
 
 	public SecureApiController() {
 		Security.addProvider(new BouncyCastleProvider());
-		ScriptEngineManager manager = new ScriptEngineManager();
-		javascriptEngine = manager.getEngineByName("nashorn");
 		try {
 			engine = new FreemarkerScriptEngine();
 			engine.start();
@@ -209,8 +206,11 @@ public class SecureApiController implements Controller {
 		}
 		File js = jsFile(sqlFolder, smartQuery);
 		if (js.exists()) {
+			ScriptEngineManager manager = new ScriptEngineManager();
+			javax.script.ScriptEngine javascriptEngine = manager.getEngineByName("nashorn");
 			javascriptEngine.put("sql", sqlJson);
 			javascriptEngine.put("json", json);
+			javascriptEngine.put("request", request);
 			json = new JSONObject((javascriptEngine.eval(FileUtils.readFileToString(js))).toString());
 		}
 		return json;
@@ -357,11 +357,13 @@ public class SecureApiController implements Controller {
 			if (json.has("contentType") && json.has("out")) {
 				response.setContentType(json.getString("contentType"));
 				if (json.has("headers")) {
-					JSONArray headers = json.getJSONArray("headers");
-					for (int i = 0; i < headers.length(); i++) {
-						JSONObject header = headers.getJSONObject(i);
-						response.setHeader(header.getString("name"), header.getString("value"));
+					JSONObject headers = json.getJSONObject("headers");
+					for (String key : headers.keySet()) {
+						response.setHeader(key, headers.getString(key));
 					}
+				}
+				if (json.has("statusCode")) {
+					response.setStatus(json.getInt("statusCode"));
 				}
 				response.getOutputStream().write(json.getString("out").getBytes(ConstUtils.UTF_8));
 			} else {
