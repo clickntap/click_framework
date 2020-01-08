@@ -311,9 +311,15 @@ public class SecureApiController implements Controller {
 		SmartContext context = new SmartContext(request, response);
 		SmartBindingResult bindingResult = context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", null, null, null);
 		BO bo = (BO) context.get(secureRequest.path(1));
+		if (api != null) {
+			api.onPreCreate(context, bo, secureRequest);
+		}
 		ValidationUtils.invokeValidator(app.getValidator(bo, "create"), bo, bindingResult.getBindingResult());
 		if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
 			bo.create();
+			if (api != null) {
+				api.onCreate(context, bo, secureRequest);
+			}
 			out(response, bo.json());
 		} else {
 			out(response, json, bindingResult);
@@ -328,10 +334,16 @@ public class SecureApiController implements Controller {
 		SmartBindingResult bindingResult = context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", fields, null, "request");
 		BO bo = (BO) context.get(secureRequest.path(1));
 		bo.read();
+		if (api != null) {
+			api.onPreEdit(context, bo, secureRequest);
+		}
 		bindingResult = context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", null, null, "request");
 		ValidationUtils.invokeValidator(app.getValidator(bo, "update"), bo, bindingResult.getBindingResult());
 		if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
 			bo.update();
+			if (api != null) {
+				api.onEdit(context, bo, secureRequest);
+			}
 			Map<String, Object> conf = new HashMap<String, Object>();
 			conf.put("appId", context.param("appId"));
 			out(response, bo.json());
@@ -347,7 +359,13 @@ public class SecureApiController implements Controller {
 		fields[0] = "id";
 		context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", fields, null, "request");
 		BO bo = (BO) context.get(secureRequest.path(1));
+		if (api != null) {
+			api.onPreDelete(context, bo, secureRequest);
+		}
 		json.put("n", bo.delete());
+		if (api != null) {
+			api.onDelete(context, bo, secureRequest);
+		}
 		out(response, json);
 		return null;
 	}
