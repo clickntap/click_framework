@@ -27,6 +27,10 @@ public class ApiUtils {
 
 	public static List<String> path(HttpServletRequest request, String folder) {
 		String uri = request.getRequestURI();
+		return path(folder, uri);
+	}
+
+	public static List<String> path(String uri, String folder) {
 		String folderPath = new StringBuffer().append('/').append(folder).append('/').toString();
 		if (uri.indexOf(folderPath) > 0) {
 			uri = uri.substring(uri.indexOf(folderPath));

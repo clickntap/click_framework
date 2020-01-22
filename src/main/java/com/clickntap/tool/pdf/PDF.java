@@ -1,0 +1,106 @@
+package com.clickntap.tool.pdf;
+
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+
+import com.clickntap.api.M;
+import com.clickntap.tool.f.F;
+import com.clickntap.tool.script.FreemarkerScriptEngine;
+import com.clickntap.utils.ConstUtils;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfCopy;
+import com.itextpdf.text.pdf.PdfReader;
+
+public class PDF {
+
+	private Resource workDir;
+	private FreemarkerScriptEngine engine;
+	private F f;
+
+	public void setWorkDir(Resource workDir) {
+		this.workDir = workDir;
+	}
+
+	public void setF(F f) {
+		this.f = f;
+	}
+
+	public void init() throws Exception {
+		engine = new FreemarkerScriptEngine();
+		engine.setExtension(ConstUtils.EMPTY);
+		engine.setTemplateDir(workDir);
+		engine.start();
+	}
+
+	/*
+	 * A4 measures 210 × 297 millimeters.
+	 * In PostScript, its dimensions are rounded off to 595 × 842 points.
+	 * We will use a 1190x1684 pixels (595*2x842*2 pixels) resolution.
+	 */
+
+	public void render(PDFContext ctx, String templateName, boolean portrait, OutputStream out) throws Exception {
+		if (f != null) {
+			ctx.put("f", f);
+		}
+		String html = engine.eval(ctx, templateName);
+		Object pd4ml = Class.forName("org.zefer.pd4ml.PD4ML").newInstance();
+		M.invoke(pd4ml, "useTTF", new Object[] { workDir.getFile().getAbsolutePath(), true });
+		if (portrait) {
+			M.invoke(pd4ml, "setPageSize", new Dimension(595, 842));
+			M.invoke(pd4ml, "setHtmlWidth", 1190);
+		} else {
+			M.invoke(pd4ml, "setPageSize", new Dimension(842, 595));
+			M.invoke(pd4ml, "setHtmlWidth", 1684);
+		}
+		M.invoke(pd4ml, "setPageInsets", new Insets(0, 0, 0, 0));
+		{
+			Document pdfDocument = new Document();
+			PdfCopy pdf = new PdfCopy(pdfDocument, out);
+			pdfDocument.open();
+			for (int i = 0; i < ctx.getNumberOfPages(); i++) {
+				ctx.setPageNumber(i + 1);
+				if (i != 0) {
+					html = engine.eval(ctx, templateName);
+				}
+				OutputStream pdfOut = new ByteArrayOutputStream();
+				ByteArrayInputStream in = new ByteArrayInputStream(html.getBytes(ConstUtils.UTF_8));
+				InputStreamReader pdfIn = new InputStreamReader(in, Charset.forName(ConstUtils.UTF_8));
+				M.invoke(pd4ml, "render", new Object[] { pdfIn, pdfOut });
+				pdfIn.close();
+				in.close();
+				PdfReader reader = new PdfReader(((ByteArrayOutputStream) pdfOut).toByteArray());
+				pdf.addPage(pdf.getImportedPage(reader, 1));
+				pdfOut.close();
+			}
+			pdfDocument.close();
+			pdf.close();
+		}
+
+	}
+
+	public static void main(String[] args) throws Exception {
+		F f = new F();
+		f.setFile(new FileSystemResource(new File("src/main/webapp/ui/js/f.js")));
+		f.init();
+
+		PDF pdf = new PDF();
+		pdf.setF(f);
+		pdf.setWorkDir(new FileSystemResource("src/main/webapp/WEB-INF/resources"));
+		pdf.init();
+		FileOutputStream out = new FileOutputStream("etc/file.pdf");
+		PDFContext ctx = new PDFContext();
+		pdf.render(ctx, "demo.html", true, out);
+		out.close();
+	}
+
+}
