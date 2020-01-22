@@ -31,6 +31,7 @@ public class PDFContext extends SmartContext {
 		super(request, response);
 		this.pageNumber = 1;
 		this.numberOfPages = 1;
+		params = new HashMap<String, String>();
 	}
 
 	public int getNumberOfPages() {
