@@ -27,7 +27,7 @@ public class ApiUtils {
 
 	public static List<String> path(HttpServletRequest request, String folder) {
 		String uri = request.getRequestURI();
-		return path(folder, uri);
+		return path(uri, folder);
 	}
 
 	public static List<String> path(String uri, String folder) {
