@@ -4,13 +4,10 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import com.clickntap.api.M;
@@ -18,6 +15,7 @@ import com.clickntap.tool.f.F;
 import com.clickntap.tool.script.FreemarkerScriptEngine;
 import com.clickntap.utils.ConstUtils;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.RectangleReadOnly;
 import com.itextpdf.text.pdf.PdfCopy;
 import com.itextpdf.text.pdf.PdfReader;
 
@@ -52,19 +50,23 @@ public class PDF {
 		if (f != null) {
 			ctx.put("f", f);
 		}
+		Document pdfDocument = null;
 		String html = engine.eval(ctx, templateName);
 		Object pd4ml = Class.forName("org.zefer.pd4ml.PD4ML").newInstance();
 		M.invoke(pd4ml, "useTTF", new Object[] { workDir.getFile().getAbsolutePath(), true });
 		if (portrait) {
 			M.invoke(pd4ml, "setPageSize", new Dimension(595, 842));
 			M.invoke(pd4ml, "setHtmlWidth", 1190);
+			pdfDocument = new Document(new RectangleReadOnly(595, 842));
 		} else {
 			M.invoke(pd4ml, "setPageSize", new Dimension(842, 595));
 			M.invoke(pd4ml, "setHtmlWidth", 1684);
+			pdfDocument = new Document(new RectangleReadOnly(595, 842, 90));
 		}
+		pdfDocument.setMarginMirroring(true);
+		pdfDocument.setMargins(0, 0, 0, 0);
 		M.invoke(pd4ml, "setPageInsets", new Insets(0, 0, 0, 0));
 		{
-			Document pdfDocument = new Document();
 			PdfCopy pdf = new PdfCopy(pdfDocument, out);
 			pdfDocument.open();
 			for (int i = 0; i < ctx.getNumberOfPages(); i++) {
@@ -82,25 +84,9 @@ public class PDF {
 				pdf.addPage(pdf.getImportedPage(reader, 1));
 				pdfOut.close();
 			}
-			pdfDocument.close();
 			pdf.close();
 		}
-
-	}
-
-	public static void main(String[] args) throws Exception {
-		F f = new F();
-		f.setFile(new FileSystemResource(new File("src/main/webapp/ui/js/f.js")));
-		f.init();
-
-		PDF pdf = new PDF();
-		pdf.setF(f);
-		pdf.setWorkDir(new FileSystemResource("src/main/webapp/WEB-INF/resources"));
-		pdf.init();
-		FileOutputStream out = new FileOutputStream("etc/file.pdf");
-		PDFContext ctx = new PDFContext();
-		pdf.render(ctx, "demo.html", true, out);
-		out.close();
+		pdfDocument.close();
 	}
 
 }
