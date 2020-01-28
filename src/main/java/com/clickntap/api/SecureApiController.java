@@ -43,6 +43,7 @@ public class SecureApiController implements Controller {
 	private App app;
 	private SecureApi api;
 	private String boPackage;
+	private String dbPackage;
 	private Resource sqlFolder;
 	private AdvancedSearch search;
 	private FreemarkerScriptEngine engine;
@@ -53,6 +54,10 @@ public class SecureApiController implements Controller {
 
 	public void setBoPackage(String boPackage) {
 		this.boPackage = boPackage;
+	}
+
+	public void setDbPackage(String dbPackage) {
+		this.dbPackage = dbPackage;
 	}
 
 	public void setSearch(AdvancedSearch search) {
@@ -102,11 +107,11 @@ public class SecureApiController implements Controller {
 						} catch (Exception e) {
 							users = new ArrayList<BO>();
 						}
+						Number authId = null;
+						if (users.size() != 0) {
+							authId = (Number) M.invoke(users.get(0), "getUserId");
+						}
 						if (secureRequest.path(0).equalsIgnoreCase("f")) {
-							Number authId = null;
-							if (users.size() != 0) {
-								authId = (Number) M.invoke(users.get(0), "getUserId");
-							}
 							json = fapi(sqlFolder, request, engine, search, secureRequest.getPath(), authId);
 							out(response, json);
 							return null;
@@ -123,6 +128,12 @@ public class SecureApiController implements Controller {
 							}
 							if ("edit".equalsIgnoreCase(secureRequest.path(2))) {
 								return edit(request, response, json, secureRequest);
+							}
+							if ("undo".equalsIgnoreCase(secureRequest.path(2))) {
+								return undo(request, response, secureRequest, authId);
+							}
+							if ("confirm".equalsIgnoreCase(secureRequest.path(2))) {
+								return confirm(request, response, secureRequest, authId);
 							}
 							if ("delete".equalsIgnoreCase(secureRequest.path(2))) {
 								return delete(request, response, json, secureRequest);
@@ -157,14 +168,28 @@ public class SecureApiController implements Controller {
 		return fapi(sqlFolder.getFile(), ctx, engine, search, ApiUtils.path(uri, folder), null);
 	}
 
+	public JSONObject fapi(SmartContext ctx, JSONObject sqlJson, Number authId) throws Exception {
+		return fapi(sqlFolder.getFile(), ctx, engine, search, null, authId, sqlJson);
+	}
+
 	public static JSONObject fapi(File sqlFolder, SmartContext ctx, ScriptEngine engine, AdvancedSearch search, List<String> path, Number authId) throws Exception {
-		JSONObject json = new JSONObject();
 		String smartQuery = path.get(1);
 		ctx.put("path", path);
 		if (authId != null) {
 			ctx.put("authId", authId);
 		}
 		JSONObject sqlJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(sqlFolder, smartQuery), ConstUtils.UTF_8)));
+		return fapi(sqlFolder, ctx, engine, search, path, authId, sqlJson);
+	}
+
+	public static JSONObject fapi(File sqlFolder, SmartContext ctx, ScriptEngine engine, AdvancedSearch search, List<String> path, Number authId, JSONObject sqlJson) throws Exception {
+		String smartQuery;
+		try {
+			smartQuery = path.get(1);
+		} catch (Exception e) {
+			smartQuery = null;
+		}
+		JSONObject json = new JSONObject();
 		boolean isID = false;
 		if (sqlJson.has("filters")) {
 			JSONArray filters = sqlJson.getJSONArray("filters");
@@ -207,14 +232,16 @@ public class SecureApiController implements Controller {
 			json.put("items", items);
 			json.put("size", items.size());
 		}
-		File js = jsFile(sqlFolder, smartQuery);
-		if (js.exists()) {
-			ScriptEngineManager manager = new ScriptEngineManager();
-			javax.script.ScriptEngine javascriptEngine = manager.getEngineByName("nashorn");
-			javascriptEngine.put("sql", sqlJson);
-			javascriptEngine.put("json", json);
-			javascriptEngine.put("request", ctx.getRequest());
-			json = new JSONObject((javascriptEngine.eval(FileUtils.readFileToString(js))).toString());
+		if (smartQuery != null) {
+			File js = jsFile(sqlFolder, smartQuery);
+			if (js.exists()) {
+				ScriptEngineManager manager = new ScriptEngineManager();
+				javax.script.ScriptEngine javascriptEngine = manager.getEngineByName("nashorn");
+				javascriptEngine.put("sql", sqlJson);
+				javascriptEngine.put("json", json);
+				javascriptEngine.put("request", ctx.getRequest());
+				json = new JSONObject((javascriptEngine.eval(FileUtils.readFileToString(js))).toString());
+			}
 		}
 		return json;
 	}
@@ -306,6 +333,55 @@ public class SecureApiController implements Controller {
 		if (api != null) {
 			api.search(result, secureRequest, token);
 		}
+		out(response, result);
+		return null;
+	}
+
+	private ModelAndView confirm(HttpServletRequest request, HttpServletResponse response, SecureRequest secureRequest, Number authId) throws Exception {
+		editEnd(request, response, secureRequest, authId, true);
+		return null;
+	}
+
+	private ModelAndView undo(HttpServletRequest request, HttpServletResponse response, SecureRequest secureRequest, Number authId) throws Exception {
+		editEnd(request, response, secureRequest, authId, false);
+		return null;
+	}
+
+	private ModelAndView editEnd(HttpServletRequest request, HttpServletResponse response, SecureRequest secureRequest, Number authId, boolean confirm) throws Exception {
+		JSONObject sql = new JSONObject();
+		String className = boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1);
+		Class clazz = Class.forName(className);
+		sql.put("class", className);
+		sql.put("table", new StringBuffer().append(dbPackage).append("_").append(secureRequest.path(1).toLowerCase()).toString());
+		List<JSONObject> filters = new ArrayList<JSONObject>();
+		{
+			JSONObject filter = new JSONObject();
+			filter.put("name", "operator_id");
+			filter.put("operator", "=");
+			filter.put("value", authId);
+			filters.add(filter);
+		}
+		{
+			JSONObject filter = new JSONObject();
+			filter.put("name", "status");
+			filter.put("operator", "=");
+			filter.put("value", "403");
+			filters.add(filter);
+		}
+		sql.put("filters", filters);
+		JSONObject json = fapi(new SmartContext(request, response), sql, authId);
+		JSONArray items = json.getJSONArray("items");
+		for (int i = 0; i < items.length(); i++) {
+			Number id = items.getJSONObject(i).getNumber("id");
+			if (confirm) {
+				BO bo = ((BO) app.getBO(clazz, id));
+				M.invoke(bo, "setStatus", 200);
+				bo.update();
+			} else {
+				((BO) app.getBO(clazz, id)).delete();
+			}
+		}
+		JSONObject result = new JSONObject();
 		out(response, result);
 		return null;
 	}

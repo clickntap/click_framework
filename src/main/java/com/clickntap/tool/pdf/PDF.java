@@ -81,7 +81,9 @@ public class PDF {
 				pdfIn.close();
 				in.close();
 				PdfReader reader = new PdfReader(((ByteArrayOutputStream) pdfOut).toByteArray());
-				pdf.addPage(pdf.getImportedPage(reader, 1));
+				for (int n = 1; n <= reader.getNumberOfPages(); n++) {
+					pdf.addPage(pdf.getImportedPage(reader, n));
+				}
 				pdfOut.close();
 			}
 			pdf.close();

@@ -19,13 +19,17 @@ count(*) as "count"
 [/#if]
 from ${json.table}
 [#assign where = true]
+[#assign filtersOperator = "and"]
+[#if json.has("operator")]
+	[#assign filtersOperator = json.operator]
+[/#if]
 [#if json.has("filters")]
   [#list this.target.list(json.filters) as filter]
     [#if filter.operator == "match"]
       [#assign query = filter.value?lower_case]
     	[#list query?split("[ .;:,]", "r") as word]
   	   	[#if word?length > 3]
-          [#if where]where[#else]and[/#if]
+          [#if where]where[#else]${filtersOperator}[/#if]
           [#assign where = false]
   		    (
   		  		 MATCH (
@@ -37,7 +41,7 @@ from ${json.table}
     [#elseif filter.operator == "text"]
         [#assign query = filter.value?lower_case]
         [#list query?split("[ .;:,]", "r") as word]
-          [#if where]where[#else]and[/#if]
+          [#if where]where[#else]${filtersOperator}[/#if]
           [#assign where = false]
           (
             [#list filter.name?split("[ .;:,]", "r") as field]
@@ -46,11 +50,11 @@ from ${json.table}
           )
         [/#list]
     [#elseif filter.operator == "like"]
-      [#if where]where[#else]and[/#if]
+      [#if where]where[#else]${filtersOperator}[/#if]
       [#assign where = false]
       ${filter.name} like ${this.toString("%"+filter.value?lower_case+"%")}
     [#else]
-      [#if where]where[#else]and[/#if]
+      [#if where]where[#else]${filtersOperator}[/#if]
       [#assign where = false]
       [#if filter.name?contains(".") || filter.value?contains("(")]
       ${filter.name} ${filter.operator} [#if filter.value?lower_case == "null"]null[#else]${filter.value?lower_case}[/#if]
