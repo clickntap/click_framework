@@ -22,7 +22,7 @@ public class F {
     public void init() throws Exception {
         ScriptEngineManager manager = new ScriptEngineManager();
         javascriptEngine = manager.getEngineByName("nashorn");
-        javascriptEngine.put("util", new Util());
+        javascriptEngine.put("util", new Util(file));
         javascriptEngine.eval("var Proxy = function(){};");
         javascriptEngine.eval("var document = {};");
         javascriptEngine.eval("var console = {};");
@@ -36,6 +36,7 @@ public class F {
     }
 
     public Object run(String script) throws Exception {
+        init();
         return javascriptEngine.eval(script);
     }
 
