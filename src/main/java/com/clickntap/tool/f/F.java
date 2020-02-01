@@ -8,7 +8,6 @@ import org.springframework.core.io.Resource;
 
 public class F {
 
-<<<<<<< HEAD
 	private ScriptEngine javascriptEngine;
 	private Resource file;
 
@@ -37,48 +36,12 @@ public class F {
 	}
 
 	public Object run(String script) throws Exception {
+		init();
 		return javascriptEngine.eval(script);
 	}
 
 	public String chart(JSONObject json) throws Exception {
 		return run("f().chart(" + json.toString() + ").render()").toString();
 	}
-=======
-    private ScriptEngine javascriptEngine;
-    private Resource file;
-
-    public Resource getFile() {
-        return file;
-    }
-
-    public void setFile(Resource file) {
-        this.file = file;
-    }
-
-    public void init() throws Exception {
-        ScriptEngineManager manager = new ScriptEngineManager();
-        javascriptEngine = manager.getEngineByName("nashorn");
-        javascriptEngine.put("util", new Util(file));
-        javascriptEngine.eval("var Proxy = function(){};");
-        javascriptEngine.eval("var document = {};");
-        javascriptEngine.eval("var console = {};");
-        javascriptEngine.eval("var window = {};");
-        javascriptEngine.eval("var sessionStorage = {};");
-        javascriptEngine.eval("document.addEventListener = function() {};");
-        javascriptEngine.eval("console.log = print;");
-        javascriptEngine.eval("window.addEventListener = function() {};");
-        javascriptEngine.eval("sessionStorage.getItem = function() { return null; };");
-        javascriptEngine.eval("load('" + file.getFile().getAbsolutePath() + "');");
-    }
-
-    public Object run(String script) throws Exception {
-        init();
-        return javascriptEngine.eval(script);
-    }
-
-    public String chart(JSONObject json) throws Exception {
-        return run("f().chart(" + json.toString() + ").render()").toString();
-    }
->>>>>>> 8a985dee2df1578b19b533e267bf71a91e7de6f7
 
 }
