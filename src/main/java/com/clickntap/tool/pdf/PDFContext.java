@@ -14,8 +14,8 @@ import com.clickntap.smart.SmartContext;
 
 public class PDFContext extends SmartContext {
 
-	private int numberOfPages;
-	private int pageNumber;
+	private Number numberOfPages;
+	private Number pageNumber;
 	private Map<String, String> params;
 
 	public PDFContext() {
@@ -34,15 +34,15 @@ public class PDFContext extends SmartContext {
 		params = new HashMap<String, String>();
 	}
 
-	public int getNumberOfPages() {
+	public Number getNumberOfPages() {
 		return numberOfPages;
 	}
 
-	public void setNumberOfPages(int numberOfPages) {
+	public void setNumberOfPages(Number numberOfPages) {
 		this.numberOfPages = numberOfPages;
 	}
 
-	public int getPageNumber() {
+	public Number getPageNumber() {
 		return pageNumber;
 	}
 

@@ -83,7 +83,7 @@ public class Util {
 		for (Element element : root.elements()) {
 			if (icon == null) {
 				String id = element.attributeValue("id");
-				if (id != null) {
+				if (id != null && !id.contains("font-awesome")) {
 					value += "," + id;
 				}
 			} else {

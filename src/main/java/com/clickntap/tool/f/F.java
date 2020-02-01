@@ -43,4 +43,8 @@ public class F {
 		return run("f().chart(" + json.toString() + ").render()").toString();
 	}
 
+	public ScriptEngine getJavascriptEngine() {
+		return javascriptEngine;
+	}
+
 }

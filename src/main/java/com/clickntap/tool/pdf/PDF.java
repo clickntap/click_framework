@@ -49,6 +49,7 @@ public class PDF {
 	public void render(PDFContext ctx, String templateName, boolean portrait, OutputStream out) throws Exception {
 		if (f != null) {
 			ctx.put("f", f);
+			f.getJavascriptEngine().put("ctx", ctx);
 		}
 		Document pdfDocument = null;
 		String html = engine.eval(ctx, templateName);
@@ -69,7 +70,7 @@ public class PDF {
 		{
 			PdfCopy pdf = new PdfCopy(pdfDocument, out);
 			pdfDocument.open();
-			for (int i = 0; i < ctx.getNumberOfPages(); i++) {
+			for (int i = 0; i < ctx.getNumberOfPages().intValue(); i++) {
 				ctx.setPageNumber(i + 1);
 				if (i != 0) {
 					html = engine.eval(ctx, templateName);
