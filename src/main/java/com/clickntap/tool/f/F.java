@@ -36,7 +36,6 @@ public class F {
 	}
 
 	public Object run(String script) throws Exception {
-		init();
 		return javascriptEngine.eval(script);
 	}
 
