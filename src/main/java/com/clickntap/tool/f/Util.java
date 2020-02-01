@@ -40,15 +40,38 @@ public class Util {
 		}
 	}
 
+	public String darken(String color, String percentage) {
+		return lessValue("darken(" + color + ", " + percentage + ")");
+	}
+
+	public String lighten(String color, String percentage) {
+		return lessValue("lighten(" + color + ", " + percentage + ")");
+	}
+
+	public String alpha(String color, String percentage) {
+		return lessValue("alpha(" + color + ", " + percentage + ")");
+	}
+
+	public String lessValue(String css) {
+		try {
+			css = less("c{a:" + css + "}");
+			int x0 = css.indexOf(":");
+			int x1 = css.indexOf(";");
+			return css.substring(x0 + 1, x1).trim();
+		} catch (Exception e) {
+			return css;
+		}
+	}
+
 	public String less(String css) {
 		try {
 			return LessUtils.eval(css);
 		} catch (Exception e) {
-			return ConstUtils.EMPTY;
+			return css;
 		}
 	}
 
-	public String fa(String group, String icon, Number width, String colorPrimary, String colorSecondary) throws Exception {
+	public String fa(String group, String icon, Number height, String colorPrimary, String colorSecondary) throws Exception {
 		String value = "";
 		Element root = null;
 		if (faFiles.containsKey(group)) {
@@ -65,6 +88,11 @@ public class Util {
 				}
 			} else {
 				if (icon.equalsIgnoreCase(element.attributeValue("id"))) {
+					for (Element path : element.elements("path")) {
+						if (path.attributeValue("d").isEmpty()) {
+							path.detach();
+						}
+					}
 					value = element.asXML().replace("symbol", "svg");
 					if (value.contains("fa-primary")) {
 						value = value.replace("class=\"fa-primary\"", "fill=\"" + colorPrimary + "\"");
@@ -79,11 +107,7 @@ public class Util {
 					String viewBox = value.substring(x1 + 9, x2);
 					int w = Integer.parseInt(StringUtil.split(viewBox, ' ')[2]);
 					int h = Integer.parseInt(StringUtil.split(viewBox, ' ')[3]);
-					if (w > h) {
-						value = value.substring(0, 5) + " width=\"" + width + "\" height=\"" + (width.floatValue() * h / w) + "\" " + value.substring(x1);
-					} else {
-						value = value.substring(0, 5) + " width=\"" + (width.floatValue() * w / h) + "\" height=\"" + width + "\" " + value.substring(x1);
-					}
+					value = value.substring(0, 5) + " width=\"" + (height.floatValue() * w / h) + "\" height=\"" + height + "\" " + value.substring(x1);
 				}
 			}
 		}
