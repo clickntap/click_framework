@@ -100,7 +100,11 @@ public class Util {
 							value = value.replace("class=\"fa-secondary\"", "fill=\"" + colorSecondary + "\"");
 						}
 					} else {
-						value = value.replace("<path ", "<path fill=\"" + colorPrimary + "\" ");
+						if (colorSecondary != null) {
+							value = value.replace("<path ", "<path stroke-width=\"1\" stroke=\"" + colorSecondary + "\" fill=\"" + colorPrimary + "\" ");
+						} else {
+							value = value.replace("<path ", "<path fill=\"" + colorPrimary + "\" ");
+						}
 					}
 					int x1 = value.indexOf("viewBox");
 					int x2 = value.indexOf("\"", x1 + 9);
