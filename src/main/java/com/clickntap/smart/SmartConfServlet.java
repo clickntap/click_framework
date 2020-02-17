@@ -30,22 +30,6 @@ public class SmartConfServlet implements Servlet {
 		return false;
 	}
 
-	private static String checkEnvsPath(String envFile, String path) {
-		if (checkEnvPath(path, "stg")) {
-			envFile = envFile.replace("-env", "-stg-env");
-		}
-		if (checkEnvPath(path, "pre")) {
-			envFile = envFile.replace("-env", "-pre-env");
-		}
-		if (checkEnvPath(path, "demo")) {
-			envFile = envFile.replace("-env", "-demo-env");
-		}
-		if (checkEnvPath(path, "dev")) {
-			envFile = envFile.replace("-env", "-dev-env");
-		}
-		return envFile;
-	}
-
 	public void init(ServletConfig conf) throws ServletException {
 		try {
 			File root = new File(conf.getServletContext().getRealPath(""));
@@ -56,13 +40,21 @@ public class SmartConfServlet implements Servlet {
 			Properties envProperties = new Properties();
 			envProperties.putAll(System.getProperties());
 			String envFile = conf.getInitParameter("smartEnv");
+			int x = envFile.lastIndexOf('/');
+			if (x >= 0) {
+				envFile = envFile.substring(x + 1);
+			}
 			if (envFile != null) {
-				envFile = checkEnvsPath(envFile, root.getAbsolutePath());
+				File etcParentDir = root;
+				while (etcParentDir != null) {
+					File file = new File(etcParentDir.getCanonicalPath() + "/etc/" + envFile);
+					if (file.exists()) {
+						envFile = file.getCanonicalPath();
+						break;
+					}
+					etcParentDir = etcParentDir.getParentFile();
+				}
 				File file = new File(envFile);
-				if (!file.exists())
-					file = new File(root.getCanonicalPath() + ConstUtils.SLASH + envFile);
-				if (!file.exists())
-					file = new File(ConstUtils.SLASH + envFile);
 				if (file.exists()) {
 					FileInputStream in = new FileInputStream(file);
 					envProperties.load(in);
