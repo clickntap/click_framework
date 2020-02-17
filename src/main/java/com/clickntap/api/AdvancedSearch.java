@@ -54,6 +54,25 @@ public class AdvancedSearch {
 		return 0;
 	}
 
+	public List<JSONObject> sql(String sql, SmartContext ctx, JSONObject data) throws Exception {
+		List<JSONObject> items = new ArrayList<JSONObject>();
+		AdvancedSearchFilter filter = new AdvancedSearchFilter();
+		List list = db.queryScript(sql, filter, Class.forName("com.clickntap.api.BO"));
+		for (BO bo : (List<BO>) list) {
+			bo.setApp((BOManager) ctx.getBean("app"));
+			JSONObject item = new JSONObject();
+			item.put("id", bo.getId());
+			for (String name : bo.valuesKeySet()) {
+				try {
+					item.put(name, bo.get(name));
+				} catch (Exception e) {
+				}
+			}
+			items.add(item);
+		}
+		return items;
+	}
+
 	public List<JSONObject> run(JSONObject json, SmartContext ctx, JSONObject data, boolean sortable) throws Exception {
 		AdvancedSearchFilter filter = new AdvancedSearchFilter();
 		try {

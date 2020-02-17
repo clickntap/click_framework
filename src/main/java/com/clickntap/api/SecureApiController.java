@@ -200,7 +200,6 @@ public class SecureApiController implements Controller {
 				}
 			}
 		}
-
 		if (isID) {
 			JSONObject item = search.run(sqlJson, ctx, json, false).get(0);
 			json.put("item", item);
@@ -210,12 +209,22 @@ public class SecureApiController implements Controller {
 				for (int i = 0; i < includes.length(); i++) {
 					JSONObject include = includes.getJSONObject(i);
 					sqlJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(sqlFolder, include.getString("file")), ConstUtils.UTF_8)));
-					List<JSONObject> otherItems = search.run(sqlJson, ctx, json, i == 0);
+					List<JSONObject> otherItems = null;
+					if (sqlJson.has("sql")) {
+						otherItems = search.sql(sqlJson.getString("sql"), ctx, json);
+					} else {
+						otherItems = search.run(sqlJson, ctx, json, i == 0);
+					}
 					json.put(include.getString("name"), otherItems);
 				}
 			}
 		} else {
-			List<JSONObject> items = search.run(sqlJson, ctx, json, true);
+			List<JSONObject> items = null;
+			if (sqlJson.has("sql")) {
+				items = search.sql(sqlJson.getString("sql"), ctx, json);
+			} else {
+				items = search.run(sqlJson, ctx, json, true);
+			}
 			for (JSONObject item : items) {
 				if (sqlJson.has("includes")) {
 					ctx.put("item", item);

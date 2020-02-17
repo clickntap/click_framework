@@ -2,6 +2,7 @@ package com.clickntap.api;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -61,6 +62,10 @@ public class BO extends com.clickntap.hub.BO {
 
 	public Object get(String key) {
 		return values.get(key);
+	}
+
+	public Set<String> valuesKeySet() {
+		return values.keySet();
 	}
 
 	public Object put(String key, Object value) {
