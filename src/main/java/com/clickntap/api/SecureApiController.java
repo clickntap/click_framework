@@ -237,7 +237,7 @@ public class SecureApiController implements Controller {
 					}
 				}
 			}
-			if (sqlJson.has("sql")) {
+			if (!sqlJson.has("sql")) {
 				json.put("count", search.count(sqlJson, ctx, json));
 			}
 			json.put("items", items);
