@@ -4,15 +4,31 @@ import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-
-import com.asual.lesscss.LessEngine;
+import org.lesscss.LessCompiler;
 
 public class LessUtils {
 
-	public static LessEngine compiler = new LessEngine();
+	public static LessCompiler compiler = null;
+	public static LessCompiler compressingCompiler = null;
 
 	public static synchronized String eval(String code) throws Exception {
-		return compiler.compile(code);
+		return compressingCompiler().compile(code);
+	}
+
+	private static LessCompiler compressingCompiler() {
+		if (compressingCompiler == null) {
+			compressingCompiler = new LessCompiler();
+			compressingCompiler.setCompress(true);
+		}
+		return compressingCompiler;
+	}
+
+	private static LessCompiler compiler() {
+		if (compiler == null) {
+			compiler = new LessCompiler();
+			compiler.setCompress(false);
+		}
+		return compiler;
 	}
 
 	public static synchronized void compile(String file) throws Exception {
@@ -28,7 +44,7 @@ public class LessUtils {
 	}
 
 	public static synchronized void compile(File file, boolean compress) throws Exception {
-		String css = compiler.compile(file, compress);
+		String css = (compress ? compressingCompiler() : compiler()).compile(file);
 		FileUtils.writeByteArrayToFile(new File(file.getParent() + "/" + FilenameUtils.getBaseName(file.getName()) + ".css"), css.getBytes(ConstUtils.UTF_8));
 	}
 }
