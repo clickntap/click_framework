@@ -273,33 +273,45 @@ public class BuildCompiler implements FileAlterationListener {
 
 	public void onFileChange(File changedFile) {
 		try {
-			String extension = FilenameUtils.getExtension(changedFile.getName());
-			if (extension.equalsIgnoreCase("js") || extension.endsWith("ss")) {
-				String code = FileUtils.readFileToString(changedFile, ConstUtils.UTF_8).trim();
-				String formattedCode = ApiUtils.codeFormat(code).trim();
-				if (!code.equals(formattedCode)) {
-					FileUtils.writeByteArrayToFile(changedFile, formattedCode.trim().getBytes(ConstUtils.UTF_8));
+			String filePath = changedFile.getAbsolutePath();
+			String dirPath = uiWorkDir.getFile().getAbsolutePath();
+			filePath = filePath.replace(dirPath, "");
+			int n = 0;
+			int x = 0;
+			while ((x = filePath.indexOf('/')) >= 0) {
+				n++;
+				filePath = filePath.substring(x + 1);
+			}
+			if (n <= 4) {
+				String extension = FilenameUtils.getExtension(changedFile.getName());
+				if (extension.equalsIgnoreCase("js") || extension.endsWith("ss")) {
+					String code = FileUtils.readFileToString(changedFile, ConstUtils.UTF_8).trim();
+					String formattedCode = ApiUtils.codeFormat(code).trim();
+					if (!code.equals(formattedCode)) {
+						FileUtils.writeByteArrayToFile(changedFile, formattedCode.trim().getBytes(ConstUtils.UTF_8));
+						return;
+					}
+				}
+				if (changedFile.getParentFile().getAbsolutePath().endsWith(extension)) {
 					return;
 				}
-			}
-			if (changedFile.getParentFile().getAbsolutePath().endsWith(extension)) {
-				return;
-			}
-			File workDir = getUiWorkDir().getFile();
-			File fileDir = changedFile.getParentFile();
-			if (workDir.getAbsolutePath().equalsIgnoreCase(fileDir.getAbsolutePath())) {
-				compile(changedFile);
-			} else {
-				for (File file : getUiWorkDir().getFile().listFiles()) {
-					String fileExtension = FilenameUtils.getExtension(file.getName());
-					if (fileExtension.equalsIgnoreCase(extension)) {
-						compile(file);
+				File workDir = getUiWorkDir().getFile();
+				File fileDir = changedFile.getParentFile();
+				if (workDir.getAbsolutePath().equalsIgnoreCase(fileDir.getAbsolutePath())) {
+					compile(changedFile);
+				} else {
+					for (File file : getUiWorkDir().getFile().listFiles()) {
+						String fileExtension = FilenameUtils.getExtension(file.getName());
+						if ((fileExtension.equalsIgnoreCase("js") && extension.equalsIgnoreCase("js")) || (fileExtension.endsWith("ss") && extension.endsWith("ss"))) {
+							compile(file);
+						}
 					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public void onFileDelete(File file) {
