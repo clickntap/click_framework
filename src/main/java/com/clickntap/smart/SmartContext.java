@@ -245,7 +245,10 @@ public class SmartContext extends HashMap<String, Object> implements Serializabl
 	}
 
 	public boolean isStoredRequest() {
-		return session.get(SMART_STORED_REQUEST) != null;
+		if (session != null) {
+			return session.get(SMART_STORED_REQUEST) != null;
+		}
+		return false;
 	}
 
 	public void loadRequest() {

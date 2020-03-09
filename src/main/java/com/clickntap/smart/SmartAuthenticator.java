@@ -3,6 +3,7 @@ package com.clickntap.smart;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.clickntap.api.M;
 import com.clickntap.tool.bean.Bean;
 import com.clickntap.tool.bean.BeanManager;
 import com.clickntap.tool.bean.BeanUtils;
@@ -68,7 +69,7 @@ public class SmartAuthenticator implements Authenticator {
 		AuthenticatedUser user = (AuthenticatedUser) Class.forName(className).newInstance();
 		user.setUsername(username);
 		if (username == null || username.trim().length() == 0) {
-			throw new UserNotEnabledException();
+			throw new UnknownUsernameException();
 		}
 		if (isMd5())
 			user.setPassword(SecurityUtils.md5(password));
@@ -81,7 +82,7 @@ public class SmartAuthenticator implements Authenticator {
 			throw new UnknownUsernameException();
 		if (bean != null && user.getPassword() != null && !user.getPassword().equals(BeanUtils.getValue(bean, "password")))
 			throw new UnknownPasswordException();
-		Boolean enabled = Boolean.valueOf(BeanUtils.getValue(bean, "enabled").toString());
+		Boolean enabled = Boolean.valueOf(M.invoke(bean, "getEnabled").toString());
 		if (!enabled)
 			throw new UserNotEnabledException();
 		user = (AuthenticatedUser) beanManager.read(bean.getId(), Class.forName(className));
