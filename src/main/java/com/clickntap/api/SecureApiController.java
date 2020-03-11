@@ -168,6 +168,10 @@ public class SecureApiController implements Controller {
 		return fapi(sqlFolder.getFile(), ctx, engine, search, ApiUtils.path(uri, folder), null);
 	}
 
+	public JSONObject fapi(SmartContext ctx, String uri, String folder, Number authId) throws Exception {
+		return fapi(sqlFolder.getFile(), ctx, engine, search, ApiUtils.path(uri, folder), authId);
+	}
+
 	public JSONObject fapi(SmartContext ctx, JSONObject sqlJson, Number authId) throws Exception {
 		return fapi(sqlFolder.getFile(), ctx, engine, search, null, authId, sqlJson);
 	}

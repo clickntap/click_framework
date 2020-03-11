@@ -1,8 +1,11 @@
 package com.clickntap.api;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -137,6 +140,14 @@ public class ApiUtils {
 
 	public static String toCamelCase(String value) {
 		return toCamelCase(value, true);
+	}
+
+
+	public static String lastModified(Date date) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
+		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		String lastModified = simpleDateFormat.format(date);
+		return lastModified;
 	}
 
 }
