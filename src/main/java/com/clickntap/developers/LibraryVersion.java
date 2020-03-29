@@ -88,7 +88,7 @@ public class LibraryVersion implements FileAlterationListener {
 			confItems.add(confItem);
 			conf.put("items", confItems);
 		}
-		FileUtils.writeStringToFile(jsonFile(), conf.toString(2), ConstUtils.UTF_8);
+		writeFile(jsonFile(), conf.toString(2));
 		engine = new FreemarkerScriptEngine();
 		engine.setTemplateDir(new FileSystemResource(file.getParentFile()));
 		engine.setExtension(ConstUtils.EMPTY);

@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +30,6 @@ import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.LessUtils;
 import com.clickntap.utils.SecurityUtils;
 import com.clickntap.utils.XMLUtils;
-import com.google.javascript.jscomp.CompilationLevel;
-import com.google.javascript.jscomp.Compiler;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.SourceFile;
 
 public class BuildCompiler implements FileAlterationListener {
 	private Resource uiWorkDir;
@@ -187,12 +182,7 @@ public class BuildCompiler implements FileAlterationListener {
 
 	public String jsCompress(String js) throws Exception {
 		if (compress) {
-			Compiler compiler = new Compiler();
-			CompilerOptions options = new CompilerOptions();
-			CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
-			SourceFile source = SourceFile.fromCode("js", js);
-			compiler.compile(Collections.<SourceFile>emptyList(), Collections.singletonList(source), options);
-			return compiler.toSource();
+			return ApiUtils.jsCompile(js);
 		} else {
 			return js;
 		}

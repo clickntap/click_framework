@@ -213,7 +213,7 @@
 		<dependency>
 			<groupId>com.google.javascript</groupId>
 			<artifactId>closure-compiler</artifactId>
-			<version>v20160208</version>
+			<version>v20200224</version>
 		</dependency>
 		<dependency>
 			<groupId>com.itextpdf</groupId>
