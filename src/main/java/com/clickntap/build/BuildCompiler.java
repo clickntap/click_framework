@@ -197,24 +197,9 @@ public class BuildCompiler implements FileAlterationListener {
 			destFile.getParentFile().mkdirs();
 			if (getUiWorkDir().getFile().getAbsolutePath().equals(file.getParentFile().getAbsolutePath())) {
 				StringBuffer sb = libs("js");
-				JSONObject json = new JSONObject();
-				try {
-					File svgDir = new File(getUiWorkDir().getFile().getCanonicalPath() + "/lib/svg");
-					boolean svgsExists = false;
-					for (File svg : svgDir.listFiles()) {
-						if (FilenameUtils.getExtension(svg.getName()).equals("svg")) {
-							json.put(FilenameUtils.getBaseName(svg.getName()), FileUtils.readFileToString(svg, ConstUtils.UTF_8));
-							svgsExists = true;
-						}
-					}
-					if (svgsExists) {
-						sb.append("UI.svg(").append(json.toString()).append(");\n\n\n");
-					}
-				} catch (Exception e) {
-				}
-				sb.append(FileUtils.readFileToString(tmpFile, ConstUtils.UTF_8));
+				sb.append(jsCompress(FileUtils.readFileToString(tmpFile, ConstUtils.UTF_8)));
 				tmpFile.delete();
-				FileUtils.writeStringToFile(destFile, jsCompress(sb.toString()), ConstUtils.UTF_8);
+				FileUtils.writeStringToFile(destFile, sb.toString(), ConstUtils.UTF_8);
 			} else {
 				tmpFile.renameTo(destFile);
 			}
