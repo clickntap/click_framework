@@ -66,10 +66,12 @@ public class ApiUtils {
 	public static String jsCompile(String js) {
 		Compiler compiler = new Compiler();
 		CompilerOptions options = new CompilerOptions();
+		options.setEmitUseStrict(false);
 		CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
 		SourceFile source = SourceFile.fromCode("js", js);
 		compiler.compile(Collections.<SourceFile>emptyList(), Collections.singletonList(source), options);
-		return compiler.toSource();
+		String code = compiler.toSource();
+		return code;
 
 	}
 
@@ -142,12 +144,16 @@ public class ApiUtils {
 		return toCamelCase(value, true);
 	}
 
-
 	public static String lastModified(Date date) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z");
 		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 		String lastModified = simpleDateFormat.format(date);
 		return lastModified;
+	}
+
+	public static void main(String args[]) {
+		String js = "var variable = 0; function hello(a,b) {}; hello();";
+		System.out.println(ApiUtils.jsCompile(js));
 	}
 
 }

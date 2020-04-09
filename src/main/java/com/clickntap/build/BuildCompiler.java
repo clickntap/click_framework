@@ -15,7 +15,6 @@ import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.dom4j.Element;
-import org.json.JSONObject;
 import org.springframework.core.io.Resource;
 
 import com.cathive.sass.SassContext;

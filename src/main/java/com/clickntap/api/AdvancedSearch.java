@@ -23,9 +23,14 @@ public class AdvancedSearch {
 
 	private JdbcManager db;
 	private String searchTemplate;
+	private BOApp app;
 
 	public AdvancedSearch() throws Exception {
 		init();
+	}
+
+	public void setApp(BOApp app) {
+		this.app = app;
 	}
 
 	private void init() throws Exception {
@@ -96,23 +101,38 @@ public class AdvancedSearch {
 		List<JSONObject> items = new ArrayList<JSONObject>();
 		List list = db.queryScript(searchTemplate, filter, Class.forName(json.getString("class")));
 		for (BO bo : (List<BO>) list) {
-			bo.setApp((BOManager) ctx.getBean("app"));
+			if (app == null) {
+				bo.setApp((BOManager) ctx.getBean("app"));
+			} else {
+				bo.setApp(app);
+			}
 			JSONObject item = new JSONObject();
 			item.put("id", bo.getId());
 			item.put("className", bo.getClass().getSimpleName());
 			if (json.has("fields")) {
 				JSONArray fields = json.getJSONArray("fields");
 				for (int i = 0; i < fields.length(); i++) {
-					String field;
+					String field = fields.getString(i);
 					String fieldKey;
-					if (fields.getString(i).contains(".")) {
-						field = fields.getString(i);
+					if (field.contains(".")) {
 						fieldKey = AdvancedSearchFilter.toCamelCase(field.replace(".", "_"));
 					} else {
-						fieldKey = field = AdvancedSearchFilter.toCamelCase(fields.getString(i));
+						fieldKey = field = AdvancedSearchFilter.toCamelCase(field);
 					}
 					try {
-						item.put(fieldKey, BeanUtils.getValue(bo, field));
+						if (field.startsWith("this.")) {
+							field = field.substring(5);
+						}
+						Object value = BeanUtils.getValue(bo, field);
+						if (value instanceof List) {
+							List<JSONObject> values = new ArrayList<JSONObject>();
+							for (BO valueItem : (List<BO>) value) {
+								values.add(valueItem.json(false));
+							}
+							item.put(fieldKey, values);
+						} else {
+							item.put(fieldKey, value);
+						}
 					} catch (Exception e) {
 					}
 				}

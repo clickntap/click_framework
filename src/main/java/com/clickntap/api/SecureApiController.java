@@ -108,18 +108,18 @@ public class SecureApiController implements Controller {
 							users = new ArrayList<BO>();
 						}
 						Number authId = null;
+						JSONObject authUser = null;
 						if (users.size() != 0) {
 							authId = (Number) M.invoke(users.get(0), "getUserId");
+							authUser = ((BO) M.invoke(users.get(0), "getUser")).json(true);
 						}
 						if (secureRequest.path(0).equalsIgnoreCase("f")) {
-							json = fapi(sqlFolder, request, engine, search, secureRequest.getPath(), authId);
+							json = fapi(sqlFolder, request, engine, search, secureRequest.getPath(), authUser);
 							out(response, json);
 							return null;
 						}
 						if (users.size() != 0 && "me".equalsIgnoreCase(secureRequest.path(0))) {
-							BO bo = (BO) M.invoke(users.get(0), "getUser");
-							JSONObject data = bo.json(true);
-							out(response, data);
+							out(response, authUser);
 							return null;
 						}
 						if (secureRequest.getPath().size() > 2) {
@@ -165,7 +165,7 @@ public class SecureApiController implements Controller {
 	}
 
 	public JSONObject fapi(SmartContext ctx, String uri, String folder) throws Exception {
-		return fapi(sqlFolder.getFile(), ctx, engine, search, ApiUtils.path(uri, folder), null);
+		return fapi(sqlFolder.getFile(), ctx, engine, search, ApiUtils.path(uri, folder), (Number) null);
 	}
 
 	public JSONObject fapi(SmartContext ctx, String uri, String folder, Number authId) throws Exception {
@@ -173,20 +173,37 @@ public class SecureApiController implements Controller {
 	}
 
 	public JSONObject fapi(SmartContext ctx, JSONObject sqlJson, Number authId) throws Exception {
-		return fapi(sqlFolder.getFile(), ctx, engine, search, null, authId, sqlJson);
+		if (authId != null) {
+			JSONObject authUser = new JSONObject();
+			authUser.put("id", authId);
+			ctx.put("authUser", authUser);
+			ctx.put("authId", authUser.get("id"));
+		}
+		return fapiRunner(sqlFolder.getFile(), ctx, engine, search, null, sqlJson);
+	}
+
+	public static JSONObject fapi(File sqlFolder, SmartContext ctx, ScriptEngine engine, AdvancedSearch search, List<String> path, JSONObject authUser) throws Exception {
+		String smartQuery = path.get(1);
+		ctx.put("path", path);
+		if (authUser != null) {
+			ctx.put("authUser", authUser);
+			ctx.put("authId", authUser.get("id"));
+		}
+		JSONObject sqlJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(sqlFolder, smartQuery), ConstUtils.UTF_8)));
+		return fapiRunner(sqlFolder, ctx, engine, search, path, sqlJson);
 	}
 
 	public static JSONObject fapi(File sqlFolder, SmartContext ctx, ScriptEngine engine, AdvancedSearch search, List<String> path, Number authId) throws Exception {
-		String smartQuery = path.get(1);
-		ctx.put("path", path);
 		if (authId != null) {
-			ctx.put("authId", authId);
+			JSONObject authUser = new JSONObject();
+			authUser.put("id", authId);
+			return fapi(sqlFolder, ctx, engine, search, path, authUser);
+		} else {
+			return fapi(sqlFolder, ctx, engine, search, path, (JSONObject) null);
 		}
-		JSONObject sqlJson = new JSONObject(engine.evalScript(ctx, FileUtils.readFileToString(sqlFile(sqlFolder, smartQuery), ConstUtils.UTF_8)));
-		return fapi(sqlFolder, ctx, engine, search, path, authId, sqlJson);
 	}
 
-	public static JSONObject fapi(File sqlFolder, SmartContext ctx, ScriptEngine engine, AdvancedSearch search, List<String> path, Number authId, JSONObject sqlJson) throws Exception {
+	public static JSONObject fapiRunner(File sqlFolder, SmartContext ctx, ScriptEngine engine, AdvancedSearch search, List<String> path, JSONObject sqlJson) throws Exception {
 		String smartQuery;
 		try {
 			smartQuery = path.get(1);
@@ -263,6 +280,10 @@ public class SecureApiController implements Controller {
 
 	public static JSONObject fapi(Resource sqlFolder, HttpServletRequest request, ScriptEngine engine, AdvancedSearch search, List<String> path, Number authId) throws Exception {
 		return fapi(sqlFolder.getFile(), new SmartContext(request, null), engine, search, path, authId);
+	}
+
+	public static JSONObject fapi(Resource sqlFolder, HttpServletRequest request, ScriptEngine engine, AdvancedSearch search, List<String> path, JSONObject authUser) throws Exception {
+		return fapi(sqlFolder.getFile(), new SmartContext(request, null), engine, search, path, authUser);
 	}
 
 	public static File sqlFile(File sqlFolderFile, String smartQuery) throws Exception {
