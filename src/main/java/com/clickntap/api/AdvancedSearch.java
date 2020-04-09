@@ -130,6 +130,8 @@ public class AdvancedSearch {
 								values.add(valueItem.json(false));
 							}
 							item.put(fieldKey, values);
+						} else if (value instanceof BO) {
+							item.put(fieldKey, ((BO) value).json(false));
 						} else {
 							item.put(fieldKey, value);
 						}
