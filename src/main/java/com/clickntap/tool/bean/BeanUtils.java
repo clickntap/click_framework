@@ -61,6 +61,11 @@ public class BeanUtils extends org.springframework.beans.BeanUtils {
 		if ((x = propertyName.indexOf(".")) >= 0) {
 			Object newTarget = getValue(target, propertyName.substring(0, x));
 			return getValue(newTarget, propertyName.substring(x + 1));
+		} else if ((x = propertyName.indexOf("[")) >= 0) {
+			int x1 = propertyName.indexOf("]");
+			int index = Integer.parseInt(propertyName.substring(x + 1, x1));
+			List list = (List) getValue(target, propertyName.substring(0, x));
+			return list.get(index);
 		}
 		Object value = null;
 		PropertyDescriptor propertyDescriptor = org.springframework.beans.BeanUtils.getPropertyDescriptor(target.getClass(), propertyName);

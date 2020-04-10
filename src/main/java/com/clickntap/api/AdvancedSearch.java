@@ -113,12 +113,15 @@ public class AdvancedSearch {
 				JSONArray fields = json.getJSONArray("fields");
 				for (int i = 0; i < fields.length(); i++) {
 					String field = fields.getString(i);
-					String fieldKey;
+					String fieldKey = field;
 					if (field.contains(".")) {
-						fieldKey = AdvancedSearchFilter.toCamelCase(field.replace(".", "_"));
-					} else {
-						fieldKey = field = AdvancedSearchFilter.toCamelCase(field);
+						fieldKey = fieldKey.replace(".", "_");
 					}
+					if (field.contains("[")) {
+						fieldKey = fieldKey.replace("[", "_").replace("]", "_");
+					}
+					fieldKey = AdvancedSearchFilter.toCamelCase(fieldKey);
+					field = AdvancedSearchFilter.toCamelCase(field);
 					try {
 						if (field.startsWith("this.")) {
 							field = field.substring(5);
