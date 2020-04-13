@@ -47,6 +47,19 @@ public class PDF {
 	 */
 
 	public void render(PDFContext ctx, String templateName, boolean portrait, OutputStream out) throws Exception {
+		Number width = null;
+		Number height = null;
+		if (portrait) {
+			width = 595;
+			height = 842;
+		} else {
+			width = 842;
+			height = 595;
+		}
+		render(ctx, templateName, width, height, out);
+	}
+
+	public void render(PDFContext ctx, String templateName, Number width, Number height, OutputStream out) throws Exception {
 		if (f != null) {
 			ctx.put("f", f);
 			f.getJavascriptEngine().put("ctx", ctx);
@@ -55,15 +68,9 @@ public class PDF {
 		String html = engine.eval(ctx, templateName);
 		Object pd4ml = Class.forName("org.zefer.pd4ml.PD4ML").newInstance();
 		M.invoke(pd4ml, "useTTF", new Object[] { workDir.getFile().getAbsolutePath(), true });
-		if (portrait) {
-			M.invoke(pd4ml, "setPageSize", new Dimension(595, 842));
-			M.invoke(pd4ml, "setHtmlWidth", 1190);
-			pdfDocument = new Document(new RectangleReadOnly(595, 842));
-		} else {
-			M.invoke(pd4ml, "setPageSize", new Dimension(842, 595));
-			M.invoke(pd4ml, "setHtmlWidth", 1684);
-			pdfDocument = new Document(new RectangleReadOnly(595, 842, 90));
-		}
+		M.invoke(pd4ml, "setPageSize", new Dimension(width.intValue(), height.intValue()));
+		M.invoke(pd4ml, "setHtmlWidth", width.intValue() * 2);
+		pdfDocument = new Document(new RectangleReadOnly(width.intValue(), height.intValue()));
 		pdfDocument.setMarginMirroring(true);
 		pdfDocument.setMargins(0, 0, 0, 0);
 		M.invoke(pd4ml, "setPageInsets", new Insets(0, 0, 0, 0));

@@ -1,12 +1,15 @@
 package com.clickntap.tool.f;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.springframework.core.io.Resource;
 
+import com.clickntap.api.SecureUtils;
 import com.clickntap.tool.types.Datetime;
 import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.LessUtils;
@@ -17,11 +20,11 @@ import freemarker.template.utility.StringUtil;
 public class Util {
 
 	private Resource file;
-	private Map<String, Element> faFiles;
+	private Map<String, Object> resourceFiles;
 
 	public Util(Resource file) {
 		this.file = file;
-		faFiles = new HashMap<String, Element>();
+		resourceFiles = new HashMap<String, Object>();
 	}
 
 	public String formatDate(String d, String format, String language) {
@@ -71,14 +74,33 @@ public class Util {
 		}
 	}
 
+	public String flag(String icon) throws Exception {
+		String value = "";
+		String flags = null;
+		if (resourceFiles.containsKey("flags")) {
+			flags = (String) resourceFiles.get("flags");
+		} else {
+			String resource = FileUtils.readFileToString(new File(file.getFile().getParentFile().getParentFile().getParentFile().getAbsolutePath() + "/css/flags.css"), ConstUtils.UTF_8);
+			resourceFiles.put("flags", flags = resource);
+		}
+		int x0 = flags.indexOf("flag-" + icon + "{");
+		
+		int x1;
+		x0 = flags.indexOf("base64,", x0) + 7;
+		x1 = flags.indexOf(")}", x0);
+		value = new String(SecureUtils.base64dec(flags.substring(x0, x1)), ConstUtils.UTF_8);
+		value = StringUtil.replace(value, "</svg>", "<circle style=\"stroke:#F0F0F0;stroke-width:\" cx=\"256\" cy=\"256\" r=\"256\"/></svg>");
+		return value;
+	}
+
 	public String fa(String group, String icon, Number height, String colorPrimary, String colorSecondary) throws Exception {
 		String value = "";
 		Element root = null;
-		if (faFiles.containsKey(group)) {
-			root = faFiles.get(group);
+		if (resourceFiles.containsKey(group)) {
+			root = (Element) resourceFiles.get(group);
 		} else {
 			Document doc = XMLUtils.copyFrom(file.getFile().getParentFile().getParentFile().getAbsolutePath() + "/svg/" + group + ".svg");
-			faFiles.put(group, root = doc.getRootElement());
+			resourceFiles.put(group, root = doc.getRootElement());
 		}
 		for (Element element : root.elements()) {
 			if (icon == null) {
