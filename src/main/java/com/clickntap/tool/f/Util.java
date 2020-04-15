@@ -89,7 +89,7 @@ public class Util {
 		x0 = flags.indexOf("base64,", x0) + 7;
 		x1 = flags.indexOf(")}", x0);
 		value = new String(SecureUtils.base64dec(flags.substring(x0, x1)), ConstUtils.UTF_8);
-		value = StringUtil.replace(value, "</svg>", "<circle style=\"stroke:#F0F0F0;stroke-width:\" cx=\"256\" cy=\"256\" r=\"256\"/></svg>");
+		value = StringUtil.replace(value, "</svg>", "<circle style=\"stroke:#F0F0F0;stroke-width:16\" cx=\"256\" cy=\"256\" r=\"256\"/></svg>");
 		return value;
 	}
 
