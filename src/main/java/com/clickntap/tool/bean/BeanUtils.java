@@ -8,6 +8,8 @@ import java.util.List;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 
+import com.clickntap.api.M;
+
 public class BeanUtils extends org.springframework.beans.BeanUtils {
 
 	public static String beanClassToResourceName(Class beanClass, String extension) {
@@ -65,6 +67,10 @@ public class BeanUtils extends org.springframework.beans.BeanUtils {
 			int x1 = propertyName.indexOf("]");
 			int index = Integer.parseInt(propertyName.substring(x + 1, x1));
 			List list = (List) getValue(target, propertyName.substring(0, x));
+			try {
+				M.invoke(list.get(index), "read");
+			} catch (Exception e) {
+			}
 			return list.get(index);
 		}
 		Object value = null;
