@@ -32,6 +32,10 @@ public class F {
 		javascriptEngine.eval("console.log = print;");
 		javascriptEngine.eval("window.addEventListener = function() {};");
 		javascriptEngine.eval("sessionStorage.getItem = function() { return null; };");
+		load();
+	}
+
+	public void load() throws Exception {
 		javascriptEngine.eval("load('" + file.getFile().getAbsolutePath() + "');");
 	}
 
