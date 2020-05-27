@@ -226,7 +226,12 @@ public class SecureApiController implements Controller {
 			}
 		}
 		if (isID) {
-			JSONObject item = search.run(sqlJson, ctx, json, false).get(0);
+			JSONObject item;
+			try {
+				item = search.run(sqlJson, ctx, json, false).get(0);
+			} catch (Exception e) {
+				return new JSONObject();
+			}
 			json.put("item", item);
 			if (sqlJson.has("includes")) {
 				ctx.put("item", item);

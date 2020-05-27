@@ -35,6 +35,14 @@ public class Util {
 		}
 	}
 
+	public String base64encode(String string) throws Exception {
+		return SecureUtils.base64enc(string.getBytes(ConstUtils.UTF_8));
+	}
+
+	public String base64decode(String string) throws Exception {
+		return new String(SecureUtils.base64dec(string), ConstUtils.UTF_8);
+	}
+
 	public String formatDate(Datetime d, String format, String language) {
 		try {
 			return d.format(format, language);
@@ -84,7 +92,7 @@ public class Util {
 			resourceFiles.put("flags", flags = resource);
 		}
 		int x0 = flags.indexOf("flag-" + icon + "{");
-		
+
 		int x1;
 		x0 = flags.indexOf("base64,", x0) + 7;
 		x1 = flags.indexOf(")}", x0);
