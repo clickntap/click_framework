@@ -22,8 +22,10 @@ public class SecureRequest {
 	private String c;
 	private Long t;
 	private BO token;
+	private HttpServletRequest request;
 
 	public SecureRequest(HttpServletRequest request) {
+		this.request = request;
 		String uri = request.getRequestURI();
 		while (uri.indexOf("/api/") > 0) {
 			uri = uri.substring(uri.indexOf("/api/"));
@@ -34,6 +36,10 @@ public class SecureRequest {
 		ServletRequestDataBinder binder = new ServletRequestDataBinder(this, this.getClass().getName());
 		BindUtils.registerCustomEditor(binder);
 		binder.bind(request);
+	}
+
+	public HttpServletRequest getRequest() {
+		return request;
 	}
 
 	public ECPublicKey getPublicKey() throws Exception {

@@ -62,7 +62,7 @@ public class Util {
     try {
       css = less("c{a:" + css + "}");
       int x0 = css.indexOf(":");
-      int x1 = css.indexOf(";");
+      int x1 = css.indexOf("}");
       return css.substring(x0 + 1, x1).trim();
     } catch (Exception e) {
       return css;

@@ -74,6 +74,36 @@ public class SecureApiController implements Controller {
 		}
 	}
 
+	public Auth auth(SecureRequest request) {
+		Auth auth = new Auth();
+		JSONObject client = new JSONObject();
+		try {
+			BO token = signed(request.getRequest(), privateKey);
+			M.invoke(request, "setDeviceToken", token);
+			if (token != null) {
+				auth.setToken(token);
+				List<BO> users;
+				try {
+					users = (List) M.invoke(token, "getAuthUsers");
+				} catch (Exception e) {
+					users = new ArrayList<BO>();
+				}
+				auth.setUsers(users);
+				Number authId = null;
+				JSONObject authUser = null;
+				if (users.size() != 0) {
+					authId = (Number) M.invoke(users.get(0), "getUserId");
+					authUser = ((BO) M.invoke(users.get(0), "getUser")).json(true);
+					client.put("authId", authId);
+					client.put("authUser", authUser);
+				}
+			}
+		} catch (Exception e) {
+		}
+		auth.setInfo(client);
+		return auth;
+	}
+
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
 			if (api != null) {
@@ -93,32 +123,28 @@ public class SecureApiController implements Controller {
 						return signout(request, response, json, secureRequest, token);
 					}
 				} else {
-					BO token = signed(request, privateKey);
-					M.invoke(secureRequest, "setDeviceToken", token);
-					if (token != null) {
+					Auth auth = auth(secureRequest);
+					if (auth.getToken() != null) {
 						if (api != null) {
 							if (api.handleRequest(request, response, secureRequest)) {
 								return null;
 							}
 						}
-						List<BO> users;
+						Number authId;
+						JSONObject authUser;
 						try {
-							users = (List) M.invoke(token, "getAuthUsers");
+							authId = auth.getInfo().getNumber("authId");
+							authUser = auth.getInfo().getJSONObject("authUser");
 						} catch (Exception e) {
-							users = new ArrayList<BO>();
-						}
-						Number authId = null;
-						JSONObject authUser = null;
-						if (users.size() != 0) {
-							authId = (Number) M.invoke(users.get(0), "getUserId");
-							authUser = ((BO) M.invoke(users.get(0), "getUser")).json(true);
+							authId = null;
+							authUser = null;
 						}
 						if (secureRequest.path(0).equalsIgnoreCase("f")) {
 							json = fapi(sqlFolder, request, engine, search, secureRequest.getPath(), authUser);
 							out(response, json);
 							return null;
 						}
-						if (users.size() != 0 && "me".equalsIgnoreCase(secureRequest.path(0))) {
+						if (auth.getUsers().size() != 0 && "me".equalsIgnoreCase(secureRequest.path(0))) {
 							out(response, authUser);
 							return null;
 						}
@@ -139,10 +165,10 @@ public class SecureApiController implements Controller {
 								return delete(request, response, json, secureRequest);
 							}
 							if ("signin".equalsIgnoreCase(secureRequest.path(2))) {
-								return signin(request, response, json, secureRequest, token);
+								return signin(request, response, json, secureRequest, auth.getToken());
 							}
 							if ("search".equalsIgnoreCase(secureRequest.path(2))) {
-								return search(request, response, json, secureRequest, token);
+								return search(request, response, json, secureRequest, auth.getToken());
 							}
 							Long id;
 							if ((id = num(secureRequest.path(2))) != 0) {
@@ -278,6 +304,7 @@ public class SecureApiController implements Controller {
 			if (js.exists()) {
 				ScriptEngineManager manager = new ScriptEngineManager();
 				javax.script.ScriptEngine javascriptEngine = manager.getEngineByName("nashorn");
+				javascriptEngine.put("app", ctx.getBean("app"));
 				javascriptEngine.put("sql", sqlJson);
 				javascriptEngine.put("json", json);
 				javascriptEngine.put("request", ctx.getRequest());
