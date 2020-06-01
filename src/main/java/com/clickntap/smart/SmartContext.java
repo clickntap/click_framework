@@ -68,6 +68,10 @@ public class SmartContext extends HashMap<String, Object> implements Serializabl
 	private SmartRequest smartRequest;
 	private Exception exception;
 
+	public SmartContext() {
+		this(null, null);
+	}
+
 	public SmartContext(HttpServletRequest request, HttpServletResponse response) {
 		if (request != null) {
 			String uri = request.getRequestURI().substring(request.getContextPath().length() + 1);

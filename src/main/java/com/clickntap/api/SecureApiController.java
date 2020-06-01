@@ -190,6 +190,14 @@ public class SecureApiController implements Controller {
 		return null;
 	}
 
+	public JSONObject fapi(String channel) throws Exception {
+		return fapi(new SmartContext(), "/api/f/" + channel, "api");
+	}
+
+	public JSONObject fapi(SmartContext ctx, String channel) throws Exception {
+		return fapi(ctx, "/api/f/" + channel, "api");
+	}
+
 	public JSONObject fapi(SmartContext ctx, String uri, String folder) throws Exception {
 		return fapi(sqlFolder.getFile(), ctx, engine, search, ApiUtils.path(uri, folder), (Number) null);
 	}
