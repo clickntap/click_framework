@@ -313,6 +313,7 @@ public class SecureApiController implements Controller {
 				ScriptEngineManager manager = new ScriptEngineManager();
 				javax.script.ScriptEngine javascriptEngine = manager.getEngineByName("nashorn");
 				javascriptEngine.put("app", ctx.getBean("app"));
+				javascriptEngine.put("crypto", ctx.getBean("crypto"));
 				javascriptEngine.put("sql", sqlJson);
 				javascriptEngine.put("json", json);
 				javascriptEngine.put("request", ctx.getRequest());
