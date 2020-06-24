@@ -10,66 +10,75 @@ import com.clickntap.api.CryptoUtils;
 
 public class F {
 
-	private ScriptEngine javascriptEngine;
-	private Resource file;
-	private CryptoUtils crypto;
-	private String serverURL;
+  private ScriptEngine javascriptEngine;
+  private Resource file;
+  private CryptoUtils crypto;
+  private UtilExtension extension;
+  private String serverURL;
 
-	public String getServerURL() {
-		return serverURL;
-	}
+  public String getServerURL() {
+    return serverURL;
+  }
 
-	public void setServerURL(String serverURL) {
-		this.serverURL = serverURL;
-	}
+  public void setServerURL(String serverURL) {
+    this.serverURL = serverURL;
+  }
 
-	public Resource getFile() {
-		return file;
-	}
+  public Resource getFile() {
+    return file;
+  }
 
-	public void setFile(Resource file) {
-		this.file = file;
-	}
+  public void setFile(Resource file) {
+    this.file = file;
+  }
 
-	public CryptoUtils getCrypto() {
-		return crypto;
-	}
+  public CryptoUtils getCrypto() {
+    return crypto;
+  }
 
-	public void setCrypto(CryptoUtils crypto) {
-		this.crypto = crypto;
-	}
+  public void setCrypto(CryptoUtils crypto) {
+    this.crypto = crypto;
+  }
 
-	public void init() throws Exception {
-		ScriptEngineManager manager = new ScriptEngineManager();
-		javascriptEngine = manager.getEngineByName("nashorn");
-		javascriptEngine.put("util", new Util(file, crypto));
-		javascriptEngine.eval("var Proxy = function(){};");
-		javascriptEngine.eval("var document = {};");
-		javascriptEngine.eval("var console = {};");
-		javascriptEngine.eval("var window = {};");
-		javascriptEngine.eval("var sessionStorage = {};");
-		javascriptEngine.eval("document.addEventListener = function() {};");
-		javascriptEngine.eval("console.log = print;");
-		javascriptEngine.eval("window.addEventListener = function() {};");
-		javascriptEngine.eval("sessionStorage.getItem = function() { return null; };");
-		load();
-	}
+  public UtilExtension getExtension() {
+    return extension;
+  }
 
-	public void load() throws Exception {
-		javascriptEngine.eval("load('" + file.getFile().getAbsolutePath() + "');");
-		javascriptEngine.eval("f().serverURL('" + getServerURL() + "')");
-	}
+  public void setExtension(UtilExtension extension) {
+    this.extension = extension;
+  }
 
-	public Object run(String script) throws Exception {
-		return javascriptEngine.eval(script);
-	}
+  public void init() throws Exception {
+    ScriptEngineManager manager = new ScriptEngineManager();
+    javascriptEngine = manager.getEngineByName("nashorn");
+    javascriptEngine.put("util", new Util(file, crypto, extension));
+    javascriptEngine.eval("var Proxy = function(){};");
+    javascriptEngine.eval("var document = {};");
+    javascriptEngine.eval("var console = {};");
+    javascriptEngine.eval("var window = {};");
+    javascriptEngine.eval("var sessionStorage = {};");
+    javascriptEngine.eval("document.addEventListener = function() {};");
+    javascriptEngine.eval("console.log = print;");
+    javascriptEngine.eval("window.addEventListener = function() {};");
+    javascriptEngine.eval("sessionStorage.getItem = function() { return null; };");
+    load();
+  }
 
-	public String chart(JSONObject json) throws Exception {
-		return run("f().chart(" + json.toString() + ").render()").toString();
-	}
+  public void load() throws Exception {
+    javascriptEngine.eval("load('" + file.getFile().getAbsolutePath() + "');");
+    javascriptEngine.eval("f().serverURL('" + getServerURL() + "')");
+  }
 
-	public ScriptEngine getJavascriptEngine() {
-		return javascriptEngine;
-	}
+  public Object run(String script) throws Exception {
+    return javascriptEngine.eval(script);
+  }
+
+  public String chart(JSONObject json) throws Exception {
+    return run("f().chart(" + json.toString() + ").render()").toString();
+  }
+
+  public ScriptEngine getJavascriptEngine() {
+    return javascriptEngine;
+  }
 
 }
