@@ -39,6 +39,10 @@ public class Util {
     base64map = new HashMap<String, String>();
   }
 
+  public void clear() {
+    base64map = new HashMap<String, String>();
+  }
+
   public Util() {
     this(null, null, null);
   }

@@ -48,10 +48,13 @@ public class F {
     this.extension = extension;
   }
 
+  public void clear() {
+    javascriptEngine.put("util", new Util(file, crypto, extension));
+  }
+
   public void init() throws Exception {
     ScriptEngineManager manager = new ScriptEngineManager();
     javascriptEngine = manager.getEngineByName("nashorn");
-    javascriptEngine.put("util", new Util(file, crypto, extension));
     javascriptEngine.eval("var Proxy = function(){};");
     javascriptEngine.eval("var document = {};");
     javascriptEngine.eval("var console = {};");
@@ -61,6 +64,7 @@ public class F {
     javascriptEngine.eval("console.log = print;");
     javascriptEngine.eval("window.addEventListener = function() {};");
     javascriptEngine.eval("sessionStorage.getItem = function() { return null; };");
+    clear();
     load();
   }
 
