@@ -40,7 +40,7 @@ public class Datetime extends GregorianCalendar implements Serializable {
   private static final String NEXTWEEK = "next week";
   private static final String NEXTMONTH = "next month";
   private static final String NEXTYEAR = "next year";
-  private String format = "yyyy-MM-dd HH:mm";
+  private String format = "yyyy-MM-dd HH:mm:ss";
 
   public Datetime() {
   }
@@ -200,7 +200,7 @@ public class Datetime extends GregorianCalendar implements Serializable {
   }
 
   public String toString() {
-    return format("yyyy-MM-dd HH:mm");
+    return format(format);
   }
 
   public int getEra() {

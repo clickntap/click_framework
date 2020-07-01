@@ -590,6 +590,13 @@ public class SecureApiController implements Controller {
     token.setApp(app);
     M.invoke(token, "setToken", secureRequest.getD());
     token.read("token");
+    if (token.getId() != null) {
+      token.read();
+      String channel = M.invoke(token, "getChannel").toString();
+      if (!channel.equalsIgnoreCase(secureRequest.getC())) {
+        token.setId(null);
+      }
+    }
     if (token.getId() == null) {
       M.invoke(token, "setPublicKey", SecurityUtils.base64enc(secureRequest.getPublicKey().getEncoded()));
       M.invoke(token, "setToken", SecurityUtils.base64enc(SecurityUtils.generateKey(512).getEncoded()));
@@ -597,7 +604,6 @@ public class SecureApiController implements Controller {
       M.invoke(token, "setLastRequestTime", secureRequest.getT());
       token.create();
     } else {
-      token.read();
       M.invoke(token, "setPublicKey", SecurityUtils.base64enc(secureRequest.getPublicKey().getEncoded()));
       M.invoke(token, "setLastRequestTime", secureRequest.getT());
       token.update();

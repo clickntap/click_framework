@@ -61,6 +61,8 @@ public class F {
     javascriptEngine.eval("var window = {};");
     javascriptEngine.eval("var sessionStorage = {};");
     javascriptEngine.eval("document.addEventListener = function() {};");
+    javascriptEngine.eval("document.location = {};");
+    javascriptEngine.eval("document.location.pathname = 'web.app';");
     javascriptEngine.eval("console.log = print;");
     javascriptEngine.eval("window.addEventListener = function() {};");
     javascriptEngine.eval("sessionStorage.getItem = function() { return null; };");
