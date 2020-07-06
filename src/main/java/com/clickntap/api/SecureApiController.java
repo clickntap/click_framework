@@ -31,6 +31,7 @@ import com.clickntap.smart.SmartContext;
 import com.clickntap.tool.bean.BeanUtils;
 import com.clickntap.tool.script.FreemarkerScriptEngine;
 import com.clickntap.tool.script.ScriptEngine;
+import com.clickntap.tool.types.Datetime;
 import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.SecurityUtils;
 
@@ -92,9 +93,13 @@ public class SecureApiController implements Controller {
       if (token != null) {
         auth.setToken(token);
         if ("api".equalsIgnoreCase(M.invoke(token, "getChannel").toString())) {
-          JSONObject info = new JSONObject(crypto.decrypt(M.invoke(token, "getToken").toString()));
-          client.put("authId", info.getNumber("id"));
-          client.put("authUser", info);
+          try {
+            JSONObject info = new JSONObject(crypto.decrypt(M.invoke(token, "getToken").toString()));
+            client.put("authId", info.getNumber("id"));
+            client.put("authUser", info);
+          } catch (Exception e) {
+            client.put("error", "expired_token");
+          }
         } else {
           List<BO> users;
           try {
@@ -139,6 +144,10 @@ public class SecureApiController implements Controller {
           }
         } else {
           Auth auth = auth(secureRequest);
+          if (auth.getInfo() != null && auth.getInfo().has("error")) {
+            out(response, auth.getInfo());
+            return null;
+          }
           if (auth.getToken() != null) {
             if (api != null) {
               if (api.handleRequest(request, response, secureRequest)) {
@@ -582,6 +591,12 @@ public class SecureApiController implements Controller {
     if (token.getId() != null) {
       token.read();
       if ("api".equalsIgnoreCase(M.invoke(token, "getChannel").toString())) {
+        Datetime creationDate = token.getCreationDate();
+        Datetime now = new Datetime();
+        int minutes = (int) ((now.getTimeInMillis() - creationDate.getTimeInMillis()) / (1000 * 60));
+        if (minutes > 30) {
+          M.invoke(token, "setToken", "");
+        }
         return token;
       } else {
         ECPublicKey publicKey = SecureUtils.importPublicKey(M.invoke(token, "getPublicKey").toString());
