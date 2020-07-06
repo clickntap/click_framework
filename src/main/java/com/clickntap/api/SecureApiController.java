@@ -47,6 +47,15 @@ public class SecureApiController implements Controller {
   private Resource sqlFolder;
   private AdvancedSearch search;
   private FreemarkerScriptEngine engine;
+  private CryptoUtils crypto;
+
+  public CryptoUtils getCrypto() {
+    return crypto;
+  }
+
+  public void setCrypto(CryptoUtils crypto) {
+    this.crypto = crypto;
+  }
 
   public void setSqlFolder(Resource sqlFolder) {
     this.sqlFolder = sqlFolder;
@@ -82,20 +91,26 @@ public class SecureApiController implements Controller {
       M.invoke(request, "setDeviceToken", token);
       if (token != null) {
         auth.setToken(token);
-        List<BO> users;
-        try {
-          users = (List) M.invoke(token, "getAuthUsers");
-        } catch (Exception e) {
-          users = new ArrayList<BO>();
-        }
-        auth.setUsers(users);
-        Number authId = null;
-        JSONObject authUser = null;
-        if (users.size() != 0) {
-          authId = (Number) M.invoke(users.get(0), "getUserId");
-          authUser = ((BO) M.invoke(users.get(0), "getUser")).json(true);
-          client.put("authId", authId);
-          client.put("authUser", authUser);
+        if ("api".equalsIgnoreCase(M.invoke(token, "getChannel").toString())) {
+          JSONObject info = new JSONObject(crypto.decrypt(M.invoke(token, "getToken").toString()));
+          client.put("authId", info.getNumber("id"));
+          client.put("authUser", info);
+        } else {
+          List<BO> users;
+          try {
+            users = (List) M.invoke(token, "getAuthUsers");
+          } catch (Exception e) {
+            users = new ArrayList<BO>();
+          }
+          auth.setUsers(users);
+          Number authId = null;
+          JSONObject authUser = null;
+          if (users.size() != 0) {
+            authId = (Number) M.invoke(users.get(0), "getUserId");
+            authUser = ((BO) M.invoke(users.get(0), "getUser")).json(true);
+            client.put("authId", authId);
+            client.put("authUser", authUser);
+          }
         }
       }
     } catch (Exception e) {
@@ -142,10 +157,6 @@ public class SecureApiController implements Controller {
             if (secureRequest.path(0).equalsIgnoreCase("f")) {
               json = fapi(sqlFolder, request, engine, search, secureRequest.getPath(), authUser);
               out(response, json);
-              return null;
-            }
-            if (auth.getUsers().size() != 0 && "me".equalsIgnoreCase(secureRequest.path(0))) {
-              out(response, authUser);
               return null;
             }
             if (secureRequest.getPath().size() > 2) {
@@ -570,14 +581,18 @@ public class SecureApiController implements Controller {
     token.read("token");
     if (token.getId() != null) {
       token.read();
-      ECPublicKey publicKey = SecureUtils.importPublicKey(M.invoke(token, "getPublicKey").toString());
-      byte[] encoded = SecureUtils.base64dec(request.getHeader("sign"));
-      JSONObject sign = new JSONObject(SecureUtils.decrypt(SecureUtils.generateSecret(publicKey, privateKey), encoded));
-      if (sign.getLong("t") > Long.parseLong(M.invoke(token, "getLastRequestTime").toString())) {
-        if (M.invoke(token, "getToken").toString().equals(sign.get("token"))) {
-          M.invoke(token, "setLastRequestTime", sign.getLong("t"));
-          token.update();
-          return token;
+      if ("api".equalsIgnoreCase(M.invoke(token, "getChannel").toString())) {
+        return token;
+      } else {
+        ECPublicKey publicKey = SecureUtils.importPublicKey(M.invoke(token, "getPublicKey").toString());
+        byte[] encoded = SecureUtils.base64dec(request.getHeader("sign"));
+        JSONObject sign = new JSONObject(SecureUtils.decrypt(SecureUtils.generateSecret(publicKey, privateKey), encoded));
+        if (sign.getLong("t") > Long.parseLong(M.invoke(token, "getLastRequestTime").toString())) {
+          if (M.invoke(token, "getToken").toString().equals(sign.get("token"))) {
+            M.invoke(token, "setLastRequestTime", sign.getLong("t"));
+            token.update();
+            return token;
+          }
         }
       }
     }
@@ -616,7 +631,7 @@ public class SecureApiController implements Controller {
     json.put("t", now);
   }
 
-  private static void out(HttpServletResponse response, JSONObject json) throws Exception {
+  public static void out(HttpServletResponse response, JSONObject json) throws Exception {
     out(response, json, null);
   }
 

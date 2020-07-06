@@ -227,7 +227,7 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
         [#list entity.elements("field") as field][#if field.attributeValue("name") != "id" && field.attributeValue("name") != "creation_date" && !field.attributeValue("name")?contains("password")]
           ${field.attributeValue("name")} = [#noparse]${this.[/#noparse]${this.name(field.attributeValue("name"))?replace("lastModified", "now()")?replace("creationDate", "now()")}},
   		[#elseif field.attributeValue("name")?contains("password")]
-  		  [#noparse][#if this.bean.[/#noparse]${this.name(field.attributeValue("name"))}??]
+  		  [#noparse][#if this.bean.[/#noparse]${this.name(field.attributeValue("name"))}?? && this.bean.${this.name(field.attributeValue("name"))} != ""]
  	        ${field.attributeValue("name")} = [#noparse]${this.[/#noparse]${this.name(field.attributeValue("name"))+"MD5"}},
 		  [#noparse][/#if][/#noparse]
         [/#if][/#list]

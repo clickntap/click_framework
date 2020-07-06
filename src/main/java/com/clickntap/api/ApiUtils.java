@@ -165,7 +165,7 @@ public class ApiUtils {
   }
 
   public static void main(String args[]) {
-    String js = "var variable = 0; function hello(a,b) {}; hello();";
+    String js = "var variable = 0;\nfunction hello(a,b) {}; hello();";
     System.out.println(ApiUtils.jsCompile(js));
   }
 
