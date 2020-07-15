@@ -7,6 +7,8 @@ import org.json.JSONObject;
 import org.springframework.core.io.Resource;
 
 import com.clickntap.api.CryptoUtils;
+import com.clickntap.utils.ConstUtils;
+import com.mchange.io.FileUtils;
 
 import de.christophkraemer.rhino.javascript.RhinoScriptEngineFactory;
 
@@ -74,7 +76,7 @@ public class F {
   }
 
   public void load() throws Exception {
-    javascriptEngine.eval("load('" + file.getFile().getAbsolutePath() + "');");
+    javascriptEngine.eval(FileUtils.getContentsAsString(file.getFile(), ConstUtils.UTF_8));
     javascriptEngine.eval("f().serverURL('" + getServerURL() + "')");
   }
 
