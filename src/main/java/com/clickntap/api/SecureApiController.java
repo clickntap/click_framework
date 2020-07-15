@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.script.ScriptEngineManager;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ import com.clickntap.tool.types.Datetime;
 import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.SecurityUtils;
 
+import de.christophkraemer.rhino.javascript.RhinoScriptEngineFactory;
 import freemarker.template.utility.StringUtil;
 
 public class SecureApiController implements Controller {
@@ -126,6 +128,7 @@ public class SecureApiController implements Controller {
 
   public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
     try {
+      TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
       if (api != null) {
         if (api.handleRequest(request, response)) {
           return null;
@@ -331,7 +334,8 @@ public class SecureApiController implements Controller {
       File js = jsFile(sqlFolder, smartQuery);
       if (js.exists()) {
         ScriptEngineManager manager = new ScriptEngineManager();
-        javax.script.ScriptEngine javascriptEngine = manager.getEngineByName("nashorn");
+        manager.registerEngineName("rhino", new RhinoScriptEngineFactory());
+        javax.script.ScriptEngine javascriptEngine = manager.getEngineByName("rhino");
         javascriptEngine.put("app", ctx.getBean("app"));
         javascriptEngine.put("crypto", ctx.getBean("crypto"));
         javascriptEngine.put("extension", ctx.getBean("utilExtension"));

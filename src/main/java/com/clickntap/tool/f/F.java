@@ -8,6 +8,8 @@ import org.springframework.core.io.Resource;
 
 import com.clickntap.api.CryptoUtils;
 
+import de.christophkraemer.rhino.javascript.RhinoScriptEngineFactory;
+
 public class F {
 
   private ScriptEngine javascriptEngine;
@@ -54,7 +56,8 @@ public class F {
 
   public void init() throws Exception {
     ScriptEngineManager manager = new ScriptEngineManager();
-    javascriptEngine = manager.getEngineByName("nashorn");
+    manager.registerEngineName("rhino", new RhinoScriptEngineFactory());
+    javascriptEngine = manager.getEngineByName("rhino");
     javascriptEngine.eval("var Proxy = function(){};");
     javascriptEngine.eval("var document = {};");
     javascriptEngine.eval("var console = {};");
