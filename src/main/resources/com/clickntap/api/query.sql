@@ -66,8 +66,7 @@ from ${json.table}
 [/#if]
 [#if json.has("intersect")]
   [#list this.target.list(json.intersect) as intersect]
-    [#if where]where[#else]and[/#if]
-    [#assign where = false]
+    [#if intersect_index == 0]where[#else]and[/#if]
     ${intersect.intersectKey} in (
       [#if intersect.has("sql")]
       	${intersect.getString("sql")}
