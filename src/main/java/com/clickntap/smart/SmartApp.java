@@ -111,13 +111,13 @@ public class SmartApp extends AbstractComponent {
 		if ("request".equals(scope)) {
 			object = ctx.getRequest().getAttribute(objectName);
 			if (object == null) {
-				object = Class.forName(objectClass).newInstance();
+				object = Class.forName(objectClass).getDeclaredConstructor().newInstance();
 				ctx.getRequest().setAttribute(objectName, object);
 			}
 		} else if ("session".equals(scope)) {
 			object = ctx.getSession().get(objectName);
 			if (object == null) {
-				object = Class.forName(objectClass).newInstance();
+				object = Class.forName(objectClass).getDeclaredConstructor().newInstance();
 				ctx.getSession().put(objectName, object);
 			}
 		} else if ("global".equals(scope)) {
@@ -125,11 +125,11 @@ public class SmartApp extends AbstractComponent {
 				globalObjects = new HashMap<String, Object>();
 			object = globalObjects.get(objectName);
 			if (object == null) {
-				object = Class.forName(objectClass).newInstance();
+				object = Class.forName(objectClass).getDeclaredConstructor().newInstance();
 				globalObjects.put(objectName, object);
 			}
 		} else {
-			object = Class.forName(objectClass).newInstance();
+			object = Class.forName(objectClass).getDeclaredConstructor().newInstance();
 		}
 		if (object instanceof Bean)
 			((Bean) object).setBeanManager((BeanManager) ctx.getBean(channel));
@@ -145,7 +145,7 @@ public class SmartApp extends AbstractComponent {
 		if ("request".equals(scope)) {
 			object = ctx.getRequest().getAttribute(objectName);
 			if (object == null) {
-				object = Class.forName(objectClass).newInstance();
+				object = Class.forName(objectClass).getDeclaredConstructor().newInstance();
 				ctx.getRequest().setAttribute(objectName, object);
 				isNew = true;
 			}
@@ -155,7 +155,7 @@ public class SmartApp extends AbstractComponent {
 			} catch (Exception e) {
 			}
 			if (object == null) {
-				object = Class.forName(objectClass).newInstance();
+				object = Class.forName(objectClass).getDeclaredConstructor().newInstance();
 				try {
 					ctx.getSession().put(objectName, object);
 				} catch (Exception e) {
@@ -167,12 +167,12 @@ public class SmartApp extends AbstractComponent {
 				globalObjects = new HashMap<String, Object>();
 			object = globalObjects.get(objectName);
 			if (object == null) {
-				object = Class.forName(objectClass).newInstance();
+				object = Class.forName(objectClass).getDeclaredConstructor().newInstance();
 				globalObjects.put(objectName, object);
 				isNew = true;
 			}
 		} else {
-			object = Class.forName(objectClass).newInstance();
+			object = Class.forName(objectClass).getDeclaredConstructor().newInstance();
 			isNew = true;
 		}
 		if (log.isDebugEnabled() && isNew) {

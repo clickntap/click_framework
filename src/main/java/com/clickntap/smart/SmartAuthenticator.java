@@ -66,7 +66,7 @@ public class SmartAuthenticator implements Authenticator {
 	}
 
 	public AuthenticatedUser login(HttpServletRequest request, HttpServletResponse response, String username, String password) throws Exception {
-		AuthenticatedUser user = (AuthenticatedUser) Class.forName(className).newInstance();
+		AuthenticatedUser user = (AuthenticatedUser) Class.forName(className).getDeclaredConstructor().newInstance();
 		user.setUsername(username);
 		if (username == null || username.trim().length() == 0) {
 			throw new UnknownUsernameException();

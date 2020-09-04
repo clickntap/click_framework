@@ -108,7 +108,7 @@ public class SmartSwitcher implements Controller {
 			Object target = bindingResult.getBindingResult().getTarget();
 			if (reset || bindingResult.isNew()) {
 				context.eval(be.getScript());
-				Object tempObject = Class.forName(be.getObjectClass()).newInstance();
+				Object tempObject = Class.forName(be.getObjectClass()).getDeclaredConstructor().newInstance();
 				context.bind(tempObject);
 				PropertyDescriptor[] descriptors = BeanUtils.getPropertyDescriptors(tempObject.getClass());
 				for (PropertyDescriptor descriptor : descriptors) {

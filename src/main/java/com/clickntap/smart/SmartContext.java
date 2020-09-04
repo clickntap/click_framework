@@ -684,7 +684,7 @@ public class SmartContext extends HashMap<String, Object> implements Serializabl
 
 	public JSONArray boValues(String className, Number id, String fields) throws Exception {
 		JSONArray values = new JSONArray();
-		BO bo = (BO) Class.forName(className).newInstance();
+		BO bo = (BO) Class.forName(className).getDeclaredConstructor().newInstance();
 		bo.setId(id);
 		bo.setApp((BOApp) getBean("app"));
 		bo.read();

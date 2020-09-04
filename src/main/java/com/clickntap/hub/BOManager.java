@@ -54,7 +54,7 @@ public class BOManager extends ProxyBeanManager {
 	}
 
 	public <T> List<T> exportBOListByClass(Class<T> clazz, String filter) throws Exception {
-		List<Bean> beans = exportList(clazz, (BO) clazz.newInstance(), filter);
+		List<Bean> beans = exportList(clazz, (BO) clazz.getDeclaredConstructor().newInstance(), filter);
 		List<T> items = new ArrayList<T>();
 		for (Bean bean : beans)
 			items.add((T) bean);

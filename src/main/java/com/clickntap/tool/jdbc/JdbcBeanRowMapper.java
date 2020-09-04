@@ -28,7 +28,7 @@ public class JdbcBeanRowMapper implements RowMapper {
   public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
     Object bean = null;
     try {
-      bean = beanClass.newInstance();
+      bean = beanClass.getDeclaredConstructor().newInstance();
       MutablePropertyValues pvs = new MutablePropertyValues();
       for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
         Object o = rs.getObject(i);

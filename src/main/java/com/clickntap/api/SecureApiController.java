@@ -412,7 +412,7 @@ public class SecureApiController implements Controller {
     for (BO user : (List<BO>) M.invoke(token, "getAuthUsers")) {
       user.delete();
     }
-    BO authUser = (BO) Class.forName(boPackage + ".security.AuthUser").newInstance();
+    BO authUser = (BO) Class.forName(boPackage + ".security.AuthUser").getDeclaredConstructor().newInstance();
     authUser.setApp(app);
     M.invoke(authUser, "setUserId", bo.getId());
     M.invoke(authUser, "setDeviceId", token.getId());
@@ -592,7 +592,7 @@ public class SecureApiController implements Controller {
   }
 
   public BO signed(HttpServletRequest request, ECPrivateKey privateKey) throws Exception {
-    BO token = (BO) Class.forName(boPackage + ".security.DeviceToken").newInstance();
+    BO token = (BO) Class.forName(boPackage + ".security.DeviceToken").getDeclaredConstructor().newInstance();
     token.setApp(app);
     M.invoke(token, "setToken", request.getHeader("token"));
     token.read("token");
@@ -624,7 +624,7 @@ public class SecureApiController implements Controller {
 
   private void handshake(JSONObject json, SecureRequest secureRequest) throws Exception {
     long now = System.currentTimeMillis();
-    BO token = (BO) Class.forName(boPackage + ".security.DeviceToken").newInstance();
+    BO token = (BO) Class.forName(boPackage + ".security.DeviceToken").getDeclaredConstructor().newInstance();
     token.setApp(app);
     M.invoke(token, "setToken", secureRequest.getD());
     token.read("token");
