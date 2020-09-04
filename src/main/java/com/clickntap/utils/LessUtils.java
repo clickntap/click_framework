@@ -18,7 +18,7 @@ public class LessUtils {
 	private static LessCompiler compressingCompiler() {
 		if (compressingCompiler == null) {
 			compressingCompiler = new LessCompiler();
-			compressingCompiler.setCompress(true);
+			compressingCompiler.setCompress(false);
 		}
 		return compressingCompiler;
 	}

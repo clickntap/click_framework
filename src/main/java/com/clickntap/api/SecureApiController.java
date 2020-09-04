@@ -342,7 +342,11 @@ public class SecureApiController implements Controller {
         javascriptEngine.put("sql", sqlJson);
         javascriptEngine.put("json", json);
         javascriptEngine.put("request", ctx.getRequest());
-        json = new JSONObject((javascriptEngine.eval(FileUtils.readFileToString(js))).toString());
+        try {
+          json = new JSONObject((javascriptEngine.eval(FileUtils.readFileToString(js))).toString());
+        } catch (Exception e) {
+          System.out.println(FileUtils.readFileToString(js));
+        }
       }
     }
     return json;

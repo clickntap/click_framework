@@ -13,7 +13,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.PropertyConfigurator;
+//import org.apache.log4j.PropertyConfigurator;
 
 import com.clickntap.utils.ConstUtils;
 
@@ -59,12 +59,12 @@ public class SmartConfServlet implements Servlet {
           FileInputStream in = new FileInputStream(file);
           envProperties.load(in);
           in.close();
-          file = new File(file.getCanonicalPath().replace("-env", "-log4j"));
-          if (file.exists()) {
-            PropertyConfigurator.configure(file.getCanonicalPath().replace("-env", "-log4j"));
-          } else {
-            System.out.println("LOG4J NOT FOUND: " + file.getCanonicalPath().replace("-env", "-log4j"));
-          }
+          //          file = new File(file.getCanonicalPath().replace("-env", "-log4j"));
+          //          if (file.exists()) {
+          //            //PropertyConfigurator.configure(file.getCanonicalPath().replace("-env", "-log4j"));
+          //          } else {
+          //            System.out.println("LOG4J NOT FOUND: " + file.getCanonicalPath().replace("-env", "-log4j"));
+          //          }
         } else {
           System.out.println("ENV NOT FOUND: " + file.getCanonicalPath());
         }
