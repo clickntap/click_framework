@@ -591,7 +591,7 @@ public class SecureApiController implements Controller {
     }
   }
 
-  public BO signed(HttpServletRequest request, ECPrivateKey privateKey) throws Exception {
+  public synchronized BO signed(HttpServletRequest request, ECPrivateKey privateKey) throws Exception {
     BO token = (BO) Class.forName(boPackage + ".security.DeviceToken").getDeclaredConstructor().newInstance();
     token.setApp(app);
     M.invoke(token, "setToken", request.getHeader("token"));
