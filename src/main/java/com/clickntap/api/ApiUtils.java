@@ -80,7 +80,7 @@ public class ApiUtils {
     Compiler compiler = new Compiler();
     CompilerOptions options = new CompilerOptions();
     options.setEmitUseStrict(false);
-    CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
+    CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(options);
     SourceFile source = SourceFile.fromCode("js", js);
     compiler.compile(Collections.<SourceFile>emptyList(), Collections.singletonList(source), options);
     String code = compiler.toSource();
