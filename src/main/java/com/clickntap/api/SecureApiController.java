@@ -200,15 +200,21 @@ public class SecureApiController implements Controller {
             }
             out(response, json);
           } else {
-            err(response);
+            JSONObject error = new JSONObject();
+            error.put("description", "no token");
+            err(error, response);
           }
         }
       } else {
-        err(response);
+        JSONObject error = new JSONObject();
+        error.put("description", "useless request");
+        err(error, response);
       }
     } catch (Exception e) {
-      e.printStackTrace();
-      err(response);
+      JSONObject error = new JSONObject();
+      error.put("description", "generic error");
+      error.put("exception", e.toString());
+      err(error, response);
     }
     return null;
   }
@@ -658,7 +664,8 @@ public class SecureApiController implements Controller {
     out(response, json, null);
   }
 
-  private void err(HttpServletResponse response) throws Exception {
+  private void err(JSONObject error, HttpServletResponse response) throws Exception {
+    response.setHeader("error", error.toString());
     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
   }
 
