@@ -48,7 +48,6 @@ public class FFMpeg {
     cmdl.addArgument("-show_format");
     cmdl.addArgument("-show_streams");
     cmdl.addArgument(source.getCanonicalPath());
-    System.out.println(cmdl);
     DefaultExecutor executor = new DefaultExecutor();
     PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
     executor.setStreamHandler(streamHandler);
@@ -96,7 +95,6 @@ public class FFMpeg {
     cmdl.addArgument("-" + trackType.substring(0, 1) + "codec");
     cmdl.addArgument("copy");
     cmdl.addArgument(dest.getAbsolutePath());
-    // System.out.println(cmdl.toString());
     DefaultExecutor executor = new DefaultExecutor();
     PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
     executor.setStreamHandler(streamHandler);
