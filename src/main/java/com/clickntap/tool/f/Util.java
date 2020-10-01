@@ -203,4 +203,18 @@ public class Util {
     return fa(group, null, 0, null, null);
   }
 
+  public static String splitPath(Number id, int maxSize) {
+    return splitPath(id.toString(), maxSize);
+  }
+
+  public static String splitPath(String id, int maxSize) {
+    String sid = id.toString();
+    StringBuffer sb = new StringBuffer();
+    for (int i = 0; i < sid.length(); i += maxSize) {
+      sb.append(StringUtil.leftPad(sid.substring(i, Math.min(sid.length(), i + maxSize)), maxSize, '0'));
+      sb.append('/');
+    }
+    return sb.toString();
+  }
+
 }

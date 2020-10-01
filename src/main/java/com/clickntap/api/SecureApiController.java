@@ -30,6 +30,7 @@ import com.clickntap.hub.App;
 import com.clickntap.smart.SmartBindingResult;
 import com.clickntap.smart.SmartContext;
 import com.clickntap.tool.bean.BeanUtils;
+import com.clickntap.tool.f.Util;
 import com.clickntap.tool.script.FreemarkerScriptEngine;
 import com.clickntap.tool.script.ScriptEngine;
 import com.clickntap.tool.types.Datetime;
@@ -344,6 +345,7 @@ public class SecureApiController implements Controller {
         javax.script.ScriptEngine javascriptEngine = manager.getEngineByName("rhino");
         javascriptEngine.put("app", ctx.getBean("app"));
         javascriptEngine.put("crypto", ctx.getBean("crypto"));
+        javascriptEngine.put("util", new Util(null, (CryptoUtils) ctx.getBean("crypto"), null));
         javascriptEngine.put("extension", ctx.getBean("utilExtension"));
         javascriptEngine.put("sql", sqlJson);
         javascriptEngine.put("json", json);
