@@ -169,7 +169,7 @@ public class SecureApiController implements Controller {
             }
             if (secureRequest.path(0).equalsIgnoreCase("f")) {
               json = fapi(sqlFolder, request, engine, search, secureRequest.getPath(), authUser);
-              out(response, json);
+              out(request, response, json);
               return null;
             }
             if (secureRequest.getPath().size() > 2) {
@@ -196,10 +196,10 @@ public class SecureApiController implements Controller {
               }
               Long id;
               if ((id = num(secureRequest.path(2))) != 0) {
-                return get(response, secureRequest, id);
+                return get(request, response, secureRequest, id);
               }
             }
-            out(response, json);
+            out(request, response, json);
           } else {
             JSONObject error = new JSONObject();
             error.put("description", "no token");
@@ -376,11 +376,11 @@ public class SecureApiController implements Controller {
     return new File(sqlFolderFile.getCanonicalPath() + "/" + smartQuery + ".js");
   }
 
-  private ModelAndView get(HttpServletResponse response, SecureRequest secureRequest, Number id) throws Exception {
+  private ModelAndView get(HttpServletRequest request, HttpServletResponse response, SecureRequest secureRequest, Number id) throws Exception {
     BOFilter filter = (BOFilter) BeanUtils.getValue(app, secureRequest.path(0));
     Method method = org.springframework.beans.BeanUtils.findDeclaredMethod(filter.getClass(), "get" + secureRequest.path(1), Number.class);
     BO bo = (BO) method.invoke(filter, id);
-    out(response, bo.json());
+    out(request, response, bo.json());
     return null;
   }
 
@@ -543,9 +543,9 @@ public class SecureApiController implements Controller {
       }
       Map<String, Object> conf = new HashMap<String, Object>();
       conf.put("appId", context.param("appId"));
-      out(response, bo.json());
+      out(request, response, bo.json());
     } else {
-      out(response, json, bindingResult);
+      out(request, response, json, bindingResult);
     }
     return null;
   }
@@ -696,6 +696,20 @@ public class SecureApiController implements Controller {
       name = StringUtil.replace(name, ((char) i) + "ys\"", ((char) i) + "ies\"");
     }
     return name;
+  }
+
+  public void out(HttpServletRequest request, HttpServletResponse response, JSONObject json) throws Exception {
+    if (api != null) {
+      api.onResponse(request, response, json);
+    }
+    out(response, json, null);
+  }
+
+  public void out(HttpServletRequest request, HttpServletResponse response, JSONObject json, SmartBindingResult bindingResult) throws Exception {
+    if (api != null) {
+      bindingResult = api.onResponse(request, response, json, bindingResult);
+    }
+    out(response, json, bindingResult);
   }
 
 }
