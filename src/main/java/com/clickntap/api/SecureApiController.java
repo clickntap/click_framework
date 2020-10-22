@@ -20,6 +20,7 @@ import org.apache.commons.io.FileUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.mozilla.javascript.engine.RhinoScriptEngineFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ValidationUtils;
@@ -37,7 +38,6 @@ import com.clickntap.tool.types.Datetime;
 import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.SecurityUtils;
 
-import de.christophkraemer.rhino.javascript.RhinoScriptEngineFactory;
 import freemarker.template.utility.StringUtil;
 
 public class SecureApiController implements Controller {
