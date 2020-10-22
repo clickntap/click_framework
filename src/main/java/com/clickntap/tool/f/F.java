@@ -4,7 +4,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 import org.json.JSONObject;
-import org.mozilla.javascript.engine.RhinoScriptEngineFactory;
 import org.springframework.core.io.Resource;
 
 import com.clickntap.api.CryptoUtils;
