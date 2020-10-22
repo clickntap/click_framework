@@ -203,6 +203,10 @@ public class Util {
     return fa(group, null, 0, null, null);
   }
 
+  public String btoa(String text) throws Exception {
+    return SecureUtils.base64enc(text.getBytes(ConstUtils.UTF_8));
+  }
+
   public static String splitPath(Number id, int maxSize) {
     return splitPath(id.toString(), maxSize);
   }
