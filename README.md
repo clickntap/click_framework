@@ -1,4 +1,4 @@
-[![Version](https://api.clickntap.com/1.142/Click%20Framework.svg)](https://search.maven.org/artifact/com.clickntap/click_framework/)
+[![Version](https://api.clickntap.com/1.143/Click%20Framework.svg)](https://search.maven.org/artifact/com.clickntap/click_framework/)
 [![License](https://api.clickntap.com/MIT/License.svg)](https://search.maven.org/artifact/com.clickntap/click_framework/)
 [![Platform](https://api.clickntap.com/Java/Platform.svg)](https://search.maven.org/artifact/com.clickntap/click_framework/)
 
@@ -13,7 +13,7 @@ Click is a framework to build clickable Web Apps
 <dependency>
   <groupId>com.clickntap</groupId>
   <artifactId>click_framework</artifactId>
-  <version>1.142</version>
+  <version>1.143</version>
 </dependency>
 
 ```
