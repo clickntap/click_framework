@@ -24,6 +24,7 @@ import com.cathive.sass.SassOutputStyle;
 import com.clickntap.api.ApiUtils;
 import com.clickntap.api.HttpUtils;
 import com.clickntap.hub.App;
+import com.clickntap.tool.f.T;
 import com.clickntap.tool.script.FreemarkerScriptEngine;
 import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.LessUtils;
@@ -36,6 +37,7 @@ public class BuildCompiler implements FileAlterationListener {
   private FileAlterationMonitor monitor;
   private boolean compress;
   private Map<String, String> libsMap;
+  private T t;
 
   public boolean isCompress() {
     return compress;
@@ -54,6 +56,8 @@ public class BuildCompiler implements FileAlterationListener {
   }
 
   public void init() throws Exception {
+    t = new T();
+    t.setUiDir(uiWorkDir);
     libsMap = new HashMap<String, String>();
     File directory = getUiWorkDir().getFile();
     FileAlterationObserver observer = new FileAlterationObserver(directory);
@@ -253,6 +257,9 @@ public class BuildCompiler implements FileAlterationListener {
     if (extension.equals("less")) {
       lessCompile(changedFile);
     }
+    if (extension.equals("html") && t != null) {
+      lessCompile(changedFile);
+    }
     if (extension.equals("js")) {
       jsCompile(changedFile);
     }
@@ -268,6 +275,10 @@ public class BuildCompiler implements FileAlterationListener {
 
   public void onFileChange(File changedFile) {
     try {
+      String extension = FilenameUtils.getExtension(changedFile.getName());
+      if ("html".equalsIgnoreCase(extension)) {
+        t.compile();
+      }
       String filePath = changedFile.getAbsolutePath();
       String dirPath = uiWorkDir.getFile().getAbsolutePath();
       filePath = filePath.replace(dirPath, "");
@@ -278,7 +289,6 @@ public class BuildCompiler implements FileAlterationListener {
         filePath = filePath.substring(x + 1);
       }
       if (n <= 4) {
-        String extension = FilenameUtils.getExtension(changedFile.getName());
         if (extension.equalsIgnoreCase("js") || extension.endsWith("ss")) {
           String code = FileUtils.readFileToString(changedFile, ConstUtils.UTF_8).trim();
           String formattedCode = ApiUtils.codeFormat(code).trim();

@@ -42,13 +42,14 @@ public class JdbcManager {
 		return i;
 	}
 
-	public List queryScript(String script, Object object, RowMapper mapper) {
+	@SuppressWarnings("deprecation")
+  public List queryScript(String script, Object object, RowMapper mapper) {
 		JdbcParams params = new JdbcParams(object);
 		List resultList = null;
 		String sql = evalScript(script, params, object);
 		//System.out.println(sql);
 		if (!ConstUtils.EMPTY.equals(sql))
-			resultList = jdbcTemplate.query(sql, params.toArray(), mapper);
+      resultList = jdbcTemplate.query(sql, params.toArray(), mapper);
 		params.close();
 		return resultList;
 	}
@@ -71,7 +72,8 @@ public class JdbcManager {
 		}
 	}
 
-	private List query(String script, Object object, Class beanClass, JdbcParams params) {
+	@SuppressWarnings("deprecation")
+  private List query(String script, Object object, Class beanClass, JdbcParams params) {
 		List resultList = null;
 		String sql = evalScript(script, params, object);
 		//    System.out.println(ApiUtils.codeFormat(sql, '(', ')'));
@@ -89,12 +91,13 @@ public class JdbcManager {
 		return resultList;
 	}
 
-	public long queryScriptForLong(String script, Object object) {
+	@SuppressWarnings("deprecation")
+  public long queryScriptForLong(String script, Object object) {
 		JdbcParams params = new JdbcParams(object);
 		long lo = 0;
 		String sql = evalScript(script, params, object);
 		if (!ConstUtils.EMPTY.equals(sql))
-			lo = jdbcTemplate.queryForObject(sql, params.toArray(), Number.class).longValue();
+      lo = jdbcTemplate.queryForObject(sql, params.toArray(), Number.class).longValue();
 		params.close();
 		return lo;
 	}
