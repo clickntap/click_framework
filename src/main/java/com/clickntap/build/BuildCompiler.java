@@ -257,9 +257,6 @@ public class BuildCompiler implements FileAlterationListener {
     if (extension.equals("less")) {
       lessCompile(changedFile);
     }
-    if (extension.equals("html") && t != null) {
-      lessCompile(changedFile);
-    }
     if (extension.equals("js")) {
       jsCompile(changedFile);
     }
@@ -278,6 +275,7 @@ public class BuildCompiler implements FileAlterationListener {
       String extension = FilenameUtils.getExtension(changedFile.getName());
       if ("html".equalsIgnoreCase(extension)) {
         t.compile();
+        return;
       }
       String filePath = changedFile.getAbsolutePath();
       String dirPath = uiWorkDir.getFile().getAbsolutePath();

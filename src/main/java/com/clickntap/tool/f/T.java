@@ -25,7 +25,7 @@ public class T {
     compile(uiDir.getFile());
     String json = templates.toString();
     FileUtils.writeStringToFile(new File(uiDir.getFile().getAbsolutePath() + '/' + name), json, ConstUtils.UTF_8);
-    FileUtils.writeStringToFile(new File(uiDir.getFile().getAbsolutePath() + '/' + name.replace("json", "js")), "\n\nf().ui(" + json + ");\n\n", ConstUtils.UTF_8);
+    FileUtils.writeStringToFile(new File(uiDir.getFile().getAbsolutePath() + '/' + name.replace("json", "js")), "\n\nf().t(" + json + ");\n\n", ConstUtils.UTF_8);
   }
 
   private void compile(File file) throws Exception {
