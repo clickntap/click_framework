@@ -42,14 +42,13 @@ public class JdbcManager {
 		return i;
 	}
 
-	@SuppressWarnings("deprecation")
-  public List queryScript(String script, Object object, RowMapper mapper) {
+	public List queryScript(String script, Object object, RowMapper mapper) {
 		JdbcParams params = new JdbcParams(object);
 		List resultList = null;
 		String sql = evalScript(script, params, object);
-		//System.out.println(sql);
+		// System.out.println(sql);
 		if (!ConstUtils.EMPTY.equals(sql))
-      resultList = jdbcTemplate.query(sql, params.toArray(), mapper);
+			resultList = jdbcTemplate.query(sql, params.toArray(), mapper);
 		params.close();
 		return resultList;
 	}
@@ -72,16 +71,15 @@ public class JdbcManager {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-  private List query(String script, Object object, Class beanClass, JdbcParams params) {
+	private List query(String script, Object object, Class beanClass, JdbcParams params) {
 		List resultList = null;
 		String sql = evalScript(script, params, object);
-		//    System.out.println(ApiUtils.codeFormat(sql, '(', ')'));
-		//		for (Object param : params.getParams()) {
-		//			System.out.print(" / ");
-		//			System.out.print(param);
-		//		}
-		//		System.out.println();
+		// System.out.println(ApiUtils.codeFormat(sql, '(', ')'));
+		// for (Object param : params.getParams()) {
+		// System.out.print(" / ");
+		// System.out.print(param);
+		// }
+		// System.out.println();
 		if (!ConstUtils.EMPTY.equals(sql)) {
 			if (log.isDebugEnabled()) {
 				log.debug("template sql: " + sql);
@@ -91,13 +89,12 @@ public class JdbcManager {
 		return resultList;
 	}
 
-	@SuppressWarnings("deprecation")
-  public long queryScriptForLong(String script, Object object) {
+	public long queryScriptForLong(String script, Object object) {
 		JdbcParams params = new JdbcParams(object);
 		long lo = 0;
 		String sql = evalScript(script, params, object);
 		if (!ConstUtils.EMPTY.equals(sql))
-      lo = jdbcTemplate.queryForObject(sql, params.toArray(), Number.class).longValue();
+			lo = jdbcTemplate.queryForObject(sql, params.toArray(), Number.class).longValue();
 		params.close();
 		return lo;
 	}
