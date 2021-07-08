@@ -67,6 +67,7 @@ public class SmartContext extends HashMap<String, Object> implements Serializabl
 	private RequestContext requestContext;
 	private SmartRequest smartRequest;
 	private Exception exception;
+	private Map<String, Object> beans;
 
 	public SmartContext() {
 		this(null, null);
@@ -322,11 +323,21 @@ public class SmartContext extends HashMap<String, Object> implements Serializabl
 	}
 
 	public Object getBean(String ref) {
+		if (beans != null) {
+			return beans.get(ref);
+		}
 		try {
 			return applicationContext.getBean(ref);
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public void addBean(String ref, Object o) {
+		if (beans == null) {
+			beans = new HashMap<String, Object>();
+		}
+		beans.put(ref, o);
 	}
 
 	public Resource getResource(String path) {
