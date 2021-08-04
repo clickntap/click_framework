@@ -152,7 +152,7 @@ public class AdvancedSearch {
 					}
 				}
 			}
-			//System.out.println((System.currentTimeMillis()-t)+" millis");
+			// System.out.println((System.currentTimeMillis()-t)+" millis");
 			items.add(item);
 		}
 

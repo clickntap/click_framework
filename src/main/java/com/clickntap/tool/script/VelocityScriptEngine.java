@@ -36,8 +36,8 @@ public class VelocityScriptEngine extends AbstractComponent implements ScriptEng
 		throw new NotYetImplemented();
 	}
 	/*
-	 * private static final String SCRIPT_LOG_TAG = "script"; private
-	 * VelocityEngine engine; private String scriptPath;
+	 * private static final String SCRIPT_LOG_TAG = "script"; private VelocityEngine
+	 * engine; private String scriptPath;
 	 * 
 	 * public String eval(Map<String, Object> ctx, String templateName) throws
 	 * Exception { StringWriter writer = new StringWriter();
@@ -46,8 +46,8 @@ public class VelocityScriptEngine extends AbstractComponent implements ScriptEng
 	 * 
 	 * public void eval(Map<String, Object> ctx, String templateName, OutputStream
 	 * out) throws Exception { OutputStreamWriter writer = new
-	 * OutputStreamWriter(out); engine.mergeTemplate(scriptPath + templateName,
-	 * new ScriptContext(ctx), writer); }
+	 * OutputStreamWriter(out); engine.mergeTemplate(scriptPath + templateName, new
+	 * ScriptContext(ctx), writer); }
 	 * 
 	 * public boolean evalRule(Map<String, Object> context, String templateName)
 	 * throws Exception { throw new NotYetImplemented(); }

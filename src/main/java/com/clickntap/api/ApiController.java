@@ -254,28 +254,33 @@ public class ApiController implements Controller {
 							outErrors(response, context, bindingResult);
 						}
 					} else if (action.equals("forgotPassword") || action.equals("forgot")) {
-						//          String[] fields = new String[4];
-						//          fields[0] = "email";
-						//          SmartBindingResult bindingResult = context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", fields, null, "request");
-						//          BO bo = (BO) context.get(entityName);
-						//          bindingResult = context.bind(entityName, this.getClass().getPackage().getName() + ".bo." + groupName + "." + entityName, "app", null, null, "request");
-						//          ValidationUtils.invokeValidator(app.getValidator(bo, "create"), bo, bindingResult.getBindingResult());
-						//          bo.read("email");
-						//          if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
-						//            out(response, bo);
-						//          } else {
-						//            outErrors(response, context, bindingResult);
-						//          }
-						//         if (bo.getId() != null) {
-						//            bo.read();
-						//            JSONObject json = new JSONObject();
-						//            json.put(action, true);
-						//            out(response, json);
-						//          } else {
-						//            JSONObject json = new JSONObject();
-						//            json.put(action, false);
-						//            out(response, json);
-						//          }
+						// String[] fields = new String[4];
+						// fields[0] = "email";
+						// SmartBindingResult bindingResult = context.bind(entityName,
+						// this.getClass().getPackage().getName() + ".bo." + groupName + "." +
+						// entityName, "app", fields, null, "request");
+						// BO bo = (BO) context.get(entityName);
+						// bindingResult = context.bind(entityName,
+						// this.getClass().getPackage().getName() + ".bo." + groupName + "." +
+						// entityName, "app", null, null, "request");
+						// ValidationUtils.invokeValidator(app.getValidator(bo, "create"), bo,
+						// bindingResult.getBindingResult());
+						// bo.read("email");
+						// if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
+						// out(response, bo);
+						// } else {
+						// outErrors(response, context, bindingResult);
+						// }
+						// if (bo.getId() != null) {
+						// bo.read();
+						// JSONObject json = new JSONObject();
+						// json.put(action, true);
+						// out(response, json);
+						// } else {
+						// JSONObject json = new JSONObject();
+						// json.put(action, false);
+						// out(response, json);
+						// }
 					} else {
 						Long actionId = 0L;
 						try {

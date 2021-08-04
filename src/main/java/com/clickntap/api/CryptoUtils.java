@@ -14,17 +14,17 @@ public class CryptoUtils {
 		this.key = key;
 	}
 
-  public String encrypt(String s) throws Exception {
-    byte[] bytes = SecureUtils.base64dec(key);
-    byte[] encoded = SecurityUtils.encrypt(s.getBytes(), bytes);
-    s = SecureUtils.base64enc(encoded);
-    s = convertStringToHex(s);
-    return s;
-  }
+	public String encrypt(String s) throws Exception {
+		byte[] bytes = SecureUtils.base64dec(key);
+		byte[] encoded = SecurityUtils.encrypt(s.getBytes(), bytes);
+		s = SecureUtils.base64enc(encoded);
+		s = convertStringToHex(s);
+		return s;
+	}
 
-  public String md5(String s) throws Exception {
-    return SecurityUtils.md5(s);
-  }
+	public String md5(String s) throws Exception {
+		return SecurityUtils.md5(s);
+	}
 
 	public String decrypt(String s) throws Exception {
 		s = convertHexToString(s);
@@ -62,7 +62,7 @@ public class CryptoUtils {
 			System.out.println(new CryptoUtils().decrypt(s));
 		}
 		String key = "";
-		//while (!key.startsWith("")) {
+		// while (!key.startsWith("")) {
 		CryptoUtils utils = new CryptoUtils();
 		key = SecureUtils.base64enc(SecurityUtils.generateKey(256).getEncoded());
 		utils.setKey(key);
@@ -71,7 +71,7 @@ public class CryptoUtils {
 		System.out.println(s);
 		System.out.println(s = utils.encrypt(s));
 		System.out.println(utils.decrypt(s));
-		//}
+		// }
 	}
 
 }

@@ -150,8 +150,7 @@ public class BeanManagerImpl implements BeanManager {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.clickntap.tool.bean.BeanManagerInterface#create(com.clickntap.tool.
+	 * @see com.clickntap.tool.bean.BeanManagerInterface#create(com.clickntap.tool.
 	 * bean.Bean)
 	 */
 	public Number create(Bean bean) throws Exception {
@@ -174,8 +173,7 @@ public class BeanManagerImpl implements BeanManager {
 	}
 
 	/*
-	 * @see
-	 * com.clickntap.tool.bean.BeanManagerInterface#update(com.clickntap.tool.
+	 * @see com.clickntap.tool.bean.BeanManagerInterface#update(com.clickntap.tool.
 	 * bean.Bean)
 	 */
 	public int update(Bean bean) throws Exception {
@@ -192,8 +190,7 @@ public class BeanManagerImpl implements BeanManager {
 	}
 
 	/*
-	 * @see
-	 * com.clickntap.tool.bean.BeanManagerInterface#delete(com.clickntap.tool.
+	 * @see com.clickntap.tool.bean.BeanManagerInterface#delete(com.clickntap.tool.
 	 * bean.Bean)
 	 */
 	public int delete(Bean bean) throws Exception {
@@ -234,8 +231,7 @@ public class BeanManagerImpl implements BeanManager {
 	}
 
 	/*
-	 * @see
-	 * com.clickntap.tool.bean.BeanManagerInterface#readList(com.clickntap.tool
+	 * @see com.clickntap.tool.bean.BeanManagerInterface#readList(com.clickntap.tool
 	 * .bean.Bean, java.lang.String)
 	 */
 	public List<Number> readList(Bean bean, String fieldName) throws Exception {

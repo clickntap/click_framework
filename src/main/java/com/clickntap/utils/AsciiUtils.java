@@ -65,10 +65,9 @@ public class AsciiUtils {
 	 * output = new ByteArrayOutputStream(); textToBinary(input, output); return
 	 * output.toString(); }
 	 * 
-	 * public static String toText(String in) throws IOException {
-	 * StringInputStream input = new StringInputStream(in); StringWriter output =
-	 * new StringWriter(); binaryToText(input, output); return output.toString();
-	 * }
+	 * public static String toText(String in) throws IOException { StringInputStream
+	 * input = new StringInputStream(in); StringWriter output = new StringWriter();
+	 * binaryToText(input, output); return output.toString(); }
 	 */
 	public static void binaryToText(InputStream in, Writer out) throws IOException {
 		int i;
