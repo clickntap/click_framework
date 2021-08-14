@@ -92,6 +92,7 @@ public class PDF {
 				for (int n = 1; n <= reader.getNumberOfPages(); n++) {
 					pdf.addPage(pdf.getImportedPage(reader, n));
 				}
+				reader.close();
 				pdfOut.close();
 			}
 			pdf.close();

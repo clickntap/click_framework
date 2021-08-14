@@ -67,7 +67,7 @@ public class AbstractApiModule implements ApiModule {
 		if (format.equalsIgnoreCase("eps"))
 			response.setContentType("application/postscript");
 		if (format.equalsIgnoreCase("jpg"))
-			response.setContentType("application/octet-stream");
+			response.setContentType("image/jpeg");
 		if (format.equalsIgnoreCase("pdf"))
 			response.setContentType("application/pdf");
 		if (format.equalsIgnoreCase("svg"))
@@ -75,15 +75,9 @@ public class AbstractApiModule implements ApiModule {
 		if (format.equalsIgnoreCase("png")) {
 			svg.png(response.getOutputStream());
 		}
-		if (format.equalsIgnoreCase("eps")) {
-			if (name != null) {
-				response.addHeader("Content-Disposition", "attachment; filename=" + name + ".eps");
-			}
-			svg.eps(response.getOutputStream());
-		}
 		if (format.equalsIgnoreCase("jpg")) {
 			if (name != null) {
-				response.addHeader("Content-Disposition", "attachment; filename=" + name + ".jpg");
+				response.addHeader("Content-Disposition", "attachment; filename=" + name + ".jpeg");
 			}
 			svg.jpg(response.getOutputStream());
 		}
@@ -94,9 +88,6 @@ public class AbstractApiModule implements ApiModule {
 			svg.pdf(response.getOutputStream());
 		}
 		if (format.equalsIgnoreCase("svg")) {
-			if (name != null) {
-				response.addHeader("Content-Disposition", "attachment; filename=" + name + ".svg");
-			}
 			svg.svg(response.getOutputStream());
 		}
 	}

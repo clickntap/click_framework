@@ -36,10 +36,10 @@ public class SVG {
 	}
 
 	public void svg(OutputStream out) throws Exception {
-		svg(out, null);
+		svg(out, null, true, true);
 	}
 
-	public void svg(OutputStream out, Integer width) throws Exception {
+	public void svg(OutputStream out, Integer width, boolean embedFont, boolean onlyCSS) throws Exception {
 		FTask task = new FTask();
 		task.setCodeScript(codeScript);
 		task.setDataScript(dataScript);
@@ -47,10 +47,12 @@ public class SVG {
 		if (task.getData() != null) {
 			String code = task.getCode();
 			StringBuffer svg = new StringBuffer();
-			if (width != null) {
+			if (embedFont) {
 				StringBuffer defs = new StringBuffer();
-				File fontFile = new File(fExecutor.getApp().getWorkDir().getFile().getAbsolutePath() + "/barlow-condensed-v4-latin-ext_latin-600.svg");
-				defs.append(FileUtils.readFileToString(fontFile));
+				if (!onlyCSS) {
+					File fontFile = new File(fExecutor.getApp().getWorkDir().getFile().getAbsolutePath() + "/barlow-condensed-v4-latin-ext_latin-600.svg");
+					defs.append(FileUtils.readFileToString(fontFile));
+				}
 				defs.append("<defs><style>text {font-family:\"Barlow Condensed SemiBold\";}</style></defs>");
 				int x = code.indexOf(">");
 				svg.append(code.substring(0, x + 1));
@@ -75,29 +77,29 @@ public class SVG {
 
 	public void pdf(OutputStream outputStream) throws Exception {
 		PDFTranscoder t = new PDFTranscoder();
-		transcode(t, 2880, outputStream);
+		transcode(t, 2880, true, false, outputStream);
 	}
 
 	public void eps(OutputStream outputStream) throws Exception {
 		EPSTranscoder t = new EPSTranscoder();
-		transcode(t, 2880, outputStream);
+		transcode(t, 2880, true, false, outputStream);
 	}
 
 	public void png(OutputStream outputStream) throws Exception {
 		Transcoder transcoder = new PNGTranscoder();
-		transcode(transcoder, 360, outputStream);
+		transcode(transcoder, 360, true, false, outputStream);
 	}
 
 	public void jpg(OutputStream outputStream) throws Exception {
 		Transcoder transcoder = new JPEGTranscoder();
 		transcoder.addTranscodingHint(JPEGTranscoder.KEY_QUALITY, 1.0f);
-		transcode(transcoder, 2880, outputStream);
+		transcode(transcoder, 2880, true, false, outputStream);
 	}
 
-	public void transcode(Transcoder transcoder, Integer width, OutputStream outputStream) {
+	public void transcode(Transcoder transcoder, Integer width, boolean embedFont, boolean onlyCSS, OutputStream outputStream) {
 		try {
 			ByteArrayOutputStream svg = new ByteArrayOutputStream();
-			svg(svg, width);
+			svg(svg, width, embedFont, onlyCSS);
 			InputStream in = new ByteArrayInputStream(svg.toByteArray());
 			TranscoderInput transcoderInput = new TranscoderInput(in);
 			TranscoderOutput transcoderOutput = new TranscoderOutput(outputStream);
