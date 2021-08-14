@@ -4,7 +4,7 @@
 
 	<groupId>com.clickntap</groupId>
 	<artifactId>click_framework</artifactId>
-	<version>1.154-SNAPSHOT</version>
+	<version>1.155-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Click Framework</name>
 	<description>Java Framework based on Spring Framework, Freemarker and Simplicity</description>
@@ -307,6 +307,7 @@
 					<goals>deploy</goals>
 				</configuration>
 			</plugin>
+			
 		</plugins>
 		<resources>
 			<resource>
