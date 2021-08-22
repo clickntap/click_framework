@@ -13,7 +13,7 @@ Click is a framework to build clickable Web Apps
 <dependency>
   <groupId>com.clickntap</groupId>
   <artifactId>click_framework</artifactId>
-  <version>1.168</version>
+  <version>1.169</version>
 </dependency>
 
 ```
