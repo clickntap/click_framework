@@ -53,7 +53,7 @@ public class SVG {
 					File fontFile = new File(fExecutor.getApp().getWorkDir().getFile().getAbsolutePath() + "/barlow-condensed-v4-latin-ext_latin-600.svg");
 					defs.append(FileUtils.readFileToString(fontFile));
 				}
-				defs.append("<defs><style>text {font-family:\"Barlow Condensed SemiBold\";}</style></defs>");
+				defs.append("<defs><style>@import url('/ui/css/fonts/barlow-condensed.css');text {font-family:\"Barlow Condensed\";font-weight:600;}</style></defs>");
 				int x = code.indexOf(">");
 				svg.append(code.substring(0, x + 1));
 				svg.append(defs);
