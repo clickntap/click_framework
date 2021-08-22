@@ -157,7 +157,7 @@ public class LibraryVersion implements FileAlterationListener {
 		try {
 			Map<String, Object> ctx = new HashMap<String, Object>();
 			File file = new File(versionDir.getAbsolutePath() + "/" + position + "_" + name + "/" + name + "." + format);
-			return engine.evalScript(ctx, FileUtils.readFileToString(file));
+			return engine.evalScript(ctx, FileUtils.readFileToString(file, ConstUtils.UTF_8));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

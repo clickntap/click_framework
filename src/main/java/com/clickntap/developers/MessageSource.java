@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 
+import com.clickntap.utils.ConstUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -46,6 +47,6 @@ public class MessageSource {
 		builder.setPrettyPrinting();
 		Gson gson = builder.create();
 		String json = gson.toJson(this);
-		FileUtils.writeStringToFile(new File(messagesJson), json);
+		FileUtils.writeStringToFile(new File(messagesJson), json, ConstUtils.UTF_8);
 	}
 }

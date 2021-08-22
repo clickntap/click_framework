@@ -17,6 +17,7 @@ import org.apache.fop.svg.PDFTranscoder;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 
+import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.XMLUtils;
 
 public class SVG {
@@ -51,7 +52,7 @@ public class SVG {
 				StringBuffer defs = new StringBuffer();
 				if (!onlyCSS) {
 					File fontFile = new File(fExecutor.getApp().getWorkDir().getFile().getAbsolutePath() + "/barlow-condensed-v4-latin-ext_latin-600.svg");
-					defs.append(FileUtils.readFileToString(fontFile));
+					defs.append(FileUtils.readFileToString(fontFile, ConstUtils.UTF_8));
 				}
 				defs.append("<defs><style>@import url('/ui/css/fonts/barlow-condensed.css');text {font-family:\"Barlow Condensed\";font-weight:600;}</style></defs>");
 				int x = code.indexOf(">");
