@@ -6,6 +6,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.context.NoSuchMessageException;
 
 import com.clickntap.developers.MessageSource;
+import com.clickntap.utils.ConstUtils;
 import com.google.gson.Gson;
 
 public class SmartJsonMessageSource extends SmartMessageSource {
@@ -19,7 +20,7 @@ public class SmartJsonMessageSource extends SmartMessageSource {
 			isJson = false;
 			super.start();
 		} else {
-			messageSource = new Gson().fromJson(FileUtils.readFileToString(messageResource.getFile()), MessageSource.class);
+			messageSource = new Gson().fromJson(FileUtils.readFileToString(messageResource.getFile(), ConstUtils.UTF_8), MessageSource.class);
 		}
 	}
 

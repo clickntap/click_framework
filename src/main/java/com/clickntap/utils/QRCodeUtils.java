@@ -43,7 +43,7 @@ public class QRCodeUtils {
 	}
 
 	public static void main(String[] args) throws Exception {
-		FileUtils.write(new File("qrcode.svg"), QRCodeUtils.svg("https://www.clickntap.com"));
+		FileUtils.write(new File("qrcode.svg"), QRCodeUtils.svg("https://www.clickntap.com"), ConstUtils.UTF_8);
 	}
 
 }
