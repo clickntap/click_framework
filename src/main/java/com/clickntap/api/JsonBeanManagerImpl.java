@@ -9,18 +9,18 @@ import com.clickntap.tool.bean.BeanManagerImpl;
 
 public class JsonBeanManagerImpl extends BeanManagerImpl implements JsonBeanManager {
 
-	public JsonBeanManagerImpl() throws Exception {
-		super();
-	}
+  public JsonBeanManagerImpl() throws Exception {
+    super();
+  }
 
-	public String readAsJson(Number id, Class clazz) throws Exception {
-		Bean bean = read(id, clazz);
-		return JsonUtils.beanToJson(bean);
-	}
+  public String readAsJson(Number id, Class clazz) throws Exception {
+    Bean bean = read(id, clazz);
+    return JsonUtils.beanToJson(bean);
+  }
 
-	public String readListAsJsonByFilter(Class clazz, String filter, String what) throws Exception {
-		List<Number> ids = readListByFilter(clazz, JsonUtils.jsonToBean(filter), what);
-		return StringUtils.join(ids.toArray(), ",");
-	}
+  public String readListAsJsonByFilter(Class clazz, String filter, String what) throws Exception {
+    List<Number> ids = readListByFilter(clazz, JsonUtils.jsonToBean(filter), what);
+    return StringUtils.join(ids.toArray(), ",");
+  }
 
 }

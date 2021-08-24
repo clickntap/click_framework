@@ -13,28 +13,28 @@ import com.clickntap.smart.SmartContext;
 
 public interface Api {
 
-	boolean handleRequest(HttpServletRequest request, HttpServletResponse response);
+  boolean handleRequest(HttpServletRequest request, HttpServletResponse response);
 
-	void onPreAdd(BO bo, Map<String, Object> conf) throws Exception;
+  void onPreAdd(BO bo, Map<String, Object> conf) throws Exception;
 
-	void onAdd(BO bo, Map<String, Object> conf) throws Exception;
+  void onAdd(BO bo, Map<String, Object> conf) throws Exception;
 
-	void onEdit(BO bo, Map<String, Object> conf) throws Exception;
+  void onEdit(BO bo, Map<String, Object> conf) throws Exception;
 
-	void onAuth(BO bo, Map<String, Object> conf) throws Exception;
+  void onAuth(BO bo, Map<String, Object> conf) throws Exception;
 
-	List<BO> onSearch(Class<? extends BOFilter> c, List<BO> list) throws Exception;
+  List<BO> onSearch(Class<? extends BOFilter> c, List<BO> list) throws Exception;
 
-	void onRead(BO bo, JSONObject json) throws Exception;
+  void onRead(BO bo, JSONObject json) throws Exception;
 
-	JSONObject onNull(Class<?> clazz, SmartContext context) throws Exception;
+  JSONObject onNull(Class<?> clazz, SmartContext context) throws Exception;
 
-	JSONObject api(String uri, SmartContext ctx) throws Exception;
+  JSONObject api(String uri, SmartContext ctx) throws Exception;
 
-	public BO get(Class<? extends BO> clazz, String value);
+  public BO get(Class<? extends BO> clazz, String value);
 
-	public String getTokenCookie(App app, HttpServletResponse response, String token, boolean secure) throws Exception;
+  public String getTokenCookie(App app, HttpServletResponse response, String token, boolean secure) throws Exception;
 
-	public String addTokenCookie(App app, HttpServletResponse response, boolean secure) throws Exception;
+  public String addTokenCookie(App app, HttpServletResponse response, boolean secure) throws Exception;
 
 }

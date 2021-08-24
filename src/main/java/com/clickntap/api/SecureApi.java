@@ -10,30 +10,30 @@ import com.clickntap.smart.SmartContext;
 
 public interface SecureApi {
 
-	boolean handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception;
+  boolean handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
-	boolean handleRequest(HttpServletRequest request, HttpServletResponse response, SecureRequest secureRequest) throws Exception;
+  boolean handleRequest(HttpServletRequest request, HttpServletResponse response, SecureRequest secureRequest) throws Exception;
 
-	BO signin(HttpServletRequest request, SecureRequest secureRequest, BO token) throws Exception;
+  BO signin(HttpServletRequest request, SecureRequest secureRequest, BO token) throws Exception;
 
-	void search(JSONObject result, SecureRequest secureRequest, BO token) throws Exception;
+  void search(JSONObject result, SecureRequest secureRequest, BO token) throws Exception;
 
-	void onPreCreate(SmartContext context, BO bo, SecureRequest secureRequest);
+  void onPreCreate(SmartContext context, BO bo, SecureRequest secureRequest);
 
-	void onCreate(SmartContext context, BO bo, SecureRequest secureRequest);
+  void onCreate(SmartContext context, BO bo, SecureRequest secureRequest);
 
-	void onPreEdit(SmartContext context, BO bo, SecureRequest secureRequest);
+  void onPreEdit(SmartContext context, BO bo, SecureRequest secureRequest);
 
-	void onEdit(SmartContext context, BO bo, SecureRequest secureRequest);
+  void onEdit(SmartContext context, BO bo, SecureRequest secureRequest);
 
-	void onPreDelete(SmartContext context, BO bo, SecureRequest secureRequest);
+  void onPreDelete(SmartContext context, BO bo, SecureRequest secureRequest);
 
-	void onDelete(SmartContext context, BO bo, SecureRequest secureRequest);
+  void onDelete(SmartContext context, BO bo, SecureRequest secureRequest);
 
-	void onResponse(HttpServletRequest request, HttpServletResponse response, JSONObject json);
+  void onResponse(HttpServletRequest request, HttpServletResponse response, JSONObject json);
 
-	SmartBindingResult onResponse(HttpServletRequest request, HttpServletResponse response, JSONObject json, SmartBindingResult bindingResult);
+  SmartBindingResult onResponse(HttpServletRequest request, HttpServletResponse response, JSONObject json, SmartBindingResult bindingResult);
 
-	void preOut(JSONObject json, HttpServletRequest request, HttpServletResponse response, SecureRequest secureRequest);
+  void preOut(JSONObject json, HttpServletRequest request, HttpServletResponse response, SecureRequest secureRequest);
 
 }

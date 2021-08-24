@@ -15,38 +15,38 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class MessageSource {
-	private Map<String, Map<String, String>> languages;
+  private Map<String, Map<String, String>> languages;
 
-	public MessageSource() {
-		languages = new HashMap<String, Map<String, String>>();
-	}
+  public MessageSource() {
+    languages = new HashMap<String, Map<String, String>>();
+  }
 
-	public MessageSource(String messageProperties, String locale) throws Exception {
-		Properties p = new Properties();
-		InputStream in = new FileInputStream(messageProperties);
-		p.load(in);
-		in.close();
-		HashMap<String, String> values = new HashMap<String, String>();
-		for (Object key : p.keySet()) {
-			values.put(key.toString(), p.getProperty(key.toString()));
-		}
-		languages = new HashMap<String, Map<String, String>>();
-		languages.put(locale, values);
-	}
+  public MessageSource(String messageProperties, String locale) throws Exception {
+    Properties p = new Properties();
+    InputStream in = new FileInputStream(messageProperties);
+    p.load(in);
+    in.close();
+    HashMap<String, String> values = new HashMap<String, String>();
+    for (Object key : p.keySet()) {
+      values.put(key.toString(), p.getProperty(key.toString()));
+    }
+    languages = new HashMap<String, Map<String, String>>();
+    languages.put(locale, values);
+  }
 
-	public Map<String, Map<String, String>> getLanguages() {
-		return languages;
-	}
+  public Map<String, Map<String, String>> getLanguages() {
+    return languages;
+  }
 
-	public void setLanguages(Map<String, Map<String, String>> languages) {
-		this.languages = languages;
-	}
+  public void setLanguages(Map<String, Map<String, String>> languages) {
+    this.languages = languages;
+  }
 
-	public void export(String messagesJson) throws IOException {
-		GsonBuilder builder = new GsonBuilder();
-		builder.setPrettyPrinting();
-		Gson gson = builder.create();
-		String json = gson.toJson(this);
-		FileUtils.writeStringToFile(new File(messagesJson), json, ConstUtils.UTF_8);
-	}
+  public void export(String messagesJson) throws IOException {
+    GsonBuilder builder = new GsonBuilder();
+    builder.setPrettyPrinting();
+    Gson gson = builder.create();
+    String json = gson.toJson(this);
+    FileUtils.writeStringToFile(new File(messagesJson), json, ConstUtils.UTF_8);
+  }
 }

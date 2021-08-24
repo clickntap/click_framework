@@ -4,24 +4,24 @@ import com.clickntap.hub.BOManager;
 import com.clickntap.tool.script.ScriptEngine;
 
 public enum AppSingleton {
-	INSTANCE;
+  INSTANCE;
 
-	private BOManager app;
-	private ScriptEngine viewEngine;
+  private BOManager app;
+  private ScriptEngine viewEngine;
 
-	public BOManager getApp() {
-		return app;
-	}
+  public BOManager getApp() {
+    return app;
+  }
 
-	public void setApp(BOManager app) {
-		this.app = app;
-	}
+  public void setApp(BOManager app) {
+    this.app = app;
+  }
 
-	public ScriptEngine getViewEngine() {
-		return viewEngine;
-	}
+  public ScriptEngine getViewEngine() {
+    return viewEngine;
+  }
 
-	public void setViewEngine(ScriptEngine viewEngine) {
-		this.viewEngine = viewEngine;
-	}
+  public void setViewEngine(ScriptEngine viewEngine) {
+    this.viewEngine = viewEngine;
+  }
 }
