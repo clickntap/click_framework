@@ -94,6 +94,16 @@ ${this.save(xml,"src/main/resources/"+this.projectPackage.replace(".","/")+"/bo/
 		[/#assign]
 		${code?trim}
         ]]></group>
+    <group name="update"><![CDATA[
+       [#list entity.elements("field") as field]
+      [#if field.attributeValue("name")?contains("password")]
+  	  [#assign passwordName = field.attributeValue("name")]
+  	  	[#noparse][#if[/#noparse] ((this.target.${passwordName})!"") != ""]
+ 		[#noparse]${[/#noparse]this.assertPassword("${passwordName}","${(field.attributeValue("security")!"low")}")}
+  	    [#noparse][/#if][/#noparse]
+  	   [/#if]
+      [/#list]
+        ]]></group>
       <group name="create"><![CDATA[
        	[#list entity.elements("field") as field]
        	[#if field.attributeValue("name")?contains("password") && (field.attributeValue("mandatory")!"") == "yes"]
