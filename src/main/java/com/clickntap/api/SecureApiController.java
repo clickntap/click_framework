@@ -182,6 +182,12 @@ public class SecureApiController implements Controller {
               if ("edit".equalsIgnoreCase(secureRequest.path(2))) {
                 return edit(request, response, json, secureRequest);
               }
+              if ("change-password".equalsIgnoreCase(secureRequest.path(2))) {
+                return changePassword(request, response, json, secureRequest);
+              }
+              if ("forgot-password".equalsIgnoreCase(secureRequest.path(2))) {
+                return forgotPassword(request, response, json, secureRequest);
+              }
               if ("undo".equalsIgnoreCase(secureRequest.path(2))) {
                 return undo(request, response, secureRequest, authId);
               }
@@ -512,7 +518,10 @@ public class SecureApiController implements Controller {
     SmartBindingResult bindingResult = context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", null, null, null);
     BO bo = (BO) context.get(secureRequest.path(1));
     if (api != null) {
-      api.onPreCreate(context, bo, secureRequest);
+      if (api.onPreCreate(context, bo, secureRequest)) {
+        out(request, response, new JSONObject());
+        return null;
+      }
     }
     ValidationUtils.invokeValidator(app.getValidator(bo, "create"), bo, bindingResult.getBindingResult());
     if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
@@ -535,7 +544,10 @@ public class SecureApiController implements Controller {
     BO bo = (BO) context.get(secureRequest.path(1));
     bo.read();
     if (api != null) {
-      api.onPreEdit(context, bo, secureRequest);
+      if (api.onPreEdit(context, bo, secureRequest)) {
+        out(request, response, new JSONObject());
+        return null;
+      }
     }
     bindingResult = context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", null, null, "request");
     ValidationUtils.invokeValidator(app.getValidator(bo, "update"), bo, bindingResult.getBindingResult());
@@ -553,6 +565,72 @@ public class SecureApiController implements Controller {
     return null;
   }
 
+  private ModelAndView changePassword(HttpServletRequest request, HttpServletResponse response, JSONObject json, SecureRequest secureRequest) throws Exception {
+    SmartContext context = new SmartContext(request, response);
+    String[] fields = new String[4];
+    fields[0] = "id";
+    fields[1] = "oldPassword";
+    fields[2] = "newPassword";
+    fields[3] = "confirmNewPassword";
+    SmartBindingResult bindingResult = context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", fields, null, "request");
+    BO bo = (BO) context.get(secureRequest.path(1));
+    bo.read();
+    if (api != null) {
+      if (api.onPreChangePassword(context, bo, secureRequest)) {
+        out(request, response, new JSONObject());
+        return null;
+      }
+    }
+    bindingResult = context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", null, null, "request");
+    ValidationUtils.invokeValidator(app.getValidator(bo, "execute-password"), bo, bindingResult.getBindingResult());
+    if (bindingResult.getBindingResult().getAllErrors().size() == 0) {
+      bo.execute("password");
+      if (api != null) {
+        api.onChangePassword(context, bo, secureRequest);
+      }
+      out(request, response, bo.json());
+    } else {
+      out(request, response, json, bindingResult);
+    }
+    return null;
+  }
+
+  private ModelAndView forgotPassword(HttpServletRequest request, HttpServletResponse response, JSONObject json, SecureRequest secureRequest) throws Exception {
+    SmartContext context = new SmartContext(request, response);
+    String[] fields = new String[1];
+    fields[0] = "email";
+    context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", null, null, "request");
+    BO bo = (BO) context.get(secureRequest.path(1));
+    bo.read("email");
+    bo.read();
+    if (api != null) {
+      if (api.onPreForgotPassword(context, bo, secureRequest)) {
+        out(request, response, new JSONObject());
+        return null;
+      }
+    }
+    if (bo.getId() != null) {
+      StringBuffer newPassword = new StringBuffer();
+      for (int i = 0; i < 3; i++) {
+        char d;
+        do {
+          d = (char) ('A' + (Math.random() * ((int) 'Z' - (int) 'A')));
+        } while (d == 'O' || d == 'I');
+        int n = (int) (Math.random() * (8)) + 2;
+        newPassword.append(d).append(n);
+      }
+      M.invoke(bo, "setNewPassword", newPassword.toString().toLowerCase());
+      bo.execute("forgot-password");
+      if (api != null) {
+        api.onForgotPassword(context, bo, secureRequest);
+      }
+      out(request, response, bo.json());
+    } else {
+      out(request, response, new JSONObject());
+    }
+    return null;
+  }
+
   private ModelAndView delete(HttpServletRequest request, HttpServletResponse response, JSONObject json, SecureRequest secureRequest) throws Exception {
     SmartContext context = new SmartContext(request, response);
     String[] fields = new String[1];
@@ -560,7 +638,10 @@ public class SecureApiController implements Controller {
     context.bind(secureRequest.path(1), boPackage + "." + secureRequest.path(0) + "." + secureRequest.path(1), "app", fields, null, "request");
     BO bo = (BO) context.get(secureRequest.path(1));
     if (api != null) {
-      api.onPreDelete(context, bo, secureRequest);
+      if (api.onPreDelete(context, bo, secureRequest)) {
+        out(request, response, new JSONObject());
+        return null;
+      }
     }
     json.put("n", bo.delete());
     if (api != null) {

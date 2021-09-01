@@ -111,14 +111,73 @@ public class BeanErrors {
     }
   }
 
-  public void assertPassword(String propertyName) {
+  public void assertPassword(String propertyName, String security) {
     Object value = BeanUtils.getValue(target, propertyName);
     if (value != null) {
-      if (!AsciiUtils.isWebized(value.toString()))
-        errors.rejectValue(propertyName, "badPassword");
-      else if (value.toString().length() < 4)
-        errors.rejectValue(propertyName, "shortPassword");
+      int level = 0;
+      if ("high".equals(security)) {
+        level = 3;
+      } else if ("medium".equals(security)) {
+        level = 2;
+      } else {
+        level = 1;
+      }
+      if (level == 0) {
+        errors.rejectValue(propertyName, "noSecurityPassword");
+      } else if (!BeanErrors.checkPassword(value.toString(), level)) {
+        errors.rejectValue(propertyName, "securityPassword");
+      }
     }
+  }
+
+  public static boolean checkPassword(String password, int level) {
+    if (password == null) {
+      return false;
+    }
+    if (password.isEmpty()) {
+      return false;
+    }
+    if (password.length() < 4) {
+      return false;
+    }
+    if (password.length() < 8 && level == 2) {
+      return false;
+    }
+    if (password.length() < 12 && level == 3) {
+      return false;
+    }
+    char c;
+    boolean capitalFlag = false;
+    boolean lowerCaseFlag = false;
+    boolean numberFlag = false;
+    boolean specialFlag = false;
+    boolean spaceFlag = false;
+    for (int i = 0; i < password.length(); i++) {
+      c = password.charAt(i);
+      if (Character.isDigit(c)) {
+        numberFlag = true;
+      } else if (Character.isUpperCase(c)) {
+        capitalFlag = true;
+      } else if (Character.isLowerCase(c)) {
+        lowerCaseFlag = true;
+      }
+      if (!Character.isLetterOrDigit(c)) {
+        specialFlag = true;
+      }
+      if (Character.isWhitespace(c)) {
+        spaceFlag = true;
+      }
+    }
+    if (spaceFlag) {
+      return false;
+    }
+    if ((!capitalFlag || !lowerCaseFlag || !numberFlag) && level > 1) {
+      return false;
+    }
+    if ((!specialFlag) && level > 2) {
+      return false;
+    }
+    return true;
   }
 
   public void assertNotNull(String propertyName) {

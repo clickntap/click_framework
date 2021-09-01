@@ -27,6 +27,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.clickntap.api.BO;
 import com.clickntap.api.BOApp;
+import com.clickntap.api.M;
 import com.clickntap.tool.bean.BeanUtils;
 import com.clickntap.tool.html.HTMLParser;
 import com.clickntap.tool.mail.Mail;
@@ -42,6 +43,7 @@ import com.clickntap.utils.WebUtils;
 import freemarker.template.utility.StringUtil;
 
 public class SmartContext extends HashMap<String, Object> implements Serializable {
+  public static final String DEVICE_TOKEN = "deviceToken";
   public static final String SMART_USER = "smartUser";
   public static final String SMART_USER_ID = "smartUserId";
   private static final String SMART_AUTHENTICATOR_BEAN = "smartAuthenticator";
@@ -376,6 +378,7 @@ public class SmartContext extends HashMap<String, Object> implements Serializabl
 
   public boolean tryLogin(boolean always) throws Exception {
     if (isLoginRequest() || always) {
+      BO token = authenticator.getDeviceToken(request);
       SmartUser smartUser = new SmartUser();
       smartUser.setUsername(authenticator.getUsername(request));
       smartUser.setPassword(authenticator.getPassword(request));
@@ -392,11 +395,92 @@ public class SmartContext extends HashMap<String, Object> implements Serializabl
       }
       if (user != null) {
         authorize(user);
+        try {
+          M.invoke(token, "setFailedAttempts", ConstUtils.EMPTY);
+          token.update();
+        } catch (Exception e) {
+        }
         return true;
       } else {
+        increaseFailedAttempts(token, smartUser.getUsername());
         response.setStatus(HttpStatus.SC_UNAUTHORIZED);
       }
       putAll(binder.getBindingResult().getModel());
+    }
+    return false;
+  }
+
+  public JSONObject getFailedAttempts() {
+    return getFailedAttempts(authenticator.getDeviceToken(request));
+  }
+
+  public JSONObject getFailedAttempts(BO token) {
+    JSONObject info = new JSONObject();
+    try {
+      info = new JSONObject((String) M.invoke(token, "getFailedAttempts"));
+    } catch (Exception e) {
+    }
+    if (!info.has("items")) {
+      info.put("items", new JSONArray());
+    }
+    return info;
+  }
+
+  private void increaseFailedAttempts(BO token, String email) {
+    try {
+      if (email == null || email.equalsIgnoreCase(ConstUtils.EMPTY)) {
+        return;
+      }
+      AuthenticatedUser user = authenticator.login(email);
+      if (user.getId() != null) {
+        JSONObject info = getFailedAttempts(token);
+        JSONArray items = info.getJSONArray("items");
+        long time = System.currentTimeMillis();
+        JSONObject item = new JSONObject();
+        item.put("date", new Datetime().toString());
+        items.put(item);
+        info.put("items", items);
+        info.put("updatedAt", time);
+        M.invoke(token, "setFailedAttempts", info.toString());
+        token.update();
+      }
+    } catch (Exception e) {
+    }
+  }
+
+  protected void checkFailedAttempts() {
+    try {
+      BO token = authenticator.getDeviceToken(request);
+      JSONObject info = getFailedAttempts(token);
+      long updatedAt = info.getLong("updatedAt");
+      long now = System.currentTimeMillis();
+      long diff = now - updatedAt;
+      if (diff > (1000 * 60 * authenticator.getNumTryAgain().intValue())) {
+        M.invoke(token, "setToken", ConstUtils.EMPTY);
+        token.update();
+      }
+    } catch (Exception e) {
+    }
+  }
+
+  public boolean banUser() {
+    try {
+      BO token = authenticator.getDeviceToken(request);
+      JSONObject info = getFailedAttempts(token);
+      JSONArray items = info.getJSONArray("items");
+      if (items.length() >= authenticator.getNumAttempts().intValue()) {
+        try {
+          if (!info.has("sendAlert") || !"yes".equalsIgnoreCase(info.getString("sendAlert"))) {
+            authenticator.failedAttempts(request, response);
+          }
+          info.put("sendAlert", "yes");
+          M.invoke(token, "setFailedAttempts", info.toString());
+          token.update();
+        } catch (Exception e) {
+        }
+        return true;
+      }
+    } catch (Exception e) {
     }
     return false;
   }

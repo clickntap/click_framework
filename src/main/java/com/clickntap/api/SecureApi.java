@@ -18,15 +18,23 @@ public interface SecureApi {
 
   void search(JSONObject result, SecureRequest secureRequest, BO token) throws Exception;
 
-  void onPreCreate(SmartContext context, BO bo, SecureRequest secureRequest);
+  boolean onPreCreate(SmartContext context, BO bo, SecureRequest secureRequest);
 
   void onCreate(SmartContext context, BO bo, SecureRequest secureRequest);
 
-  void onPreEdit(SmartContext context, BO bo, SecureRequest secureRequest);
+  boolean onPreEdit(SmartContext context, BO bo, SecureRequest secureRequest);
 
   void onEdit(SmartContext context, BO bo, SecureRequest secureRequest);
 
-  void onPreDelete(SmartContext context, BO bo, SecureRequest secureRequest);
+  boolean onPreChangePassword(SmartContext context, BO bo, SecureRequest secureRequest);
+
+  void onChangePassword(SmartContext context, BO bo, SecureRequest secureRequest);
+
+  boolean onPreForgotPassword(SmartContext context, BO bo, SecureRequest secureRequest);
+
+  void onForgotPassword(SmartContext context, BO bo, SecureRequest secureRequest);
+
+  boolean onPreDelete(SmartContext context, BO bo, SecureRequest secureRequest);
 
   void onDelete(SmartContext context, BO bo, SecureRequest secureRequest);
 

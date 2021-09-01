@@ -3,15 +3,11 @@ package com.clickntap.smart;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.clickntap.api.M;
+import com.clickntap.api.BO;
 import com.clickntap.tool.bean.Bean;
 import com.clickntap.tool.bean.BeanManager;
 import com.clickntap.tool.bean.BeanUtils;
-import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.SecurityUtils;
-import com.clickntap.utils.WebUtils;
-
-import freemarker.template.utility.StringUtil;
 
 public class SmartAuthenticator implements Authenticator {
 
@@ -57,6 +53,14 @@ public class SmartAuthenticator implements Authenticator {
     Class.forName(className);
   }
 
+  public Number getNumAttempts() {
+    return 5;
+  }
+
+  public Number getNumTryAgain() {
+    return 20;
+  }
+
   public boolean isLoginRequest(HttpServletRequest request) throws Exception {
     return SMART_LOGIN_PARAM.equals(request.getParameter(SMART_ACTION));
   }
@@ -69,7 +73,7 @@ public class SmartAuthenticator implements Authenticator {
     AuthenticatedUser user = (AuthenticatedUser) Class.forName(className).getDeclaredConstructor().newInstance();
     user.setUsername(username);
     if (username == null || username.trim().length() == 0) {
-      throw new UnknownUsernameException();
+      throw new UserNotEnabledException();
     }
     if (isMd5())
       user.setPassword(SecurityUtils.md5(password));
@@ -82,18 +86,18 @@ public class SmartAuthenticator implements Authenticator {
       throw new UnknownUsernameException();
     if (bean != null && user.getPassword() != null && !user.getPassword().equals(BeanUtils.getValue(bean, "password")))
       throw new UnknownPasswordException();
-    Boolean enabled = Boolean.valueOf(M.invoke(bean, "getEnabled").toString());
+    Boolean enabled = Boolean.valueOf(BeanUtils.getValue(bean, "enabled").toString());
     if (!enabled)
       throw new UserNotEnabledException();
     user = (AuthenticatedUser) beanManager.read(bean.getId(), Class.forName(className));
-    if (request.getParameter("smartRememberMe") != null) {
-      WebUtils.setClientData(response, SmartContext.SMART_USER_ID, StringUtil.leftPad(user.getId().toString(), 16, '0'));
-    }
+// if (request.getParameter("smartRememberMe") != null) {
+// WebUtils.setClientData(response, SmartContext.SMART_USER_ID, StringUtil.leftPad(user.getId().toString(), 16, '0'));
+// }
     return user;
   }
 
   public void logout(HttpServletRequest request, HttpServletResponse response, AuthenticatedUser user) throws Exception {
-    WebUtils.setClientData(response, SmartContext.SMART_USER_ID, null);
+// WebUtils.setClientData(response, SmartContext.SMART_USER_ID, null);
     if (user != null)
       beanManager.execute(user, BEAN_LOGOUT_FILTER);
   }
@@ -115,21 +119,22 @@ public class SmartAuthenticator implements Authenticator {
   }
 
   public AuthenticatedUser tryAutoLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    try {
-      String id = WebUtils.getClientData(request, SmartContext.SMART_USER_ID);
-      if (id != null && !id.equals(ConstUtils.EMPTY))
-        return (AuthenticatedUser) getBeanManager().read(Long.parseLong(id), Class.forName(className));
-      else {
-        try {
-          id = WebUtils.decryptClientData(request.getParameter(SmartContext.SMART_USER_ID));
-          return (AuthenticatedUser) getBeanManager().read(Long.parseLong(id), Class.forName(className));
-        } catch (Exception e) {
-        }
-        return null;
-      }
-    } catch (Exception e) {
-      return null;
-    }
+// try {
+// String id = WebUtils.getClientData(request, SmartContext.SMART_USER_ID);
+// if (id != null && !id.equals(ConstUtils.EMPTY))
+// return (AuthenticatedUser) getBeanManager().read(Long.parseLong(id), Class.forName(className));
+// else {
+// try {
+// id = WebUtils.decryptClientData(request.getParameter(SmartContext.SMART_USER_ID));
+// return (AuthenticatedUser) getBeanManager().read(Long.parseLong(id), Class.forName(className));
+// } catch (Exception e) {
+// }
+// return null;
+// }
+// } catch (Exception e) {
+// return null;
+// }
+    return null;
   }
 
   public boolean isAuthenticated(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -138,9 +143,9 @@ public class SmartAuthenticator implements Authenticator {
 
   public void authorize(HttpServletRequest request, HttpServletResponse response, AuthenticatedUser user) throws Exception {
     request.getSession().setAttribute(SmartContext.SMART_USER_ID, user.getId());
-    if (request.getParameter("smartRememberMe") != null) {
-      WebUtils.setClientData(response, SmartContext.SMART_USER_ID, StringUtil.leftPad(user.getId().toString(), 16, '0'));
-    }
+// if (request.getParameter("smartRememberMe") != null) {
+// WebUtils.setClientData(response, SmartContext.SMART_USER_ID, StringUtil.leftPad(user.getId().toString(), 16, '0'));
+// }
   }
 
   public void deauthorize(HttpServletRequest request, HttpServletResponse response) {
@@ -166,6 +171,18 @@ public class SmartAuthenticator implements Authenticator {
     public void setSmartPassword(String smartPassword) {
       this.smartPassword = smartPassword;
     }
+  }
+
+  public void failedAttempts(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+  }
+
+  public BO getDeviceToken(HttpServletRequest request) {
+    return null;
+  }
+
+  public AuthenticatedUser login(String email) throws Exception {
+    return null;
   }
 
 }

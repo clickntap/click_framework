@@ -154,6 +154,7 @@ public class SmartSwitcher implements Controller {
     if (request.getCharacterEncoding() == null)
       request.setCharacterEncoding(ConstUtils.UTF_8);
     SmartContext ctx = new SmartContext(request, response);
+    ctx.checkFailedAttempts();
     return restHandleRequest(ctx);
   }
 

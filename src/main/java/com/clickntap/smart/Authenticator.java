@@ -3,6 +3,7 @@ package com.clickntap.smart;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.clickntap.api.BO;
 import com.clickntap.tool.bean.BeanManager;
 
 public interface Authenticator {
@@ -11,7 +12,9 @@ public interface Authenticator {
 
   public boolean isLogoutRequest(HttpServletRequest request);
 
-  public AuthenticatedUser login(HttpServletRequest request, HttpServletResponse response, String username, String password) throws Exception;
+  public AuthenticatedUser login(HttpServletRequest request, HttpServletResponse response, String email, String password) throws Exception;
+
+  public AuthenticatedUser login(String email) throws Exception;
 
   public void logout(HttpServletRequest request, HttpServletResponse response, AuthenticatedUser user) throws Exception;
 
@@ -30,5 +33,13 @@ public interface Authenticator {
   public void authorize(HttpServletRequest request, HttpServletResponse response, AuthenticatedUser user) throws Exception;
 
   public void deauthorize(HttpServletRequest request, HttpServletResponse response) throws Exception;
+
+  public void failedAttempts(HttpServletRequest request, HttpServletResponse response) throws Exception;
+
+  public BO getDeviceToken(HttpServletRequest request);
+
+  public Number getNumAttempts();
+
+  public Number getNumTryAgain();
 
 }
