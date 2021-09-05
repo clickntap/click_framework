@@ -4,8 +4,7 @@ import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-
-import com.googlecode.lesscss4j.LessCompiler;
+import org.lesscss.LessCompiler;
 
 public class LessUtils {
 

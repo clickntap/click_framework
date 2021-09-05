@@ -4,7 +4,7 @@
 
 	<groupId>com.clickntap</groupId>
 	<artifactId>click_framework</artifactId>
-	<version>1.174-SNAPSHOT</version>
+	<version>1.173-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Click Framework</name>
 	<description>Java Framework based on Spring Framework, Freemarker and Simplicity</description>
@@ -148,9 +148,9 @@
 			<version>2.11.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.googlecode.lesscss4j</groupId>
-			<artifactId>lesscss4j</artifactId>
-			<version>1.2.2</version>
+			<groupId>org.lesscss</groupId>
+			<artifactId>lesscss</artifactId>
+			<version>1.7.0.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
