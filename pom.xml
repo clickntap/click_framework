@@ -148,9 +148,9 @@
 			<version>2.11.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.lesscss</groupId>
-			<artifactId>lesscss</artifactId>
-			<version>1.7.0.1.1</version>
+			<groupId>com.googlecode.lesscss4j</groupId>
+			<artifactId>lesscss4j</artifactId>
+			<version>1.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
@@ -242,6 +242,11 @@
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk</artifactId>
 			<version>1.11.855</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.4</version>
 		</dependency>
 	</dependencies>
 

@@ -4,12 +4,13 @@ import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.lesscss.LessCompiler;
+
+import com.googlecode.lesscss4j.LessCompiler;
 
 public class LessUtils {
 
-  public static LessCompiler compiler = null;
   public static LessCompiler compressingCompiler = null;
+  public static LessCompiler compiler = null;
 
   public static synchronized String eval(String code) throws Exception {
     return compressingCompiler().compile(code);
