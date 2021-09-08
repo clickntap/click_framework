@@ -24,6 +24,7 @@ import com.cathive.sass.SassOutputStyle;
 import com.clickntap.api.ApiUtils;
 import com.clickntap.api.HttpUtils;
 import com.clickntap.hub.App;
+import com.clickntap.tool.f.FJson;
 import com.clickntap.tool.f.T;
 import com.clickntap.tool.script.FreemarkerScriptEngine;
 import com.clickntap.utils.ConstUtils;
@@ -38,6 +39,7 @@ public class BuildCompiler implements FileAlterationListener {
   private boolean compress;
   private Map<String, String> libsMap;
   private T t;
+  private FJson fj;
 
   public boolean isCompress() {
     return compress;
@@ -58,6 +60,8 @@ public class BuildCompiler implements FileAlterationListener {
   public void init() throws Exception {
     t = new T();
     t.setUiDir(uiWorkDir);
+    fj = new FJson();
+    fj.setUiDir(uiWorkDir);
     libsMap = new HashMap<String, String>();
     File directory = getUiWorkDir().getFile();
     FileAlterationObserver observer = new FileAlterationObserver(directory);
@@ -275,6 +279,10 @@ public class BuildCompiler implements FileAlterationListener {
       String extension = FilenameUtils.getExtension(changedFile.getName());
       if ("html".equalsIgnoreCase(extension)) {
         t.compile();
+        return;
+      }
+      if ("json".equalsIgnoreCase(extension) && !changedFile.getCanonicalPath().contains("/lib/")) {
+        fj.compile();
         return;
       }
       String filePath = changedFile.getAbsolutePath();
