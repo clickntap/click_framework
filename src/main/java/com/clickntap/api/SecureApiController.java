@@ -362,7 +362,7 @@ public class SecureApiController implements Controller {
         try {
           json = new JSONObject((javascriptEngine.eval(FileUtils.readFileToString(js, ConstUtils.UTF_8))).toString());
         } catch (Exception e) {
-          System.out.println(FileUtils.readFileToString(js, ConstUtils.UTF_8));
+          e.printStackTrace();
         }
       }
     }
