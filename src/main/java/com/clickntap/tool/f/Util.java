@@ -13,7 +13,9 @@ import org.dom4j.Element;
 import org.springframework.core.io.Resource;
 
 import com.clickntap.api.CryptoUtils;
+import com.clickntap.api.SecureApiController;
 import com.clickntap.api.SecureUtils;
+import com.clickntap.smart.SmartContext;
 import com.clickntap.tool.types.Datetime;
 import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.IOUtils;
@@ -28,6 +30,7 @@ public class Util {
   private Map<String, Object> resourceFiles;
   private UtilExtension extension;
   private CryptoUtils crypto;
+  private SecureApiController api;
 
   private Map<String, String> base64map;
 
@@ -39,12 +42,21 @@ public class Util {
     base64map = new HashMap<String, String>();
   }
 
+  public Util(Resource file, SecureApiController api, UtilExtension extension) {
+    this(file, api.getCrypto(), extension);
+    this.api = api;
+  }
+
+  public String fapi(SmartContext ctx, String channel) throws Exception {
+    return api.fapi(ctx, channel).toString();
+  }
+
   public void clear() {
     base64map = new HashMap<String, String>();
   }
 
   public Util() {
-    this(null, null, null);
+    this(null, (CryptoUtils) null, null);
   }
 
   public String formatDate(String d, String format, String language) {

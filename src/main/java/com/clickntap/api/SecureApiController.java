@@ -354,14 +354,16 @@ public class SecureApiController implements Controller {
         javax.script.ScriptEngine javascriptEngine = manager.getEngineByName("rhino");
         javascriptEngine.put("app", ctx.getBean("app"));
         javascriptEngine.put("crypto", ctx.getBean("crypto"));
-        javascriptEngine.put("util", new Util(null, (CryptoUtils) ctx.getBean("crypto"), null));
+        javascriptEngine.put("util", new Util(null, (SecureApiController) ctx.getBean("apiController"), null));
         javascriptEngine.put("extension", ctx.getBean("utilExtension"));
         javascriptEngine.put("sql", sqlJson);
         javascriptEngine.put("json", json);
+        javascriptEngine.put("ctx", ctx);
         javascriptEngine.put("request", ctx.getRequest());
         try {
           json = new JSONObject((javascriptEngine.eval(FileUtils.readFileToString(js, ConstUtils.UTF_8))).toString());
         } catch (Exception e) {
+          System.out.println(json.toString(2));
           e.printStackTrace();
         }
       }
