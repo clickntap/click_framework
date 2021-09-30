@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.RowMapper;
 import com.clickntap.api.BO;
 import com.clickntap.api.M;
 import com.clickntap.tool.types.Datetime;
-import com.clickntap.utils.AsciiUtils;
 import com.clickntap.utils.BindUtils;
 import com.clickntap.utils.ConstUtils;
 import com.clickntap.utils.IOUtils;
@@ -44,7 +43,7 @@ public class JdbcBeanRowMapper implements RowMapper {
         }
         if (o instanceof String) {
           String s = (String) o;
-          s = AsciiUtils.utf7ToText(s);
+          // s = AsciiUtils.utf7ToText(s);
           o = s;
         }
         String label = rs.getMetaData().getColumnLabel(i).trim();
