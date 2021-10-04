@@ -5,7 +5,6 @@ import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.TimeZone;
 
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,7 +21,7 @@ public class JdbcBeanRowMapper implements RowMapper {
 
   public JdbcBeanRowMapper(Class beanClass) {
     this.beanClass = beanClass;
-    TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    // TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
   }
 
   public Object mapRow(ResultSet rs, int rowNum) throws SQLException {

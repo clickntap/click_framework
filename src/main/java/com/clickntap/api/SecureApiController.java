@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import javax.script.ScriptEngineManager;
 import javax.servlet.http.HttpServletRequest;
@@ -129,7 +128,7 @@ public class SecureApiController implements Controller {
 
   public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
     try {
-      TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+      // TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
       if (api != null) {
         if (api.handleRequest(request, response)) {
           return null;
