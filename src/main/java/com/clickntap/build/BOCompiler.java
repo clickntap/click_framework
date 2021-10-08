@@ -112,7 +112,7 @@ public class BOCompiler {
             String className = line.substring(x1 + 1, x2);
             boolean skip = true;
             for (String codeLine : lines) {
-              if (!codeLine.startsWith("import") && codeLine.contains(className)) {
+              if (!codeLine.startsWith("import") && (codeLine.contains(className + ' ') || codeLine.contains(className + '<') || codeLine.contains(className + '>') || codeLine.contains(className + '.'))) {
                 skip = false;
                 break;
               }

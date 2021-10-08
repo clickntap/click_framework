@@ -1,5 +1,6 @@
 package com.clickntap.api;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -30,12 +31,12 @@ public class BOSorter {
             value2 = ConstUtils.EMPTY;
           }
           try {
-            int n1 = (int) (Double.parseDouble(value1) * 1000);
-            int n2 = (int) (Double.parseDouble(value2) * 1000);
+            BigDecimal n1 = new BigDecimal(value1);
+            BigDecimal n2 = new BigDecimal(value2);
             if (ascending)
-              return n1 - n2;
+              return n1.compareTo(n2);
             else
-              return n2 - n1;
+              return n2.compareTo(n1);
           } catch (Exception e) {
           }
           if (ascending)
