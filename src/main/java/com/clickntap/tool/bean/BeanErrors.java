@@ -200,6 +200,15 @@ public class BeanErrors {
     if (value1 != null && !value1.equals(value2))
       errors.rejectValue(propertyName1, "different");
   }
+  
+  public void assertNotEquals(String propertyName1, String propertyName2) {
+    Object value1 = BeanUtils.getValue(target, propertyName1);
+	Object value2 = BeanUtils.getValue(target, propertyName2);
+	if (value1 == null && value2 == null)
+       return;
+	if (value1 != null && value1.equals(value2))
+	   errors.rejectValue(propertyName1, "equal");
+  }
 
   public void assertEqualsMD5(String propertyName1, String propertyName2) throws Exception {
     String value1 = BeanUtils.getValue(target, propertyName1).toString();
