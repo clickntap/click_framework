@@ -42,6 +42,7 @@ public class JdbcManager {
     return i;
   }
 
+  @SuppressWarnings("deprecation")
   public List queryScript(String script, Object object, RowMapper mapper) {
     JdbcParams params = new JdbcParams(object);
     List resultList = null;
@@ -71,6 +72,7 @@ public class JdbcManager {
     }
   }
 
+  @SuppressWarnings("deprecation")
   private List query(String script, Object object, Class beanClass, JdbcParams params) {
     List resultList = null;
     String sql = evalScript(script, params, object);
@@ -89,6 +91,7 @@ public class JdbcManager {
     return resultList;
   }
 
+  @SuppressWarnings("deprecation")
   public long queryScriptForLong(String script, Object object) {
     JdbcParams params = new JdbcParams(object);
     long lo = 0;
