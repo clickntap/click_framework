@@ -29,7 +29,6 @@ import com.clickntap.hub.App;
 import com.clickntap.smart.SmartBindingResult;
 import com.clickntap.smart.SmartContext;
 import com.clickntap.tool.bean.BeanUtils;
-import com.clickntap.tool.f.RhinoScriptEngineFactory;
 import com.clickntap.tool.f.Util;
 import com.clickntap.tool.script.FreemarkerScriptEngine;
 import com.clickntap.tool.script.ScriptEngine;
@@ -349,11 +348,11 @@ public class SecureApiController implements Controller {
       File js = jsFile(sqlFolder, smartQuery);
       if (js.exists()) {
         ScriptEngineManager manager = new ScriptEngineManager();
-        manager.registerEngineName("rhino", new RhinoScriptEngineFactory());
-        javax.script.ScriptEngine javascriptEngine = manager.getEngineByName("rhino");
+        javax.script.ScriptEngine javascriptEngine = manager.getEngineByName("nashorn");
         javascriptEngine.put("app", ctx.getBean("app"));
         javascriptEngine.put("crypto", ctx.getBean("crypto"));
-        javascriptEngine.put("util", new Util(null, (SecureApiController) ctx.getBean("apiController"), null));
+        SecureApiController api = (SecureApiController) ctx.getBean("apiController");
+        javascriptEngine.put("util", new Util(null, api, null));
         javascriptEngine.put("extension", ctx.getBean("utilExtension"));
         javascriptEngine.put("sql", sqlJson);
         javascriptEngine.put("json", json);

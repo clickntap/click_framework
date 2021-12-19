@@ -219,11 +219,11 @@ public class Util {
     return SecureUtils.base64enc(text.getBytes(ConstUtils.UTF_8));
   }
 
-  public static String splitPath(Number id, int maxSize) {
+  public String splitPath(Number id, int maxSize) {
     return splitPath(id.toString(), maxSize);
   }
 
-  public static String splitPath(String id, int maxSize) {
+  public String splitPath(String id, int maxSize) {
     String sid = id.toString();
     StringBuffer sb = new StringBuffer();
     for (int i = 0; i < sid.length(); i += maxSize) {

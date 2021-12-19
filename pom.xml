@@ -74,32 +74,32 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>5.2.9.RELEASE</version>
+			<version>5.3.14</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>5.2.9.RELEASE</version>
+			<version>5.3.14</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>5.2.9.RELEASE</version>
+			<version>5.3.14</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-			<version>5.2.9.RELEASE</version>
+			<version>5.3.14</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>5.2.9.RELEASE</version>
+			<version>5.3.14</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>5.2.9.RELEASE</version>
+			<version>5.3.14</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -127,10 +127,10 @@
 			<artifactId>barcode4j</artifactId>
 			<version>2.1</version>
 		</dependency>
-		<dependency>
+	<dependency>
 			<groupId>com.caucho</groupId>
 			<artifactId>hessian</artifactId>
-			<version>4.0.51</version>
+			<version>4.0.65</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
@@ -213,9 +213,9 @@
 			<version>5.5.3</version>
 		</dependency>
 		<dependency>
-			<groupId>de.christophkraemer</groupId>
-			<artifactId>rhino-script-engine</artifactId>
-			<version>1.1.0</version>
+			<groupId>org.openjdk.nashorn</groupId>
+			<artifactId>nashorn-core</artifactId>
+			<version>15.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>

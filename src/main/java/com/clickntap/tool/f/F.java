@@ -56,8 +56,7 @@ public class F {
 
   public void init() throws Exception {
     ScriptEngineManager manager = new ScriptEngineManager();
-    manager.registerEngineName("rhino", new RhinoScriptEngineFactory());
-    javascriptEngine = manager.getEngineByName("rhino");
+    javascriptEngine = manager.getEngineByName("nashorn");
     javascriptEngine.eval("var Proxy = function(){};");
     javascriptEngine.eval("var document = {};");
     javascriptEngine.eval("var console = {};");
