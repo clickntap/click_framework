@@ -381,7 +381,7 @@ public class ${entity.attributeValue("name")} extends BO {
   [#if field.attributeValue("crypto")?? && field.attributeValue("crypto") == "yes"]
   if (${field.attributeValue("name")} != null) {
    try {
-      name = getApp().getCrypto().decrypt(${field.attributeValue("name")});
+      ${field.attributeValue("name")} = getApp().getCrypto().decrypt(${field.attributeValue("name")});
     } catch (Exception e) {
     }
   }
@@ -394,7 +394,7 @@ public class ${entity.attributeValue("name")} extends BO {
     [#if field.attributeValue("crypto")?? && field.attributeValue("crypto") == "yes"]
     if (${field.attributeValue("name")} != null) {
      try {
-        name = getApp().getCrypto().encrypt(${field.attributeValue("name")});
+        ${field.attributeValue("name")} = getApp().getCrypto().encrypt(${field.attributeValue("name")});
       } catch (Exception e) {
       }
     }
