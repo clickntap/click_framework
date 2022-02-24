@@ -50,4 +50,5 @@ public class BOApp extends com.clickntap.hub.App {
     }
     return sb.toString().toLowerCase();
   }
+
 }

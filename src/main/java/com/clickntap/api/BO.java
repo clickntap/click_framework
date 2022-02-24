@@ -25,10 +25,6 @@ public class BO extends com.clickntap.hub.BO {
     values = new HashMap<String, Object>();
   }
 
-  public BOApp getApp() throws Exception {
-    return (BOApp) super.getApp();
-  }
-
   public Datetime getCreationDate() {
     return creationDate;
   }

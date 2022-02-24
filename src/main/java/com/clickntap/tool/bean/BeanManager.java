@@ -9,6 +9,8 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.clickntap.api.CryptoUtils;
+
 public interface BeanManager {
 
   public Bean read(Number id, Class beanClass) throws Exception;
@@ -46,5 +48,9 @@ public interface BeanManager {
   public PlatformTransactionManager getTransactionManager();
 
   public void init() throws Exception;
+
+  public void setCrypto(CryptoUtils crypto);
+
+  public CryptoUtils getCrypto();
 
 }

@@ -17,6 +17,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.clickntap.api.CryptoUtils;
 import com.clickntap.tool.bean.BeanInfo.BlobInfo;
 import com.clickntap.tool.cache.Cache;
 import com.clickntap.tool.cache.CacheManager;
@@ -34,6 +35,15 @@ public class BeanManagerImpl implements BeanManager {
   private ScriptEngine scriptEngine;
   private String channel;
   private Boolean cacheEnabled;
+  protected CryptoUtils crypto;
+
+  public void setCrypto(CryptoUtils crypto) {
+    this.crypto = crypto;
+  }
+
+  public CryptoUtils getCrypto() {
+    return crypto;
+  }
 
   public Boolean isCacheEnabled() {
     return cacheEnabled;
@@ -85,14 +95,16 @@ public class BeanManagerImpl implements BeanManager {
   }
 
   /*
-   * @see com.clickntap.tool.bean.BeanManagerInterface#read(java.lang.Number, java.lang.Class)
+   * @see com.clickntap.tool.bean.BeanManagerInterface#read(java.lang.Number,
+   * java.lang.Class)
    */
   public Bean read(Number id, Class beanClass) throws Exception {
     return readByFilter(new Bean(id), ID_FILTER, beanClass);
   }
 
   /*
-   * @see com.clickntap.tool.bean.BeanManagerInterface#read(java.lang.Object, java.lang.String, java.lang.Class)
+   * @see com.clickntap.tool.bean.BeanManagerInterface#read(java.lang.Object,
+   * java.lang.String, java.lang.Class)
    */
   public Bean readByFilter(Bean filter, String filterName, Class beanClass) throws Exception {
     BeanInfo beanInfo = getBeanInfo(beanClass);
@@ -148,7 +160,8 @@ public class BeanManagerImpl implements BeanManager {
   /*
    * (non-Javadoc)
    * 
-   * @see com.clickntap.tool.bean.BeanManagerInterface#create(com.clickntap.tool. bean.Bean)
+   * @see com.clickntap.tool.bean.BeanManagerInterface#create(com.clickntap.tool.
+   * bean.Bean)
    */
   public Number create(Bean bean) throws Exception {
     Class beanClass = bean.getClass();
@@ -170,7 +183,8 @@ public class BeanManagerImpl implements BeanManager {
   }
 
   /*
-   * @see com.clickntap.tool.bean.BeanManagerInterface#update(com.clickntap.tool. bean.Bean)
+   * @see com.clickntap.tool.bean.BeanManagerInterface#update(com.clickntap.tool.
+   * bean.Bean)
    */
   public int update(Bean bean) throws Exception {
     bean.setupBeforeUpdate();
@@ -186,7 +200,8 @@ public class BeanManagerImpl implements BeanManager {
   }
 
   /*
-   * @see com.clickntap.tool.bean.BeanManagerInterface#delete(com.clickntap.tool. bean.Bean)
+   * @see com.clickntap.tool.bean.BeanManagerInterface#delete(com.clickntap.tool.
+   * bean.Bean)
    */
   public int delete(Bean bean) throws Exception {
     Class beanClass = bean.getClass();
@@ -226,7 +241,8 @@ public class BeanManagerImpl implements BeanManager {
   }
 
   /*
-   * @see com.clickntap.tool.bean.BeanManagerInterface#readList(com.clickntap.tool .bean.Bean, java.lang.String)
+   * @see com.clickntap.tool.bean.BeanManagerInterface#readList(com.clickntap.tool
+   * .bean.Bean, java.lang.String)
    */
   public List<Number> readList(Bean bean, String fieldName) throws Exception {
     return readListByFilter(bean.getClass(), bean, fieldName);
@@ -253,7 +269,8 @@ public class BeanManagerImpl implements BeanManager {
   }
 
   /*
-   * @see com.clickntap.tool.bean.BeanManagerInterface#readList(java.lang.Class, java.lang.String)
+   * @see com.clickntap.tool.bean.BeanManagerInterface#readList(java.lang.Class,
+   * java.lang.String)
    */
   public List<Number> readListByClass(Class beanClass, String fieldName) throws Exception {
     BeanInfo beanInfo = getBeanInfo(beanClass);
@@ -279,7 +296,8 @@ public class BeanManagerImpl implements BeanManager {
   }
 
   /*
-   * @see com.clickntap.tool.bean.BeanManagerInterface#readList(java.lang.Class, com.clickntap.tool.bean.Bean, java.lang.String)
+   * @see com.clickntap.tool.bean.BeanManagerInterface#readList(java.lang.Class,
+   * com.clickntap.tool.bean.Bean, java.lang.String)
    */
   public List<Number> readListByFilter(Class beanClass, Bean bean, String fieldName) throws Exception {
     BeanInfo beanInfo = getBeanInfo(beanClass);

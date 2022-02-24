@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.caucho.hessian.client.HessianProxyFactory;
 import com.caucho.hessian.io.SerializerFactory;
+import com.clickntap.api.CryptoUtils;
 
 public class RemoteBeanManager implements BeanManager {
 
@@ -112,6 +113,14 @@ public class RemoteBeanManager implements BeanManager {
 
   public PlatformTransactionManager getTransactionManager() {
     return remoteBeanManager.getTransactionManager();
+  }
+
+  public void setCrypto(CryptoUtils crypto) {
+    remoteBeanManager.setCrypto(crypto);
+  }
+
+  public CryptoUtils getCrypto() {
+    return remoteBeanManager.getCrypto();
   }
 
 }

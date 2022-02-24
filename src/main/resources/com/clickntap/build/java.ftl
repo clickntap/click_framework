@@ -362,6 +362,57 @@ public class ${entity.attributeValue("name")} extends BO {
     return weight;
   }
 
+
+  public Number create() throws Exception {
+    encrypt();
+    Number id = super.create();
+    decrypt();
+    return id;
+  }
+
+  public Number update() throws Exception {
+    Number count = super.update();
+    decrypt();
+    return count;
+  }
+
+  private void decrypt() {
+  [#list entity.elements("field") as field]
+  [#if field.attributeValue("crypto")?? && field.attributeValue("crypto") == "yes"]
+  if (${field.attributeValue("name")} != null) {
+   try {
+      name = getApp().getCrypto().decrypt(${field.attributeValue("name")});
+    } catch (Exception e) {
+    }
+  }
+  [/#if]
+  [/#list]
+  }
+
+  private void encrypt() {
+    [#list entity.elements("field") as field]
+    [#if field.attributeValue("crypto")?? && field.attributeValue("crypto") == "yes"]
+    if (${field.attributeValue("name")} != null) {
+     try {
+        name = getApp().getCrypto().encrypt(${field.attributeValue("name")});
+      } catch (Exception e) {
+      }
+    }
+    [/#if]
+    [/#list]
+  }
+
+  public void setBeanManager(com.clickntap.tool.bean.BeanManager beanManager) {
+    super.setBeanManager(beanManager);
+    decrypt();
+  }
+
+  public void setupBeforeUpdate() throws Exception {
+    encrypt();
+    super.setupBeforeUpdate();
+  }
+
+
   [#list entity.elements("field") as field][#if field.attributeValue("name") != "id" && field.attributeValue("name") != "last_modified" && field.attributeValue("name") != "creation_date"]
   [#if field.attributeValue("type")?contains("date") && field.attributeValue("name")?ends_with("date")]
   public String ${this.getter(field.attributeValue("name")+"_only_time")}() {
@@ -388,11 +439,12 @@ public class ${entity.attributeValue("name")} extends BO {
     return new JSONObject(${this.getter(field.attributeValue("name"))}());
   };
   [/#if]
-  
-  
+
+
+
     [#if field.attributeValue("name")?contains("password")]
   [#assign passwordName = this.getter(field.attributeValue("name"))?replace("get","")]
-  
+
   public String getConfirm${passwordName}() {
     return confirm${passwordName};
   }
@@ -415,8 +467,8 @@ public String get${passwordName}MD5() throws Exception {
     return SecurityUtils.md5(get${passwordName}());
   }
    [/#if]
-  
-  
+
+
 
   [/#if]
   [#if (field.attributeValue("references")!"") != ""]
@@ -462,9 +514,9 @@ public String get${passwordName}MD5() throws Exception {
   [#if field.attributeValue("name") == "email"]
   	public void forgotPassword(Map<String, Object> ctx) throws Exception {
 		if (getEmail() != null && !"".equals(getEmail())) {
-			Mail mail = getApp().getMailer().newMail("forgot-password");
+			Mail mail = ((com.clickntap.api.BOApp)getApp()).getMailer().newMail("forgot-password");
 			mail.addTo(getEmail());
-			getApp().getMailer().setup(mail, ctx);
+			((com.clickntap.api.BOApp)getApp()).getMailer().setup(mail, ctx);
 			mail.send();
 		}
 	}

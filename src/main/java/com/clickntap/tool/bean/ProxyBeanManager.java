@@ -9,6 +9,8 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.clickntap.api.CryptoUtils;
+
 public class ProxyBeanManager implements BeanManager {
 
   private BeanManager beanManager;
@@ -19,7 +21,7 @@ public class ProxyBeanManager implements BeanManager {
 
   public Bean read(Number id, Class beanClass) throws Exception {
     Bean bean = beanManager.read(id, beanClass);
-    if (bean != null)
+    if (bean != null && bean.getBeanManager() == null)
       bean.setBeanManager(this);
     return bean;
   }
@@ -96,6 +98,14 @@ public class ProxyBeanManager implements BeanManager {
 
   public void init() throws Exception {
     beanManager.init();
+  }
+
+  public void setCrypto(CryptoUtils crypto) {
+    beanManager.setCrypto(crypto);
+  }
+
+  public CryptoUtils getCrypto() {
+    return beanManager.getCrypto();
   }
 
 }
