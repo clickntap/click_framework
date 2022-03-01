@@ -57,7 +57,7 @@ public class BeanManagerImpl implements BeanManager {
     this.cacheEnabled = cacheEnabled;
   }
 
-  public BeanManagerImpl() throws Exception {
+  public BeanManagerImpl() {
     start();
   }
 
@@ -228,7 +228,7 @@ public class BeanManagerImpl implements BeanManager {
     start();
   }
 
-  public void start() throws Exception {
+  public void start() {
     beanInfoMap = new HashMap<Class, BeanInfo>();
     cacheEnabled = true;
   }

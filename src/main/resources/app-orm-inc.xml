@@ -24,10 +24,5 @@
         <property name="scriptEngine" ref="jdbcScriptEngine"/>
         <property name="db" value="${jdbc.db}"/>
     </bean>
-    <bean id="beanManager" class="com.clickntap.tool.bean.BeanManagerImpl">
-        <property name="jdbcManager" ref="jdbcManager"/>
-        <property name="cacheManager" ref="cacheManager"/>
-        <property name="scriptEngine" ref="validationScriptEngine"/>
-    </bean>
-    <bean class="com.clickntap.tool.cache.EhCacheManager" id="cacheManager"/>
+     <bean class="com.clickntap.tool.cache.EhCacheManager" id="cacheManager"/>
 </beans>

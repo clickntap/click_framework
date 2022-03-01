@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.clickntap.tool.bean.Bean;
-import com.clickntap.tool.bean.ProxyBeanManager;
+import com.clickntap.tool.bean.BeanManagerImpl;
 
-public class BOManager extends ProxyBeanManager {
+public class BOManager extends BeanManagerImpl {
 
   public BOManager() {
+    super();
     System.setProperty("java.awt.headless", "true");
   }
 
