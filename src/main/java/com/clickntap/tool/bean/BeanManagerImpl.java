@@ -290,6 +290,7 @@ public class BeanManagerImpl implements BeanManager {
   private List<Number> toIdList(List<BeanId> list) {
     List<Number> idList = new ArrayList<Number>(list.size());
     for (BeanId beanId : list) {
+
       idList.add(beanId.getId());
     }
     return idList;
@@ -311,8 +312,12 @@ public class BeanManagerImpl implements BeanManager {
     BeanInfo beanInfo = getBeanInfo(bean.getClass());
 
     // validate(bean, beanInfo, "exportlist-" + fieldName);
-
-    return jdbcManager.queryScript(beanInfo.getReadListScript(fieldName), bean, beanClass);
+    List<Bean> beans = jdbcManager.queryScript(beanInfo.getReadListScript(fieldName), bean, beanClass);
+    for (Bean aBean : beans) {
+      aBean.setBeanManager(this);
+      aBean.setupAfterRead();
+    }
+    return beans;
   }
 
   public Validator getValidator(BeanInfo beanInfo, String validationGroup) throws Exception {
