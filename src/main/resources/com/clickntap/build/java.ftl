@@ -551,7 +551,7 @@ public String get${passwordName}MD5() throws Exception {
       [#if json.attributeValue("value")?contains(".ftl")]
       Map<String, Object> ctx = new HashMap<String, Object>();
 			ctx.put(ConstUtils.THIS, this);
-			String value = getApp().getBoEngine().eval(ctx, "${json.attributeValue("value")}");
+			String value = ((com.clickntap.api.BOApp) getApp()).getBoEngine().eval(ctx, "${json.attributeValue("value")}");
       json.put("${json.attributeValue("name")}", value);
       [#else]
 	      [#if json.attributeValue("name") == "t"]
