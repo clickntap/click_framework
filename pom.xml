@@ -6,7 +6,7 @@
 
 	<groupId>com.clickntap</groupId>
 	<artifactId>click_framework</artifactId>
-	<version>1.200</version>
+	<version>1.201</version>
 	<packaging>jar</packaging>
 	<name>CLICK FRAMEWORK</name>
 	<description>WEBAPP FRAMEWORK</description>
