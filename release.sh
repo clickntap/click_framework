@@ -1,5 +1,5 @@
-REL=1.191
-NEXT=1.190-SNAPSHOT
+REL=1.200
+NEXT=1.201-SNAPSHOT
 ARTIFACT=click_framework
 
 mvn -q versions:set -DnewVersion="$REL"
